@@ -1,8 +1,9 @@
 fastapi
 uvicorn[standard]
-pydantic
+pydantic[email]
 python-jose[cryptography]
 bcrypt
 mysqlclient
 SQLAlchemy
 python-dotenv
+httpx

@@ -9,10 +9,10 @@ from services.auth_service import hash_password
 def run():
     db = SessionLocal()
     # Seed admin if not exists
-    admin = db.query(User).filter(User.email == "admin@nousqa.internal").first()
+    admin = db.query(User).filter(User.email == "admin@nousinfo.com").first()
     if not admin:
         admin = User(
-            email="admin@nousqa.internal",
+            email="admin@nousinfo.com",
             password_hash=hash_password("Admin@123"),
             full_name="Platform Admin",
             role=UserRole.admin

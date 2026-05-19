@@ -14,7 +14,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white shadow p-4 flex justify-between items-center">
-      <Link to="/roadmap" className="text-xl font-bold text-blue-700">NousQA Platform</Link>
+      <Link to="/roadmap" className="text-xl font-bold text-blue-700">ANTS Trail</Link>
       <div className="flex items-center space-x-4">
         {user.role === 'admin' && <Link to="/admin" className="text-sm text-gray-700">Dashboard</Link>}
         <button onClick={handleLogout} className="text-sm text-red-500">Logout</button>

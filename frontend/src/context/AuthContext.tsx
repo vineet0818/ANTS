@@ -7,12 +7,15 @@ interface UserState {
   token: string;
   role: UserRole;
   id: number;
+  full_name: string;
 }
 
 interface AuthContextType {
   user: UserState | null;
   login: (email: string, password: string) => Promise<any>;
   register: (full_name: string, email: string, password: string) => Promise<any>;
+  /** Called by SSOCallback after a successful Microsoft SSO redirect. */
+  setUserFromSSO: (params: { token: string; userId: number; role: string; full_name: string }) => void;
   logout: () => void;
 }
 
@@ -25,41 +28,58 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
     const storedUserId = localStorage.getItem('user_id');
+    const full_name = localStorage.getItem('full_name') ?? '';
 
     if (token && role && storedUserId) {
-      setUser({ token, role, id: Number(storedUserId) });
+      setUser({ token, role, id: Number(storedUserId), full_name });
     }
   }, []);
 
+  const persistUser = (token: string, role: string, id: number, full_name: string) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', role);
+    localStorage.setItem('user_id', String(id));
+    localStorage.setItem('full_name', full_name);
+    setUser({ token, role, id, full_name });
+  };
+
   const login = async (email: string, password: string) => {
     const res = await api.post('/auth/login', { email, password });
-    localStorage.setItem('token', res.data.access_token);
-    localStorage.setItem('role', res.data.role);
-    localStorage.setItem('user_id', String(res.data.user_id));
-    const userState = { token: res.data.access_token, role: res.data.role, id: res.data.user_id };
-    setUser(userState);
+    persistUser(res.data.access_token, res.data.role, res.data.user_id, res.data.full_name ?? '');
     return res.data;
   };
 
   const register = async (full_name: string, email: string, password: string) => {
     const res = await api.post('/auth/register', { full_name, email, password });
-    localStorage.setItem('token', res.data.access_token);
-    localStorage.setItem('role', res.data.role);
-    localStorage.setItem('user_id', String(res.data.user_id));
-    const userState = { token: res.data.access_token, role: res.data.role, id: res.data.user_id };
-    setUser(userState);
+    persistUser(res.data.access_token, res.data.role, res.data.user_id, res.data.full_name ?? '');
     return res.data;
+  };
+
+  /** Invoked by SSOCallback page after Microsoft redirects back with a JWT. */
+  const setUserFromSSO = ({
+    token,
+    userId,
+    role,
+    full_name,
+  }: {
+    token: string;
+    userId: number;
+    role: string;
+    full_name: string;
+  }) => {
+    persistUser(token, role, userId, full_name);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('user_id');
+    localStorage.removeItem('full_name');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, setUserFromSSO, logout }}>
       {children}
     </AuthContext.Provider>
   );

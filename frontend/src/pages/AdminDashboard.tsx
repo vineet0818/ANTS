@@ -20,7 +20,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="glass p-4 border-b border-gray-700">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-white">NousQA Platform</h1>
+          <h1 className="text-2xl font-bold text-white">ANTS Trail</h1>
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate('/roadmap')}
