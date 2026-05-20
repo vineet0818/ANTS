@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedUserId = localStorage.getItem('user_id');
     const full_name = localStorage.getItem('full_name') ?? '';
 
+    const full_name = localStorage.getItem('full_name') ?? '';
     if (token && role && storedUserId) {
       setUser({ token, role, id: Number(storedUserId), full_name });
     }
