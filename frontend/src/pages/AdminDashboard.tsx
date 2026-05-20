@@ -1,94 +1,659 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '../api';
-import { useNavigate } from 'react-router-dom';
+import { Layout } from '../components/Layout';
 
-export default function AdminDashboard() {
-  const [data, setData] = useState([]);
-  const navigate = useNavigate();
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface LearnerRow {
+  user_id: number;
+  name: string;
+  email: string;
+  profile_name: string;
+  profile_key: string;
+  completion_pct: number;
+  completed_modules: number;
+  in_progress_modules: number;
+  total_modules: number;
+  target_date: string;
+  start_date: string;
+  roadmap_state: string;
+  risk_flag: 'completed' | 'on_track' | 'at_risk' | 'overdue';
+  last_activity: string | null;
+}
+
+interface ModuleDetail {
+  module_id: number;
+  title: string;
+  category: string;
+  resource_name: string;
+  resource_link: string;
+  estimated_time: string;
+  progress_state: string;
+  percentage: number;
+  updated_at: string | null;
+}
+
+interface EventLog {
+  event_id: number;
+  module_title: string;
+  event_type: string;
+  old_state: string;
+  new_state: string;
+  percentage: number;
+  created_at: string;
+}
+
+interface NudgeEntry {
+  created_at: string;
+  details: Record<string, string>;
+}
+
+interface LearnerDetail {
+  user_id: number;
+  name: string;
+  email: string;
+  profile_name: string;
+  completion_pct: number;
+  total_modules: number;
+  target_date: string | null;
+  start_date: string | null;
+  risk_flag: string;
+  modules: ModuleDetail[];
+  event_log: EventLog[];
+  nudge_history: NudgeEntry[];
+}
+
+// ─── Inline SVG icons ─────────────────────────────────────────────────────────
+const Ic = ({ size = 15, sw = 1.6, children, ...rest }: { size?: number; sw?: number; children?: React.ReactNode; [k: string]: unknown }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" {...(rest as React.SVGProps<SVGSVGElement>)}>
+    {children}
+  </svg>
+);
+const IcSearch  = (p: {size?:number}) => <Ic {...p}><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/></Ic>;
+const IcClose   = (p: {size?:number}) => <Ic {...p}><path d="M18 6 6 18M6 6l12 12"/></Ic>;
+const IcChevron = (p: {size?:number; open?: boolean}) => (
+  <Ic size={p.size} style={{ transition: 'transform .2s', transform: p.open ? 'rotate(90deg)' : 'none' }}>
+    <path d="M9 18l6-6-6-6"/>
+  </Ic>
+);
+const IcBolt    = (p: {size?:number}) => <Ic {...p}><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></Ic>;
+const IcUsers   = (p: {size?:number}) => <Ic {...p}><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.2"/><path d="M3 18a6 6 0 0 1 12 0M14 18a4.5 4.5 0 0 1 7 0"/></Ic>;
+const IcAlert   = (p: {size?:number}) => <Ic {...p}><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></Ic>;
+const IcCheck   = (p: {size?:number}) => <Ic {...p}><path d="m5 12 5 5L20 7"/></Ic>;
+const IcClock   = (p: {size?:number}) => <Ic {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></Ic>;
+const IcLink    = (p: {size?:number}) => <Ic {...p}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></Ic>;
+
+// ─── Risk badge ───────────────────────────────────────────────────────────────
+const RISK_CONFIG = {
+  overdue:   { bg: 'rgba(239,68,68,.15)',   border: 'rgba(239,68,68,.35)',   text: '#f87171', label: 'Overdue' },
+  at_risk:   { bg: 'rgba(234,179,8,.15)',   border: 'rgba(234,179,8,.35)',   text: '#fbbf24', label: 'At Risk' },
+  on_track:  { bg: 'rgba(34,197,94,.12)',   border: 'rgba(34,197,94,.3)',    text: '#4ade80', label: 'On Track' },
+  completed: { bg: 'rgba(99,102,241,.15)',  border: 'rgba(99,102,241,.35)',  text: '#a5b4fc', label: 'Completed' },
+};
+
+function RiskBadge({ flag }: { flag: string }) {
+  const cfg = RISK_CONFIG[flag as keyof typeof RISK_CONFIG] ?? RISK_CONFIG.on_track;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+      letterSpacing: '.03em', background: cfg.bg, border: `1px solid ${cfg.border}`,
+      color: cfg.text, whiteSpace: 'nowrap',
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.text, flexShrink: 0 }} />
+      {cfg.label}
+    </span>
+  );
+}
+
+// ─── Mini progress bar ────────────────────────────────────────────────────────
+function MiniBar({ pct, flag }: { pct: number; flag: string }) {
+  const color = flag === 'overdue' ? '#f87171' : flag === 'at_risk' ? '#fbbf24' : flag === 'completed' ? '#a5b4fc' : 'oklch(0.80 0.16 200)';
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 120 }}>
+      <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
+        <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 99, transition: 'width .3s' }} />
+      </div>
+      <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink-80)', width: 32, textAlign: 'right' }}>{pct}%</span>
+    </div>
+  );
+}
+
+// ─── Format relative time ─────────────────────────────────────────────────────
+function relTime(ts: string | null): string {
+  if (!ts) return '—';
+  const diff = Date.now() - new Date(ts).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 2) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d ago`;
+  return new Date(ts).toLocaleDateString();
+}
+
+// ─── State badge ──────────────────────────────────────────────────────────────
+function StateBadge({ state }: { state: string }) {
+  const map: Record<string, [string, string]> = {
+    completed:   ['oklch(0.80 0.16 200)', 'rgba(99,102,241,.15)'],
+    in_progress: ['#fbbf24', 'rgba(234,179,8,.1)'],
+    not_started: ['var(--ink-40)', 'rgba(255,255,255,.04)'],
+  };
+  const [color, bg] = map[state] ?? map.not_started;
+  return (
+    <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: bg, color, fontWeight: 600 }}>
+      {state.replace('_', ' ')}
+    </span>
+  );
+}
+
+// ─── Drill-down panel ─────────────────────────────────────────────────────────
+function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => void }) {
+  const [detail, setDetail] = useState<LearnerDetail | null>(null);
+  const [tab, setTab] = useState<'modules' | 'events' | 'nudges'>('modules');
+  const [nudging, setNudging] = useState(false);
+  const [nudgeDone, setNudgeDone] = useState(false);
 
   useEffect(() => {
-    api.get('/admin/dashboard').then(res => setData(res.data));
-  }, []);
+    api.get(`/admin/learner/${userId}`).then(r => setDetail(r.data));
+    setNudgeDone(false);
+    setTab('modules');
+  }, [userId]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+  const handleNudge = async () => {
+    if (nudging) return;
+    setNudging(true);
+    try {
+      await api.post(`/admin/nudge/${userId}`);
+      setNudgeDone(true);
+      // refresh nudge history
+      const r = await api.get(`/admin/learner/${userId}`);
+      setDetail(r.data);
+    } finally {
+      setNudging(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      {/* Header */}
-      <div className="glass p-4 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-white">ANTS Trail</h1>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => navigate('/roadmap')}
-              className="glass-button px-4 py-2 rounded-lg text-gray-300 hover:text-white transition-colors duration-300"
-            >
-              My Roadmap
-            </button>
-            <button
-              onClick={handleLogout}
-              className="glass-button px-4 py-2 rounded-lg text-red-400 hover:text-red-300 transition-colors duration-300"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 1000,
+      display: 'flex', justifyContent: 'flex-end',
+    }} onClick={onClose}>
+      {/* Backdrop */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(7,7,11,.6)', backdropFilter: 'blur(4px)' }} />
 
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="glass-card p-8 rounded-2xl mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-          <p className="text-gray-300">Monitor user progress and roadmaps</p>
-        </div>
+      {/* Panel */}
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: 'relative', width: 520, height: '100%',
+          background: 'var(--bg-1, #0e0e14)', borderLeft: '1px solid var(--glass-stroke)',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        }}
+      >
+        {/* Panel header */}
+        {detail ? (
+          <>
+            <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid var(--glass-stroke)', flexShrink: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', lineHeight: 1.2 }}>{detail.name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-60)', marginTop: 2 }}>{detail.email}</div>
+                </div>
+                <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-60)', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center' }}>
+                  <IcClose size={16} />
+                </button>
+              </div>
 
-        <div className="glass-card p-6 rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-600">
-                  <th className="text-left p-4 text-white font-semibold">Name</th>
-                  <th className="text-left p-4 text-white font-semibold">Email</th>
-                  <th className="text-left p-4 text-white font-semibold">Completion %</th>
-                  <th className="text-left p-4 text-white font-semibold">Target Date</th>
-                  <th className="text-left p-4 text-white font-semibold">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map(row => (
-                  <tr key={row.user_id} className="border-b border-gray-700 hover:bg-white/5 transition-colors duration-200">
-                    <td className="p-4 text-gray-300">{row.name}</td>
-                    <td className="p-4 text-gray-300">{row.email}</td>
-                    <td className="p-4">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-16 bg-gray-700 h-2 rounded-full overflow-hidden">
-                          <div
-                            className="bg-gradient-to-r from-green-500 to-blue-500 h-full rounded-full"
-                            style={{ width: `${row.completion_pct}%` }}
-                          ></div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                <RiskBadge flag={detail.risk_flag} />
+                <span style={{ fontSize: 12, color: 'var(--ink-60)', background: 'rgba(255,255,255,.05)', padding: '3px 10px', borderRadius: 20, border: '1px solid var(--glass-stroke)' }}>
+                  {detail.profile_name}
+                </span>
+                <MiniBar pct={detail.completion_pct} flag={detail.risk_flag} />
+              </div>
+
+              {detail.target_date && (
+                <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-40)', display: 'flex', gap: 16 }}>
+                  <span>Started: <b style={{ color: 'var(--ink-60)' }}>{detail.start_date}</b></span>
+                  <span>Target: <b style={{ color: 'var(--ink-60)' }}>{detail.target_date}</b></span>
+                </div>
+              )}
+
+              {/* Nudge button */}
+              <button
+                onClick={handleNudge}
+                disabled={nudging}
+                style={{
+                  marginTop: 14, display: 'flex', alignItems: 'center', gap: 7,
+                  padding: '8px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: nudging ? 'not-allowed' : 'pointer',
+                  background: nudgeDone ? 'rgba(34,197,94,.12)' : 'rgba(251,191,36,.1)',
+                  border: nudgeDone ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(251,191,36,.3)',
+                  color: nudgeDone ? '#4ade80' : '#fbbf24',
+                  transition: 'all .2s',
+                }}
+              >
+                {nudgeDone ? <IcCheck size={14} /> : <IcBolt size={14} />}
+                {nudging ? 'Sending…' : nudgeDone ? 'Nudge sent!' : 'Nudge learner'}
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div style={{ display: 'flex', gap: 2, padding: '12px 24px 0', borderBottom: '1px solid var(--glass-stroke)', flexShrink: 0 }}>
+              {(['modules', 'events', 'nudges'] as const).map(t => (
+                <button key={t} onClick={() => setTab(t)} style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  padding: '8px 14px 10px', fontSize: 13, fontWeight: tab === t ? 600 : 400,
+                  color: tab === t ? 'var(--ink-100)' : 'var(--ink-50)',
+                  borderBottom: tab === t ? '2px solid oklch(0.80 0.16 200)' : '2px solid transparent',
+                  marginBottom: -1, transition: 'color .15s',
+                }}>
+                  {t === 'modules' ? `Modules (${detail.total_modules})` : t === 'events' ? `Activity (${detail.event_log.length})` : `Nudges (${detail.nudge_history.length})`}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab content */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
+              {tab === 'modules' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {detail.modules.map(m => (
+                    <div key={m.module_id} style={{
+                      background: 'rgba(255,255,255,.03)', border: '1px solid var(--glass-stroke)',
+                      borderRadius: 10, padding: '12px 14px',
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-90)', lineHeight: 1.3, marginBottom: 4 }}>{m.title}</div>
+                          <div style={{ fontSize: 11, color: 'var(--ink-40)', marginBottom: 6 }}>{m.category}</div>
+                          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                            <StateBadge state={m.progress_state} />
+                            {m.percentage > 0 && (
+                              <span style={{ fontSize: 11, color: 'var(--ink-50)', fontFamily: 'var(--font-mono)' }}>{m.percentage}%</span>
+                            )}
+                            {m.updated_at && (
+                              <span style={{ fontSize: 11, color: 'var(--ink-30)' }}>{relTime(m.updated_at)}</span>
+                            )}
+                          </div>
                         </div>
-                        <span className="text-white font-medium">{row.completion_pct}%</span>
+                        {m.resource_link && (
+                          <a href={m.resource_link} target="_blank" rel="noreferrer"
+                            style={{ color: 'var(--ink-40)', display: 'flex', alignItems: 'center', marginTop: 2 }}>
+                            <IcLink size={13} />
+                          </a>
+                        )}
                       </div>
-                    </td>
-                    <td className="p-4 text-gray-300">{row.target_date}</td>
-                    <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        row.roadmap_state === 'completed' ? 'bg-green-500/20 text-green-400' :
-                        row.roadmap_state === 'in_progress' ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-gray-500/20 text-gray-400'
-                      }`}>
-                        {row.roadmap_state}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      {m.progress_state !== 'not_started' && (
+                        <div style={{ marginTop: 8 }}>
+                          <MiniBar pct={m.percentage} flag={m.progress_state === 'completed' ? 'completed' : 'on_track'} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {tab === 'events' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {detail.event_log.length === 0 ? (
+                    <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No activity yet</div>
+                  ) : detail.event_log.map(ev => (
+                    <div key={ev.event_id} style={{
+                      display: 'flex', gap: 12, alignItems: 'flex-start',
+                      padding: '10px 12px', background: 'rgba(255,255,255,.03)',
+                      border: '1px solid var(--glass-stroke)', borderRadius: 8,
+                    }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                        background: 'rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--ink-60)',
+                      }}>
+                        <IcClock size={12} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-80)', marginBottom: 2 }}>{ev.module_title}</div>
+                        <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>
+                          <span style={{ color: 'var(--ink-40)' }}>{ev.old_state}</span>
+                          {' → '}
+                          <span style={{ color: 'oklch(0.80 0.16 200)' }}>{ev.new_state}</span>
+                          {ev.percentage > 0 && <span style={{ color: 'var(--ink-40)' }}> · {ev.percentage}%</span>}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-30)', whiteSpace: 'nowrap', marginTop: 2 }}>
+                        {relTime(ev.created_at)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {tab === 'nudges' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {detail.nudge_history.length === 0 ? (
+                    <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No nudges sent yet</div>
+                  ) : detail.nudge_history.map((n, i) => (
+                    <div key={i} style={{
+                      padding: '10px 14px', background: 'rgba(251,191,36,.05)',
+                      border: '1px solid rgba(251,191,36,.2)', borderRadius: 8,
+                    }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#fbbf24', marginBottom: 4, display: 'flex', gap: 6, alignItems: 'center' }}>
+                        <IcBolt size={12} /> Nudge sent
+                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>
+                        By {n.details?.nudged_by ?? '—'} · {relTime(n.created_at)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'var(--ink-40)', fontSize: 13 }}>
+            Loading…
           </div>
-        </div>
+        )}
       </div>
     </div>
+  );
+}
+
+// ─── Summary stat card ────────────────────────────────────────────────────────
+function StatCard({ label, value, sub, color, icon }: { label: string; value: number; sub?: string; color: string; icon: React.ReactNode }) {
+  return (
+    <div style={{
+      background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
+      borderRadius: 14, padding: '18px 20px',
+      backdropFilter: 'blur(var(--glass-blur))', flex: 1, minWidth: 140,
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+        <div style={{ fontSize: 12, color: 'var(--ink-50)', fontWeight: 500 }}>{label}</div>
+        <div style={{ color, opacity: .7 }}>{icon}</div>
+      </div>
+      <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--ink-100)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: 'var(--ink-40)', marginTop: 6 }}>{sub}</div>}
+    </div>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+export default function AdminDashboard() {
+  const [learners, setLearners] = useState<LearnerRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [nudgingId, setNudgingId] = useState<number | null>(null);
+  const [nudgedIds, setNudgedIds] = useState<Set<number>>(new Set());
+
+  // Filters
+  const [search, setSearch] = useState('');
+  const [profileFilter, setProfileFilter] = useState('');
+  const [riskFilter, setRiskFilter] = useState('');
+  const [minPct, setMinPct] = useState('');
+  const [maxPct, setMaxPct] = useState('');
+
+  useEffect(() => {
+    api.get('/admin/dashboard')
+      .then(r => setLearners(r.data))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const profiles = useMemo(() => [...new Set(learners.map(l => l.profile_name).filter(Boolean))], [learners]);
+
+  const filtered = useMemo(() => learners.filter(l => {
+    const q = search.toLowerCase();
+    if (q && !l.name.toLowerCase().includes(q) && !l.email.toLowerCase().includes(q)) return false;
+    if (profileFilter && l.profile_name !== profileFilter) return false;
+    if (riskFilter && l.risk_flag !== riskFilter) return false;
+    if (minPct && l.completion_pct < Number(minPct)) return false;
+    if (maxPct && l.completion_pct > Number(maxPct)) return false;
+    return true;
+  }), [learners, search, profileFilter, riskFilter, minPct, maxPct]);
+
+  const stats = useMemo(() => ({
+    total: learners.length,
+    overdue: learners.filter(l => l.risk_flag === 'overdue').length,
+    at_risk: learners.filter(l => l.risk_flag === 'at_risk').length,
+    completed: learners.filter(l => l.risk_flag === 'completed').length,
+  }), [learners]);
+
+  const handleNudge = async (e: React.MouseEvent, userId: number) => {
+    e.stopPropagation();
+    if (nudgingId) return;
+    setNudgingId(userId);
+    try {
+      await api.post(`/admin/nudge/${userId}`);
+      setNudgedIds(prev => new Set(prev).add(userId));
+    } finally {
+      setNudgingId(null);
+    }
+  };
+
+  const inputStyle: React.CSSProperties = {
+    background: 'rgba(255,255,255,.05)', border: '1px solid var(--glass-stroke)',
+    borderRadius: 8, padding: '8px 12px', color: 'var(--ink-90)', fontSize: 13,
+    outline: 'none', fontFamily: 'var(--font-sans)',
+  };
+
+  return (
+    <Layout>
+      {/* Hero */}
+      <div className="ants-hero" style={{ paddingBottom: 16 }}>
+        <div className="ants-hero-top">
+          <div>
+            <div className="ants-welcome">Platform Management</div>
+            <div className="ants-hello" style={{ fontSize: 22 }}>Admin Dashboard</div>
+          </div>
+          <div className="ants-step-pill">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <circle cx="5" cy="5" r="3" fill="currentColor" />
+            </svg>
+            {learners.length} learners
+          </div>
+        </div>
+        <p className="ants-hero-sub" style={{ marginBottom: 0 }}>
+          Monitor progress, spot risks early, and keep your team on track to December 2026.
+        </p>
+      </div>
+
+      {/* Summary cards */}
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
+        <StatCard label="Total Learners"  value={stats.total}    sub="active on platform"        color="oklch(0.80 0.16 200)" icon={<IcUsers size={16}/>} />
+        <StatCard label="Overdue"         value={stats.overdue}  sub="past target date"          color="#f87171" icon={<IcAlert size={16}/>} />
+        <StatCard label="At Risk"         value={stats.at_risk}  sub=">20% behind schedule"      color="#fbbf24" icon={<IcAlert size={16}/>} />
+        <StatCard label="Completed"       value={stats.completed} sub="finished all modules"     color="#a5b4fc" icon={<IcCheck size={16}/>} />
+      </div>
+
+      {/* Filters */}
+      <div style={{
+        background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
+        borderRadius: 14, padding: '14px 18px', marginBottom: 18,
+        backdropFilter: 'blur(var(--glass-blur))',
+        display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
+      }}>
+        {/* Search */}
+        <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 180 }}>
+          <div style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-40)', pointerEvents: 'none' }}>
+            <IcSearch size={13} />
+          </div>
+          <input
+            placeholder="Search name or email…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ ...inputStyle, paddingLeft: 30, width: '100%', boxSizing: 'border-box' }}
+          />
+        </div>
+
+        {/* Profile */}
+        <select value={profileFilter} onChange={e => setProfileFilter(e.target.value)}
+          style={{ ...inputStyle, cursor: 'pointer', minWidth: 160 }}>
+          <option value="">All profiles</option>
+          {profiles.map(p => <option key={p} value={p}>{p}</option>)}
+        </select>
+
+        {/* Risk */}
+        <select value={riskFilter} onChange={e => setRiskFilter(e.target.value)}
+          style={{ ...inputStyle, cursor: 'pointer', minWidth: 140 }}>
+          <option value="">All statuses</option>
+          <option value="overdue">Overdue</option>
+          <option value="at_risk">At Risk</option>
+          <option value="on_track">On Track</option>
+          <option value="completed">Completed</option>
+        </select>
+
+        {/* Completion range */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <input placeholder="Min %" value={minPct} onChange={e => setMinPct(e.target.value)}
+            style={{ ...inputStyle, width: 68 }} type="number" min={0} max={100} />
+          <span style={{ color: 'var(--ink-30)', fontSize: 12 }}>–</span>
+          <input placeholder="Max %" value={maxPct} onChange={e => setMaxPct(e.target.value)}
+            style={{ ...inputStyle, width: 68 }} type="number" min={0} max={100} />
+        </div>
+
+        {/* Clear */}
+        {(search || profileFilter || riskFilter || minPct || maxPct) && (
+          <button onClick={() => { setSearch(''); setProfileFilter(''); setRiskFilter(''); setMinPct(''); setMaxPct(''); }}
+            style={{
+              background: 'rgba(255,255,255,.05)', border: '1px solid var(--glass-stroke)',
+              borderRadius: 8, padding: '8px 12px', color: 'var(--ink-60)', fontSize: 13, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}>
+            <IcClose size={12} /> Clear
+          </button>
+        )}
+
+        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--ink-40)', alignSelf: 'center' }}>
+          {filtered.length} of {learners.length}
+        </div>
+      </div>
+
+      {/* Table */}
+      <div style={{
+        background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
+        borderRadius: 16, overflow: 'hidden',
+        backdropFilter: 'blur(var(--glass-blur))',
+      }}>
+        {loading ? (
+          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>Loading learners…</div>
+        ) : filtered.length === 0 ? (
+          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>No learners match your filters</div>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--glass-stroke)' }}>
+                {['Learner', 'Profile', 'Progress', 'Last Active', 'Status', 'Actions'].map(h => (
+                  <th key={h} style={{
+                    padding: '12px 16px', textAlign: 'left', fontSize: 11,
+                    fontWeight: 600, color: 'var(--ink-40)', letterSpacing: '.06em',
+                    textTransform: 'uppercase', whiteSpace: 'nowrap',
+                  }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, i) => {
+                const isNudged = nudgedIds.has(row.user_id);
+                const isNudging = nudgingId === row.user_id;
+                return (
+                  <tr
+                    key={row.user_id}
+                    onClick={() => setSelectedId(row.user_id)}
+                    style={{
+                      borderBottom: i < filtered.length - 1 ? '1px solid var(--glass-stroke)' : 'none',
+                      cursor: 'pointer', transition: 'background .15s',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,.03)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = '')}
+                  >
+                    {/* Learner */}
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{
+                          width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                          background: 'linear-gradient(135deg, oklch(0.78 0.18 285), oklch(0.80 0.16 200))',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 13, fontWeight: 700, color: 'white',
+                        }}>
+                          {row.name?.charAt(0)?.toUpperCase() ?? '?'}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-90)' }}>{row.name}</div>
+                          <div style={{ fontSize: 11, color: 'var(--ink-40)' }}>{row.email}</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Profile */}
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{ fontSize: 12, color: 'var(--ink-60)' }}>{row.profile_name}</span>
+                    </td>
+
+                    {/* Progress */}
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ marginBottom: 4 }}>
+                        <MiniBar pct={row.completion_pct} flag={row.risk_flag} />
+                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-40)', fontFamily: 'var(--font-mono)' }}>
+                        {row.completed_modules}/{row.total_modules} modules
+                      </div>
+                    </td>
+
+                    {/* Last Active */}
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{ fontSize: 12, color: 'var(--ink-50)' }}>{relTime(row.last_activity)}</span>
+                    </td>
+
+                    {/* Status */}
+                    <td style={{ padding: '14px 16px' }}>
+                      <RiskBadge flag={row.risk_flag} />
+                    </td>
+
+                    {/* Actions */}
+                    <td style={{ padding: '14px 16px' }} onClick={e => e.stopPropagation()}>
+                      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                        <button
+                          onClick={e => handleNudge(e, row.user_id)}
+                          disabled={isNudging || isNudged}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: 5,
+                            padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                            cursor: isNudging || isNudged ? 'default' : 'pointer',
+                            background: isNudged ? 'rgba(34,197,94,.1)' : 'rgba(251,191,36,.08)',
+                            border: isNudged ? '1px solid rgba(34,197,94,.25)' : '1px solid rgba(251,191,36,.25)',
+                            color: isNudged ? '#4ade80' : '#fbbf24',
+                            transition: 'all .2s', whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {isNudged ? <IcCheck size={11} /> : <IcBolt size={11} />}
+                          {isNudging ? '…' : isNudged ? 'Sent' : 'Nudge'}
+                        </button>
+
+                        <button
+                          onClick={e => { e.stopPropagation(); setSelectedId(row.user_id); }}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: 5,
+                            padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                            cursor: 'pointer', background: 'rgba(255,255,255,.05)',
+                            border: '1px solid var(--glass-stroke)', color: 'var(--ink-60)',
+                            transition: 'all .2s', whiteSpace: 'nowrap',
+                          }}
+                        >
+                          <IcChevron size={11} /> View
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Drill-down panel */}
+      {selectedId !== null && (
+        <DrillDownPanel userId={selectedId} onClose={() => setSelectedId(null)} />
+      )}
+    </Layout>
   );
 }
