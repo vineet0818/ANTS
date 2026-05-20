@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models.profile import UserProfile, ProfileState, Profile
 from models.roadmap import ProfileModule, RoadmapModule
-from models.progress import ModuleProgressCurrent
+from models.progress import ModuleProgressCurrent, ProgressEvent
 from schemas.roadmap import ModuleOut, RoadmapOut
 from middleware.auth_middleware import get_current_user
 
@@ -11,7 +11,6 @@ router = APIRouter(prefix="/api/roadmap", tags=["roadmap"])
 
 @router.get("/", response_model=RoadmapOut)
 def get_roadmap(current_user=Depends(get_current_user), db: Session = Depends(get_db)):
-    # Find active user profile
     user_profile = db.query(UserProfile).filter(
         UserProfile.user_id == current_user.id,
         UserProfile.current_state == ProfileState.active
@@ -19,11 +18,9 @@ def get_roadmap(current_user=Depends(get_current_user), db: Session = Depends(ge
     if not user_profile:
         raise HTTPException(status_code=404, detail="No active roadmap. Please select a profile.")
 
-    # Get profile name (fix: query Profile separately)
     profile = db.query(Profile).filter(Profile.id == user_profile.profile_id).first()
     profile_name = profile.name if profile else "Unknown"
 
-    # Get all modules for this profile, ordered
     module_rows = (
         db.query(
             RoadmapModule,
@@ -41,6 +38,18 @@ def get_roadmap(current_user=Depends(get_current_user), db: Session = Depends(ge
         .order_by(ProfileModule.sequence_order)
         .all()
     )
+
+    # Fetch first progress event per module (started_at)
+    first_events = {}
+    events = (
+        db.query(ProgressEvent.module_id, ProgressEvent.created_at)
+        .filter(ProgressEvent.user_id == current_user.id)
+        .order_by(ProgressEvent.created_at.asc())
+        .all()
+    )
+    for module_id, created_at in events:
+        if module_id not in first_events:
+            first_events[module_id] = str(created_at)
 
     modules = []
     completed = 0
@@ -62,7 +71,8 @@ def get_roadmap(current_user=Depends(get_current_user), db: Session = Depends(ge
             module_type=mod.module_type.value,
             sequence_order=seq,
             progress_state=state,
-            percentage=perc
+            percentage=perc,
+            started_at=first_events.get(mod.id),
         ))
 
     total = len(modules)
@@ -72,5 +82,7 @@ def get_roadmap(current_user=Depends(get_current_user), db: Session = Depends(ge
         modules=modules,
         total_modules=total,
         completed_modules=completed,
-        overall_percentage=overall
+        overall_percentage=overall,
+        profile_start_date=str(user_profile.start_date) if user_profile.start_date else None,
+        profile_target_date=str(user_profile.target_end_date) if user_profile.target_end_date else None,
     )

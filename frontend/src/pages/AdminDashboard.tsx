@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import api from '../api';
-import { Layout } from '../components/Layout';
+import { AdminLayout } from '../components/AdminLayout';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface LearnerRow {
@@ -69,25 +69,95 @@ const Ic = ({ size = 15, sw = 1.6, children, ...rest }: { size?: number; sw?: nu
     {children}
   </svg>
 );
-const IcSearch  = (p: {size?:number}) => <Ic {...p}><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/></Ic>;
-const IcClose   = (p: {size?:number}) => <Ic {...p}><path d="M18 6 6 18M6 6l12 12"/></Ic>;
-const IcChevron = (p: {size?:number; open?: boolean}) => (
-  <Ic size={p.size} style={{ transition: 'transform .2s', transform: p.open ? 'rotate(90deg)' : 'none' }}>
-    <path d="M9 18l6-6-6-6"/>
+const IcSearch   = (p: {size?:number}) => <Ic {...p}><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/></Ic>;
+const IcClose    = (p: {size?:number}) => <Ic {...p}><path d="M18 6 6 18M6 6l12 12"/></Ic>;
+const IcChevronD = (p: {size?:number; open?: boolean}) => (
+  <Ic size={p.size ?? 12} style={{ transition:'transform .15s', transform: p.open ? 'rotate(180deg)':'none' } as React.CSSProperties}>
+    <path d="m6 9 6 6 6-6"/>
   </Ic>
 );
-const IcBolt    = (p: {size?:number}) => <Ic {...p}><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></Ic>;
-const IcUsers   = (p: {size?:number}) => <Ic {...p}><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.2"/><path d="M3 18a6 6 0 0 1 12 0M14 18a4.5 4.5 0 0 1 7 0"/></Ic>;
-const IcAlert   = (p: {size?:number}) => <Ic {...p}><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></Ic>;
-const IcCheck   = (p: {size?:number}) => <Ic {...p}><path d="m5 12 5 5L20 7"/></Ic>;
-const IcClock   = (p: {size?:number}) => <Ic {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></Ic>;
-const IcLink    = (p: {size?:number}) => <Ic {...p}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></Ic>;
+const IcChevronR = (p: {size?:number}) => <Ic {...p}><path d="M9 18l6-6-6-6"/></Ic>;
+const IcBolt     = (p: {size?:number}) => <Ic {...p}><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></Ic>;
+const IcUsers    = (p: {size?:number}) => <Ic {...p}><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.2"/><path d="M3 18a6 6 0 0 1 12 0M14 18a4.5 4.5 0 0 1 7 0"/></Ic>;
+const IcAlert    = (p: {size?:number}) => <Ic {...p}><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></Ic>;
+const IcCheck    = (p: {size?:number}) => <Ic {...p}><path d="m5 12 5 5L20 7"/></Ic>;
+const IcClock    = (p: {size?:number}) => <Ic {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></Ic>;
+const IcLink     = (p: {size?:number}) => <Ic {...p}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></Ic>;
+
+// ─── Custom dark dropdown ─────────────────────────────────────────────────────
+interface DropdownOption { value: string; label: string }
+
+function Dropdown({ value, onChange, options, placeholder }: {
+  value: string;
+  onChange: (v: string) => void;
+  options: DropdownOption[];
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const selected = options.find(o => o.value === value);
+
+  return (
+    <div ref={ref} style={{ position: 'relative', minWidth: 150 }}>
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+          padding: '8px 12px', borderRadius: 8, fontSize: 13, cursor: 'pointer',
+          background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
+          color: selected ? 'var(--ink-90)' : 'var(--ink-50)',
+          fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
+        }}
+      >
+        {selected ? selected.label : placeholder}
+        <IcChevronD size={12} open={open} />
+      </button>
+
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 6px)', left: 0, minWidth: '100%',
+          background: '#16161e', border: '1px solid rgba(255,255,255,.14)',
+          borderRadius: 10, padding: '4px', zIndex: 9999,
+          boxShadow: '0 8px 32px rgba(0,0,0,.6)',
+        }}>
+          {[{ value: '', label: placeholder }, ...options].map(opt => (
+            <div
+              key={opt.value}
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              style={{
+                padding: '8px 12px', borderRadius: 7, fontSize: 13, cursor: 'pointer',
+                color: opt.value === value ? 'var(--ink-100)' : 'var(--ink-70)',
+                background: opt.value === value ? 'rgba(255,255,255,.08)' : 'transparent',
+                fontWeight: opt.value === value ? 600 : 400,
+                transition: 'background .1s',
+              }}
+              onMouseEnter={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,.05)'; }}
+              onMouseLeave={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+            >
+              {opt.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Risk badge ───────────────────────────────────────────────────────────────
 const RISK_CONFIG = {
-  overdue:   { bg: 'rgba(239,68,68,.15)',   border: 'rgba(239,68,68,.35)',   text: '#f87171', label: 'Overdue' },
-  at_risk:   { bg: 'rgba(234,179,8,.15)',   border: 'rgba(234,179,8,.35)',   text: '#fbbf24', label: 'At Risk' },
-  on_track:  { bg: 'rgba(34,197,94,.12)',   border: 'rgba(34,197,94,.3)',    text: '#4ade80', label: 'On Track' },
+  overdue:   { bg: 'rgba(239,68,68,.15)',   border: 'rgba(239,68,68,.35)',   text: '#f87171', label: 'Overdue'   },
+  at_risk:   { bg: 'rgba(234,179,8,.15)',   border: 'rgba(234,179,8,.35)',   text: '#fbbf24', label: 'At Risk'   },
+  on_track:  { bg: 'rgba(34,197,94,.12)',   border: 'rgba(34,197,94,.3)',    text: '#4ade80', label: 'On Track'  },
   completed: { bg: 'rgba(99,102,241,.15)',  border: 'rgba(99,102,241,.35)',  text: '#a5b4fc', label: 'Completed' },
 };
 
@@ -119,7 +189,6 @@ function MiniBar({ pct, flag }: { pct: number; flag: string }) {
   );
 }
 
-// ─── Format relative time ─────────────────────────────────────────────────────
 function relTime(ts: string | null): string {
   if (!ts) return '—';
   const diff = Date.now() - new Date(ts).getTime();
@@ -133,7 +202,6 @@ function relTime(ts: string | null): string {
   return new Date(ts).toLocaleDateString();
 }
 
-// ─── State badge ──────────────────────────────────────────────────────────────
 function StateBadge({ state }: { state: string }) {
   const map: Record<string, [string, string]> = {
     completed:   ['oklch(0.80 0.16 200)', 'rgba(99,102,241,.15)'],
@@ -143,7 +211,7 @@ function StateBadge({ state }: { state: string }) {
   const [color, bg] = map[state] ?? map.not_started;
   return (
     <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: bg, color, fontWeight: 600 }}>
-      {state.replace('_', ' ')}
+      {state.replace(/_/g, ' ')}
     </span>
   );
 }
@@ -156,6 +224,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
   const [nudgeDone, setNudgeDone] = useState(false);
 
   useEffect(() => {
+    setDetail(null);
     api.get(`/admin/learner/${userId}`).then(r => setDetail(r.data));
     setNudgeDone(false);
     setTab('modules');
@@ -167,7 +236,6 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
     try {
       await api.post(`/admin/nudge/${userId}`);
       setNudgeDone(true);
-      // refresh nudge history
       const r = await api.get(`/admin/learner/${userId}`);
       setDetail(r.data);
     } finally {
@@ -176,26 +244,19 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
   };
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 1000,
-      display: 'flex', justifyContent: 'flex-end',
-    }} onClick={onClose}>
-      {/* Backdrop */}
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }} onClick={onClose}>
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(7,7,11,.6)', backdropFilter: 'blur(4px)' }} />
-
-      {/* Panel */}
       <div
         onClick={e => e.stopPropagation()}
         style={{
           position: 'relative', width: 520, height: '100%',
-          background: 'var(--bg-1, #0e0e14)', borderLeft: '1px solid var(--glass-stroke)',
+          background: '#0e0e14', borderLeft: '1px solid rgba(255,255,255,.1)',
           display: 'flex', flexDirection: 'column', overflow: 'hidden',
         }}
       >
-        {/* Panel header */}
         {detail ? (
           <>
-            <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid var(--glass-stroke)', flexShrink: 0 }}>
+            <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid rgba(255,255,255,.08)', flexShrink: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                 <div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', lineHeight: 1.2 }}>{detail.name}</div>
@@ -205,23 +266,19 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                   <IcClose size={16} />
                 </button>
               </div>
-
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 <RiskBadge flag={detail.risk_flag} />
-                <span style={{ fontSize: 12, color: 'var(--ink-60)', background: 'rgba(255,255,255,.05)', padding: '3px 10px', borderRadius: 20, border: '1px solid var(--glass-stroke)' }}>
+                <span style={{ fontSize: 12, color: 'var(--ink-60)', background: 'rgba(255,255,255,.05)', padding: '3px 10px', borderRadius: 20, border: '1px solid rgba(255,255,255,.1)' }}>
                   {detail.profile_name}
                 </span>
                 <MiniBar pct={detail.completion_pct} flag={detail.risk_flag} />
               </div>
-
               {detail.target_date && (
                 <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-40)', display: 'flex', gap: 16 }}>
                   <span>Started: <b style={{ color: 'var(--ink-60)' }}>{detail.start_date}</b></span>
                   <span>Target: <b style={{ color: 'var(--ink-60)' }}>{detail.target_date}</b></span>
                 </div>
               )}
-
-              {/* Nudge button */}
               <button
                 onClick={handleNudge}
                 disabled={nudging}
@@ -230,8 +287,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                   padding: '8px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: nudging ? 'not-allowed' : 'pointer',
                   background: nudgeDone ? 'rgba(34,197,94,.12)' : 'rgba(251,191,36,.1)',
                   border: nudgeDone ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(251,191,36,.3)',
-                  color: nudgeDone ? '#4ade80' : '#fbbf24',
-                  transition: 'all .2s',
+                  color: nudgeDone ? '#4ade80' : '#fbbf24', transition: 'all .2s',
                 }}
               >
                 {nudgeDone ? <IcCheck size={14} /> : <IcBolt size={14} />}
@@ -240,7 +296,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: 2, padding: '12px 24px 0', borderBottom: '1px solid var(--glass-stroke)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: 2, padding: '12px 24px 0', borderBottom: '1px solid rgba(255,255,255,.08)', flexShrink: 0 }}>
               {(['modules', 'events', 'nudges'] as const).map(t => (
                 <button key={t} onClick={() => setTab(t)} style={{
                   background: 'none', border: 'none', cursor: 'pointer',
@@ -258,9 +314,11 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
             <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
               {tab === 'modules' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {detail.modules.map(m => (
+                  {detail.modules.length === 0
+                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No modules assigned yet</div>
+                    : detail.modules.map(m => (
                     <div key={m.module_id} style={{
-                      background: 'rgba(255,255,255,.03)', border: '1px solid var(--glass-stroke)',
+                      background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)',
                       borderRadius: 10, padding: '12px 14px',
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
@@ -269,17 +327,12 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                           <div style={{ fontSize: 11, color: 'var(--ink-40)', marginBottom: 6 }}>{m.category}</div>
                           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                             <StateBadge state={m.progress_state} />
-                            {m.percentage > 0 && (
-                              <span style={{ fontSize: 11, color: 'var(--ink-50)', fontFamily: 'var(--font-mono)' }}>{m.percentage}%</span>
-                            )}
-                            {m.updated_at && (
-                              <span style={{ fontSize: 11, color: 'var(--ink-30)' }}>{relTime(m.updated_at)}</span>
-                            )}
+                            {m.percentage > 0 && <span style={{ fontSize: 11, color: 'var(--ink-50)', fontFamily: 'var(--font-mono)' }}>{m.percentage}%</span>}
+                            {m.updated_at && <span style={{ fontSize: 11, color: 'var(--ink-30)' }}>{relTime(m.updated_at)}</span>}
                           </div>
                         </div>
                         {m.resource_link && (
-                          <a href={m.resource_link} target="_blank" rel="noreferrer"
-                            style={{ color: 'var(--ink-40)', display: 'flex', alignItems: 'center', marginTop: 2 }}>
+                          <a href={m.resource_link} target="_blank" rel="noreferrer" style={{ color: 'var(--ink-40)', display: 'flex', alignItems: 'center', marginTop: 2 }}>
                             <IcLink size={13} />
                           </a>
                         )}
@@ -296,13 +349,13 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 
               {tab === 'events' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {detail.event_log.length === 0 ? (
-                    <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No activity yet</div>
-                  ) : detail.event_log.map(ev => (
+                  {detail.event_log.length === 0
+                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No activity yet</div>
+                    : detail.event_log.map(ev => (
                     <div key={ev.event_id} style={{
                       display: 'flex', gap: 12, alignItems: 'flex-start',
                       padding: '10px 12px', background: 'rgba(255,255,255,.03)',
-                      border: '1px solid var(--glass-stroke)', borderRadius: 8,
+                      border: '1px solid rgba(255,255,255,.07)', borderRadius: 8,
                     }}>
                       <div style={{
                         width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
@@ -320,9 +373,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                           {ev.percentage > 0 && <span style={{ color: 'var(--ink-40)' }}> · {ev.percentage}%</span>}
                         </div>
                       </div>
-                      <div style={{ fontSize: 11, color: 'var(--ink-30)', whiteSpace: 'nowrap', marginTop: 2 }}>
-                        {relTime(ev.created_at)}
-                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-30)', whiteSpace: 'nowrap', marginTop: 2 }}>{relTime(ev.created_at)}</div>
                     </div>
                   ))}
                 </div>
@@ -330,9 +381,9 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 
               {tab === 'nudges' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {detail.nudge_history.length === 0 ? (
-                    <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No nudges sent yet</div>
-                  ) : detail.nudge_history.map((n, i) => (
+                  {detail.nudge_history.length === 0
+                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No nudges sent yet</div>
+                    : detail.nudge_history.map((n, i) => (
                     <div key={i} style={{
                       padding: '10px 14px', background: 'rgba(251,191,36,.05)',
                       border: '1px solid rgba(251,191,36,.2)', borderRadius: 8,
@@ -340,9 +391,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                       <div style={{ fontSize: 12, fontWeight: 600, color: '#fbbf24', marginBottom: 4, display: 'flex', gap: 6, alignItems: 'center' }}>
                         <IcBolt size={12} /> Nudge sent
                       </div>
-                      <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>
-                        By {n.details?.nudged_by ?? '—'} · {relTime(n.created_at)}
-                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>By {n.details?.nudged_by ?? '—'} · {relTime(n.created_at)}</div>
                     </div>
                   ))}
                 </div>
@@ -350,8 +399,8 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
             </div>
           </>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'var(--ink-40)', fontSize: 13 }}>
-            Loading…
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+            <div style={{ color: 'var(--ink-40)', fontSize: 13 }}>Loading…</div>
           </div>
         )}
       </div>
@@ -359,13 +408,12 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
   );
 }
 
-// ─── Summary stat card ────────────────────────────────────────────────────────
+// ─── Stat card ────────────────────────────────────────────────────────────────
 function StatCard({ label, value, sub, color, icon }: { label: string; value: number; sub?: string; color: string; icon: React.ReactNode }) {
   return (
     <div style={{
-      background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
-      borderRadius: 14, padding: '18px 20px',
-      backdropFilter: 'blur(var(--glass-blur))', flex: 1, minWidth: 140,
+      background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)',
+      borderRadius: 14, padding: '18px 20px', backdropFilter: 'blur(12px)', flex: 1, minWidth: 140,
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
         <div style={{ fontSize: 12, color: 'var(--ink-50)', fontWeight: 500 }}>{label}</div>
@@ -398,7 +446,18 @@ export default function AdminDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const profiles = useMemo(() => [...new Set(learners.map(l => l.profile_name).filter(Boolean))], [learners]);
+  const profileOptions = useMemo(() =>
+    [...new Set(learners.map(l => l.profile_name).filter(p => p && p !== 'No profile'))]
+      .map(p => ({ value: p, label: p })),
+    [learners]
+  );
+
+  const riskOptions: { value: string; label: string }[] = [
+    { value: 'overdue',   label: '🔴 Overdue'   },
+    { value: 'at_risk',   label: '🟡 At Risk'   },
+    { value: 'on_track',  label: '🟢 On Track'  },
+    { value: 'completed', label: '✦ Completed'  },
+  ];
 
   const filtered = useMemo(() => learners.filter(l => {
     const q = search.toLowerCase();
@@ -411,9 +470,9 @@ export default function AdminDashboard() {
   }), [learners, search, profileFilter, riskFilter, minPct, maxPct]);
 
   const stats = useMemo(() => ({
-    total: learners.length,
-    overdue: learners.filter(l => l.risk_flag === 'overdue').length,
-    at_risk: learners.filter(l => l.risk_flag === 'at_risk').length,
+    total:     learners.length,
+    overdue:   learners.filter(l => l.risk_flag === 'overdue').length,
+    at_risk:   learners.filter(l => l.risk_flag === 'at_risk').length,
     completed: learners.filter(l => l.risk_flag === 'completed').length,
   }), [learners]);
 
@@ -429,14 +488,16 @@ export default function AdminDashboard() {
     }
   };
 
+  const hasFilters = search || profileFilter || riskFilter || minPct || maxPct;
+
   const inputStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,.05)', border: '1px solid var(--glass-stroke)',
+    background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
     borderRadius: 8, padding: '8px 12px', color: 'var(--ink-90)', fontSize: 13,
-    outline: 'none', fontFamily: 'var(--font-sans)',
+    outline: 'none', fontFamily: 'var(--font-sans)', boxSizing: 'border-box' as const,
   };
 
   return (
-    <Layout>
+    <AdminLayout>
       {/* Hero */}
       <div className="ants-hero" style={{ paddingBottom: 16 }}>
         <div className="ants-hero-top">
@@ -445,9 +506,7 @@ export default function AdminDashboard() {
             <div className="ants-hello" style={{ fontSize: 22 }}>Admin Dashboard</div>
           </div>
           <div className="ants-step-pill">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <circle cx="5" cy="5" r="3" fill="currentColor" />
-            </svg>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3" fill="currentColor"/></svg>
             {learners.length} learners
           </div>
         </div>
@@ -456,19 +515,18 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Summary cards */}
+      {/* Stat cards */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
-        <StatCard label="Total Learners"  value={stats.total}    sub="active on platform"        color="oklch(0.80 0.16 200)" icon={<IcUsers size={16}/>} />
-        <StatCard label="Overdue"         value={stats.overdue}  sub="past target date"          color="#f87171" icon={<IcAlert size={16}/>} />
-        <StatCard label="At Risk"         value={stats.at_risk}  sub=">20% behind schedule"      color="#fbbf24" icon={<IcAlert size={16}/>} />
-        <StatCard label="Completed"       value={stats.completed} sub="finished all modules"     color="#a5b4fc" icon={<IcCheck size={16}/>} />
+        <StatCard label="Total Learners" value={stats.total}     sub="active on platform"    color="oklch(0.80 0.16 200)" icon={<IcUsers size={16}/>} />
+        <StatCard label="Overdue"        value={stats.overdue}   sub="past target date"      color="#f87171"              icon={<IcAlert size={16}/>} />
+        <StatCard label="At Risk"        value={stats.at_risk}   sub=">20% behind schedule"  color="#fbbf24"              icon={<IcAlert size={16}/>} />
+        <StatCard label="Completed"      value={stats.completed} sub="finished all modules"  color="#a5b4fc"              icon={<IcCheck size={16}/>} />
       </div>
 
       {/* Filters */}
       <div style={{
-        background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
-        borderRadius: 14, padding: '14px 18px', marginBottom: 18,
-        backdropFilter: 'blur(var(--glass-blur))',
+        background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)',
+        borderRadius: 14, padding: '12px 16px', marginBottom: 18,
         display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
       }}>
         {/* Search */}
@@ -480,70 +538,82 @@ export default function AdminDashboard() {
             placeholder="Search name or email…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ ...inputStyle, paddingLeft: 30, width: '100%', boxSizing: 'border-box' }}
+            style={{ ...inputStyle, paddingLeft: 30, width: '100%' }}
           />
         </div>
 
-        {/* Profile */}
-        <select value={profileFilter} onChange={e => setProfileFilter(e.target.value)}
-          style={{ ...inputStyle, cursor: 'pointer', minWidth: 160 }}>
-          <option value="">All profiles</option>
-          {profiles.map(p => <option key={p} value={p}>{p}</option>)}
-        </select>
+        {/* Profile dropdown */}
+        <Dropdown
+          value={profileFilter}
+          onChange={setProfileFilter}
+          options={profileOptions}
+          placeholder="All profiles"
+        />
 
-        {/* Risk */}
-        <select value={riskFilter} onChange={e => setRiskFilter(e.target.value)}
-          style={{ ...inputStyle, cursor: 'pointer', minWidth: 140 }}>
-          <option value="">All statuses</option>
-          <option value="overdue">Overdue</option>
-          <option value="at_risk">At Risk</option>
-          <option value="on_track">On Track</option>
-          <option value="completed">Completed</option>
-        </select>
+        {/* Risk dropdown */}
+        <Dropdown
+          value={riskFilter}
+          onChange={setRiskFilter}
+          options={riskOptions}
+          placeholder="All statuses"
+        />
 
-        {/* Completion range */}
+        {/* Completion % range */}
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <input placeholder="Min %" value={minPct} onChange={e => setMinPct(e.target.value)}
-            style={{ ...inputStyle, width: 68 }} type="number" min={0} max={100} />
+          <input
+            placeholder="Min %"
+            value={minPct}
+            onChange={e => setMinPct(e.target.value)}
+            style={{ ...inputStyle, width: 72 }}
+            type="number" min={0} max={100}
+          />
           <span style={{ color: 'var(--ink-30)', fontSize: 12 }}>–</span>
-          <input placeholder="Max %" value={maxPct} onChange={e => setMaxPct(e.target.value)}
-            style={{ ...inputStyle, width: 68 }} type="number" min={0} max={100} />
+          <input
+            placeholder="Max %"
+            value={maxPct}
+            onChange={e => setMaxPct(e.target.value)}
+            style={{ ...inputStyle, width: 72 }}
+            type="number" min={0} max={100}
+          />
         </div>
 
-        {/* Clear */}
-        {(search || profileFilter || riskFilter || minPct || maxPct) && (
-          <button onClick={() => { setSearch(''); setProfileFilter(''); setRiskFilter(''); setMinPct(''); setMaxPct(''); }}
+        {/* Clear filters */}
+        {hasFilters && (
+          <button
+            onClick={() => { setSearch(''); setProfileFilter(''); setRiskFilter(''); setMinPct(''); setMaxPct(''); }}
             style={{
-              background: 'rgba(255,255,255,.05)', border: '1px solid var(--glass-stroke)',
+              background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)',
               borderRadius: 8, padding: '8px 12px', color: 'var(--ink-60)', fontSize: 13, cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
+              display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--font-sans)',
+            }}
+          >
             <IcClose size={12} /> Clear
           </button>
         )}
 
-        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--ink-40)', alignSelf: 'center' }}>
+        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--ink-40)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
           {filtered.length} of {learners.length}
         </div>
       </div>
 
       {/* Table */}
       <div style={{
-        background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
+        background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.09)',
         borderRadius: 16, overflow: 'hidden',
-        backdropFilter: 'blur(var(--glass-blur))',
       }}>
         {loading ? (
           <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>Loading learners…</div>
         ) : filtered.length === 0 ? (
-          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>No learners match your filters</div>
+          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>
+            {learners.length === 0 ? 'No learners on the platform yet' : 'No learners match your filters'}
+          </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--glass-stroke)' }}>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,.08)' }}>
                 {['Learner', 'Profile', 'Progress', 'Last Active', 'Status', 'Actions'].map(h => (
                   <th key={h} style={{
-                    padding: '12px 16px', textAlign: 'left', fontSize: 11,
+                    padding: '11px 16px', textAlign: 'left', fontSize: 11,
                     fontWeight: 600, color: 'var(--ink-40)', letterSpacing: '.06em',
                     textTransform: 'uppercase', whiteSpace: 'nowrap',
                   }}>{h}</th>
@@ -552,15 +622,15 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {filtered.map((row, i) => {
-                const isNudged = nudgedIds.has(row.user_id);
+                const isNudged  = nudgedIds.has(row.user_id);
                 const isNudging = nudgingId === row.user_id;
                 return (
                   <tr
                     key={row.user_id}
                     onClick={() => setSelectedId(row.user_id)}
                     style={{
-                      borderBottom: i < filtered.length - 1 ? '1px solid var(--glass-stroke)' : 'none',
-                      cursor: 'pointer', transition: 'background .15s',
+                      borderBottom: i < filtered.length - 1 ? '1px solid rgba(255,255,255,.06)' : 'none',
+                      cursor: 'pointer', transition: 'background .12s',
                     }}
                     onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,.03)')}
                     onMouseLeave={e => (e.currentTarget.style.background = '')}
@@ -585,16 +655,16 @@ export default function AdminDashboard() {
 
                     {/* Profile */}
                     <td style={{ padding: '14px 16px' }}>
-                      <span style={{ fontSize: 12, color: 'var(--ink-60)' }}>{row.profile_name}</span>
+                      <span style={{ fontSize: 12, color: row.profile_name === 'No profile' ? 'var(--ink-30)' : 'var(--ink-60)', fontStyle: row.profile_name === 'No profile' ? 'italic' : 'normal' }}>
+                        {row.profile_name}
+                      </span>
                     </td>
 
                     {/* Progress */}
                     <td style={{ padding: '14px 16px' }}>
-                      <div style={{ marginBottom: 4 }}>
-                        <MiniBar pct={row.completion_pct} flag={row.risk_flag} />
-                      </div>
-                      <div style={{ fontSize: 11, color: 'var(--ink-40)', fontFamily: 'var(--font-mono)' }}>
-                        {row.completed_modules}/{row.total_modules} modules
+                      <MiniBar pct={row.completion_pct} flag={row.risk_flag} />
+                      <div style={{ fontSize: 11, color: 'var(--ink-40)', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
+                        {row.total_modules > 0 ? `${row.completed_modules}/${row.total_modules} modules` : 'No modules'}
                       </div>
                     </td>
 
@@ -610,7 +680,7 @@ export default function AdminDashboard() {
 
                     {/* Actions */}
                     <td style={{ padding: '14px 16px' }} onClick={e => e.stopPropagation()}>
-                      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: 6 }}>
                         <button
                           onClick={e => handleNudge(e, row.user_id)}
                           disabled={isNudging || isNudged}
@@ -621,7 +691,7 @@ export default function AdminDashboard() {
                             background: isNudged ? 'rgba(34,197,94,.1)' : 'rgba(251,191,36,.08)',
                             border: isNudged ? '1px solid rgba(34,197,94,.25)' : '1px solid rgba(251,191,36,.25)',
                             color: isNudged ? '#4ade80' : '#fbbf24',
-                            transition: 'all .2s', whiteSpace: 'nowrap',
+                            transition: 'all .2s', whiteSpace: 'nowrap', fontFamily: 'var(--font-sans)',
                           }}
                         >
                           {isNudged ? <IcCheck size={11} /> : <IcBolt size={11} />}
@@ -634,11 +704,11 @@ export default function AdminDashboard() {
                             display: 'flex', alignItems: 'center', gap: 5,
                             padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600,
                             cursor: 'pointer', background: 'rgba(255,255,255,.05)',
-                            border: '1px solid var(--glass-stroke)', color: 'var(--ink-60)',
-                            transition: 'all .2s', whiteSpace: 'nowrap',
+                            border: '1px solid rgba(255,255,255,.1)', color: 'var(--ink-60)',
+                            transition: 'all .2s', whiteSpace: 'nowrap', fontFamily: 'var(--font-sans)',
                           }}
                         >
-                          <IcChevron size={11} /> View
+                          <IcChevronR size={11} /> View
                         </button>
                       </div>
                     </td>
@@ -650,10 +720,9 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* Drill-down panel */}
       {selectedId !== null && (
         <DrillDownPanel userId={selectedId} onClose={() => setSelectedId(null)} />
       )}
-    </Layout>
+    </AdminLayout>
   );
 }

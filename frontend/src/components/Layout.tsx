@@ -43,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const location         = useLocation();
   const [_m, _setM]      = useState(false);
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogout = () => { logout(); navigate('/'); };
   const firstName    = user?.full_name?.split(' ')[0] ?? 'Learner';
   const initials     = (user?.full_name ?? 'L').slice(0, 1).toUpperCase();
   const currentNav   = NAV_ITEMS.find(n => location.pathname.startsWith(n.to));

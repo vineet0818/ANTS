@@ -116,7 +116,7 @@ export default function LandingPage() {
             </button>
 
             <button
-              onClick={() => window.open('/programme-overview.html', '_blank')}
+              onClick={() => window.location.href = '/programme-overview'}
               style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 14.5, fontWeight: 500, color: 'var(--ink-80)', padding: '13px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.05)', cursor: 'pointer', transition: 'background 0.15s, color 0.15s, border-color 0.15s' }}
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = 'var(--ink-100)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'var(--ink-80)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
@@ -207,7 +207,7 @@ export default function LandingPage() {
           <div style={{ display: 'flex', gap: 16 }}>
             <button onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Sign In</button>
             <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Sign Up</button>
-            <button onClick={() => window.open('/programme-overview.html', '_blank')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Programme Overview</button>
+            <button onClick={() => window.location.href = '/programme-overview'} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Programme Overview</button>
           </div>
         </footer>
       </div>
