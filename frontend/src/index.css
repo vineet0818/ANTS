@@ -54,20 +54,20 @@ html {
 
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--bg-0);
   color: var(--ink-100);
   -webkit-font-smoothing: antialiased;
 }
 
-#root { min-height: 100vh; }
+#root { height: 100vh; }
 button, input, textarea, select { font: inherit; }
 ::selection { background: oklch(0.78 0.18 285 / 0.25); }
 
 /* ── APP SHELL ── */
 .ants-app {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   position: relative;
   overflow: hidden;
 }

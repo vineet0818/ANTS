@@ -115,27 +115,136 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
         ))}
       </div>
 
-      {/* 6-Month Sprint */}
+      {/* 6-Month Sprint Matrix */}
       <div style={{ marginBottom: 24 }}>
         {card(<>
+          {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
             <div>
               {mono('The 6-Month Sprint')}
-              <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>From kickoff to ANTS in 4 phases</h2>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-60)' }}>QA</span>
-              <div style={{ width: 80, height: 4, borderRadius: 999, background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2), oklch(0.80 0.18 330))' }} />
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', fontWeight: 700 }}>ANTS</span>
+              <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>Each level’s journey, side by side.</h2>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-            {SPRINT_PHASES.map((phase, i) => (
-              <div key={phase.label} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '18px 16px', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 3, background: `linear-gradient(90deg, var(--accent-${(i % 2) + 1}), var(--accent-${(i % 2) + 2 > 3 ? 1 : (i % 2) + 2}))`, borderRadius: '14px 14px 0 0' }} />
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--accent-1)', marginBottom: 8 }}>{phase.label}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-80)', marginBottom: 8 }}>{phase.period}</div>
-                <div style={{ fontSize: 12, color: 'var(--ink-60)', lineHeight: 1.55 }}>{phase.detail}</div>
+          <p style={{ fontSize: 12, color: 'var(--ink-50)', marginBottom: 20, lineHeight: 1.55 }}>
+            All 394 engineers start together on June 1. Tier 0 + Tier 1 are universal; Tier 2 forks by level. Certifications graduate in staggered waves so every engineer finishes a Specialist by Dec 31.
+          </p>
+
+          {/* Table */}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, minWidth: 700 }}>
+              <thead>
+                {/* Phase row */}
+                <tr>
+                  <th style={{ width: 110, padding: '0 12px 0 0', verticalAlign: 'bottom', paddingBottom: 8 }} />
+                  {[
+                    { label: 'PHASE 1 · JUN–JUL', color: '#2dd4bf', title: 'Foundations for all 394', sub: 'Tier 0 (AI) + Tier 1 (Playwright + AI) — universal' },
+                    { label: 'PHASE 2 · AUG–SEP', color: '#818cf8', title: 'First wave certifies',   sub: 'L1 → Mid Automation Engineer' },
+                    { label: 'PHASE 3 · OCT–NOV', color: '#a78bfa', title: 'Mid wave certifies',     sub: 'L2 → Senior SDET · L3 → Test Lead' },
+                    { label: 'PHASE 4 · DEC',         color: '#34d399', title: '100% Specialist',         sub: 'L4 → Principal AI Quality Architect' },
+                  ].map((ph, i) => (
+                    <th key={i} style={{ padding: '0 8px 14px', textAlign: 'left', verticalAlign: 'bottom', minWidth: 165 }}>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: ph.color, marginBottom: 5 }}>{ph.label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-90)', marginBottom: 4 }}>{ph.title}</div>
+                      <div style={{ fontSize: 12, color: 'var(--ink-50)', lineHeight: 1.4 }}>{ph.sub}</div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    level: 'L1', sub: 'Junior → Mid',
+                    cells: [
+                      { type: 'universal',  title: 'Tier 0 + Tier 1',    desc: '77 hrs · all 394 together' },
+                      { type: 'cert',       title: 'Mid Automation',      desc: 'Tier 2 (23 hrs) → certified', star: true },
+                      { type: 'neutral',    title: 'In production',       desc: 'Applying AI-driven testing' },
+                      { type: 'done',       title: 'Specialist · Mid',     desc: '100 hrs complete' },
+                    ],
+                  },
+                  {
+                    level: 'L2', sub: 'Mid → Senior',
+                    cells: [
+                      { type: 'universal',  title: 'Tier 0 + Tier 1',      desc: '77 hrs' },
+                      { type: 'role',       title: 'Tier 2 begins',         desc: 'perf · chaos · contracts · 25 of 45 hrs' },
+                      { type: 'cert',       title: 'Senior SDET',           desc: 'Tier 2 complete · certified', star: true },
+                      { type: 'done',       title: 'Specialist · Senior',    desc: '122 hrs complete' },
+                    ],
+                  },
+                  {
+                    level: 'L3', sub: 'Senior → Lead',
+                    cells: [
+                      { type: 'universal',  title: 'Tier 0 + Tier 1',        desc: '77 hrs' },
+                      { type: 'role',       title: 'Tier 2 — agents · SRE', desc: 'Playwright Agents · k6 · 45 of 90 hrs' },
+                      { type: 'cert',       title: 'Test Lead / Architect',   desc: 'Tier 2 complete · certified', star: true },
+                      { type: 'done',       title: 'Specialist · Lead',       desc: '167 hrs complete' },
+                    ],
+                  },
+                  {
+                    level: 'L4', sub: 'Lead → Principal',
+                    cells: [
+                      { type: 'universal',  title: 'Tier 0 + Tier 1',         desc: '77 hrs' },
+                      { type: 'role',       title: 'Tier 2 — governance',      desc: 'DORA · OTel · SRE org · 40 of 85 hrs' },
+                      { type: 'cert',       title: 'Tier 2 — multi-agent COE', desc: '12-Factor Agents · LangGraph · 45 of 85 hrs', star: true },
+                      { type: 'done',       title: 'Principal · 100% ANTS',    desc: '162 hrs · certified' },
+                    ],
+                  },
+                ].map((row, ri) => {
+                  const cellStyles: Record<string, React.CSSProperties> = {
+                    universal: { background: 'rgba(45,212,191,.08)',  border: '1px solid rgba(45,212,191,.22)',  borderRadius: 10 },
+                    role:      { background: 'rgba(99,102,241,.10)',  border: '1px solid rgba(99,102,241,.25)',  borderRadius: 10, borderStyle: 'dashed' },
+                    cert:      { background: 'rgba(251,146,60,.10)',  border: '1px solid rgba(251,146,60,.28)',  borderRadius: 10 },
+                    neutral:   { background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)', borderRadius: 10, borderStyle: 'dashed' },
+                    done:      { background: 'rgba(52,211,153,.08)',  border: '1px solid rgba(52,211,153,.22)',  borderRadius: 10 },
+                  };
+                  const titleColors: Record<string, string> = {
+                    universal: '#2dd4bf', role: '#818cf8', cert: '#fb923c', neutral: 'var(--ink-70)', done: '#34d399',
+                  };
+                  return (
+                    <tr key={ri}>
+                      <td style={{ padding: '8px 12px 8px 0', verticalAlign: 'top' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 700, color: 'var(--ink-100)' }}>{row.level}</div>
+                        <div style={{ fontSize: 12, color: 'var(--ink-40)', marginTop: 3 }}>{row.sub}</div>
+                      </td>
+                      {row.cells.map((cell, ci) => (
+                        <td key={ci} style={{ padding: '0 6px 10px', verticalAlign: 'top' }}>
+                          <div style={cellStyles[cell.type]}>
+                            <div style={{ padding: '10px 12px' }}>
+                              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 4, marginBottom: 4 }}>
+                                <div style={{ fontSize: 13, fontWeight: 700, color: titleColors[cell.type], lineHeight: 1.3 }}>{cell.title}</div>
+                                {cell.type === 'cert' && (
+                                  <span style={{ fontSize: 13, color: '#fb923c', flexShrink: 0, marginTop: -1 }}>&#9733;</span>
+                                )}
+                                {cell.type === 'done' && (
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="12" cy="12" r="9" opacity="0.4"/><path d="m9 12 2 2 4-4"/></svg>
+                                )}
+                              </div>
+                              <div style={{ fontSize: 12, color: 'var(--ink-50)', lineHeight: 1.5 }}>{cell.desc}</div>
+                            </div>
+                          </div>
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Legend */}
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,.07)' }}>
+            {[
+              { color: '#2dd4bf', label: 'Universal foundations (Tier 0 + Tier 1)' },
+              { color: '#818cf8', borderDash: true, label: 'Role-specific Tier 2 in flight' },
+              { color: '#fb923c', label: '★ Certification milestone — new title earned' },
+              { color: '#34d399', label: 'AI-Native Testing Specialist achieved' },
+            ].map((leg, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <div style={{
+                  width: 12, height: 12, borderRadius: 3, flexShrink: 0,
+                  background: `${leg.color}22`,
+                  border: `${leg.borderDash ? '1.5px dashed' : '1.5px solid'} ${leg.color}88`,
+                }} />
+                <span style={{ fontSize: 12, color: 'var(--ink-50)' }}>{leg.label}</span>
               </div>
             ))}
           </div>

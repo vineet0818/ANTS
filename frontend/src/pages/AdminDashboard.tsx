@@ -437,8 +437,8 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState('');
   const [profileFilter, setProfileFilter] = useState('');
   const [riskFilter, setRiskFilter] = useState('');
-  const [minPct, setMinPct] = useState('');
-  const [maxPct, setMaxPct] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     api.get('/admin/dashboard')
@@ -464,10 +464,14 @@ export default function AdminDashboard() {
     if (q && !l.name.toLowerCase().includes(q) && !l.email.toLowerCase().includes(q)) return false;
     if (profileFilter && l.profile_name !== profileFilter) return false;
     if (riskFilter && l.risk_flag !== riskFilter) return false;
-    if (minPct && l.completion_pct < Number(minPct)) return false;
-    if (maxPct && l.completion_pct > Number(maxPct)) return false;
     return true;
-  }), [learners, search, profileFilter, riskFilter, minPct, maxPct]);
+  }), [learners, search, profileFilter, riskFilter]);
+
+  // Reset page when filters change
+  useEffect(() => setCurrentPage(1), [search, profileFilter, riskFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginated  = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const stats = useMemo(() => ({
     total:     learners.length,
@@ -488,7 +492,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const hasFilters = search || profileFilter || riskFilter || minPct || maxPct;
+  const hasFilters = search || profileFilter || riskFilter;
 
   const inputStyle: React.CSSProperties = {
     background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
@@ -505,9 +509,41 @@ export default function AdminDashboard() {
             <div className="ants-welcome">Platform Management</div>
             <div className="ants-hello" style={{ fontSize: 22 }}>Admin Dashboard</div>
           </div>
-          <div className="ants-step-pill">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3" fill="currentColor"/></svg>
-            {learners.length} learners
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div className="ants-step-pill">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3" fill="currentColor"/></svg>
+              {learners.length} learners
+            </div>
+            <button
+              onClick={() => {
+                const headers = ['Name','Email','Profile','Completion %','Completed Modules','Total Modules','Status','Last Activity','Start Date','Target Date'];
+                const rows = learners.map(l => [
+                  l.name, l.email, l.profile_name, l.completion_pct,
+                  l.completed_modules, l.total_modules, l.risk_flag,
+                  l.last_activity ?? '', l.start_date ?? '', l.target_date ?? '',
+                ]);
+                const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url  = URL.createObjectURL(blob);
+                const a    = document.createElement('a');
+                a.href = url; a.download = 'ants_learners.csv'; a.click();
+                URL.revokeObjectURL(url);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '6px 14px', borderRadius: 10, fontSize: 12, fontWeight: 600,
+                background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)',
+                color: 'var(--ink-70)', cursor: 'pointer', fontFamily: 'var(--font-sans)',
+                transition: 'all .18s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.1)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-100)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-70)'; }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Export CSV
+            </button>
           </div>
         </div>
         <p className="ants-hero-sub" style={{ marginBottom: 0 }}>
@@ -558,29 +594,10 @@ export default function AdminDashboard() {
           placeholder="All statuses"
         />
 
-        {/* Completion % range */}
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <input
-            placeholder="Min %"
-            value={minPct}
-            onChange={e => setMinPct(e.target.value)}
-            style={{ ...inputStyle, width: 72 }}
-            type="number" min={0} max={100}
-          />
-          <span style={{ color: 'var(--ink-30)', fontSize: 12 }}>–</span>
-          <input
-            placeholder="Max %"
-            value={maxPct}
-            onChange={e => setMaxPct(e.target.value)}
-            style={{ ...inputStyle, width: 72 }}
-            type="number" min={0} max={100}
-          />
-        </div>
-
         {/* Clear filters */}
         {hasFilters && (
           <button
-            onClick={() => { setSearch(''); setProfileFilter(''); setRiskFilter(''); setMinPct(''); setMaxPct(''); }}
+            onClick={() => { setSearch(''); setProfileFilter(''); setRiskFilter(''); }}
             style={{
               background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)',
               borderRadius: 8, padding: '8px 12px', color: 'var(--ink-60)', fontSize: 13, cursor: 'pointer',
@@ -621,7 +638,7 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((row, i) => {
+              {paginated.map((row, i) => {
                 const isNudged  = nudgedIds.has(row.user_id);
                 const isNudging = nudgingId === row.user_id;
                 return (
@@ -629,7 +646,7 @@ export default function AdminDashboard() {
                     key={row.user_id}
                     onClick={() => setSelectedId(row.user_id)}
                     style={{
-                      borderBottom: i < filtered.length - 1 ? '1px solid rgba(255,255,255,.06)' : 'none',
+                      borderBottom: i < paginated.length - 1 ? '1px solid rgba(255,255,255,.06)' : 'none',
                       cursor: 'pointer', transition: 'background .12s',
                     }}
                     onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,.03)')}
@@ -719,6 +736,42 @@ export default function AdminDashboard() {
           </table>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: 8, marginTop: 20, padding: '14px 0',
+        }}>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              style={{
+                width: 36, height: 36, borderRadius: '50%',
+                border: page === currentPage
+                  ? '2px solid oklch(0.78 0.20 150)'
+                  : '1px solid rgba(255,255,255,.12)',
+                background: page === currentPage
+                  ? 'rgba(34,197,94,.08)'
+                  : 'rgba(255,255,255,.04)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                color: page === currentPage ? 'oklch(0.78 0.20 150)' : 'var(--ink-50)',
+                fontSize: 13, fontWeight: page === currentPage ? 700 : 400,
+                cursor: 'pointer', transition: 'all .18s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'var(--font-mono)',
+                boxShadow: page === currentPage ? '0 0 12px oklch(0.78 0.20 150 / 0.35)' : 'none',
+              }}
+              onMouseEnter={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.08)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-80)'; } }}
+              onMouseLeave={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.04)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-50)'; } }}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+      )}
 
       {selectedId !== null && (
         <DrillDownPanel userId={selectedId} onClose={() => setSelectedId(null)} />
