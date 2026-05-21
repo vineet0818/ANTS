@@ -12,6 +12,7 @@ interface UserState {
 
 interface AuthContextType {
   user: UserState | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<any>;
   register: (full_name: string, email: string, password: string) => Promise<any>;
   /** Called by SSOCallback after a successful Microsoft SSO redirect. */
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserState | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -32,6 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token && role && storedUserId) {
       setUser({ token, role, id: Number(storedUserId), full_name });
     }
+    setLoading(false);
   }, []);
 
   const persistUser = (token: string, role: string, id: number, full_name: string) => {
@@ -78,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, setUserFromSSO, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, setUserFromSSO, logout }}>
       {children}
     </AuthContext.Provider>
   );

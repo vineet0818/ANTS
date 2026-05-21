@@ -342,7 +342,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 export default function ProgrammeOverview() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [daysToKickoff, setDaysToKickoff] = useState(0);
   const [daysToDec, setDaysToDec]         = useState(0);
@@ -351,6 +351,9 @@ export default function ProgrammeOverview() {
     setDaysToKickoff(daysUntil('2026-06-01'));
     setDaysToDec(daysUntil('2026-12-31'));
   }, []);
+
+  // Wait for localStorage auth check before rendering — prevents sidebar flash
+  if (loading) return null;
 
   // ── Authenticated: show inside app Layout (sidebar + topbar) ──────────────
   if (user) {
