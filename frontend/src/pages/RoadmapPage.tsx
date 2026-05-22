@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { Layout } from '../components/Layout';
@@ -103,69 +103,176 @@ function timelineStatus(
 }
 
 // ── Progress Slider ────────────────────────────────────────────────────────────
+// Slider is visual-only until the user clicks Submit.
+// Once submitted, the locked minimum prevents any decrease.
 function ProgressSlider({ moduleId, initial, onSaved }: {
   moduleId: number; initial: number; onSaved: (pct: number) => void;
 }) {
-  const [pct, setPct]       = useState(initial);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved]   = useState(false);
-  const [minPct, setMinPct] = useState(initial > 0 ? initial : 0);
-  const timerRef            = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const state               = stateFromPct(pct);
+  const [pct, setPct]           = useState(initial);
+  const [savedPct, setSavedPct] = useState(initial);          // last committed value
+  const [lockedMin, setLockedMin] = useState(initial > 0 ? initial : 0); // floor — never decreases
+  const [saving, setSaving]     = useState(false);
+  const [saved, setSaved]       = useState(false);
+  const state                   = stateFromPct(pct);
+  const isComplete              = savedPct === 100;
+  const hasUnsaved              = pct !== savedPct;
 
-  useEffect(() => { setPct(initial); if (initial > 0) setMinPct(initial); }, [initial]);
-
-  const save = useCallback(async (value: number) => {
-    setSaving(true); setSaved(false);
-    try {
-      await api.put('/progress/update', { module_id: moduleId, progress_state: stateFromPct(value), percentage: value });
-      onSaved(value);
-      if (value > 0) setMinPct(value);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 1800);
-    } finally { setSaving(false); }
-  }, [moduleId, onSaved]);
+  useEffect(() => {
+    setPct(initial);
+    setSavedPct(initial);
+    setLockedMin(initial > 0 ? initial : 0);
+  }, [initial]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = Number(e.target.value);
-    setPct(v);
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => save(v), 600);
+    setPct(Number(e.target.value));
   };
 
-  const handlePointerUp = () => { if (timerRef.current) clearTimeout(timerRef.current); save(pct); };
+  const handleSubmit = useCallback(async () => {
+    if (pct === savedPct || saving) return;
+    setSaving(true); setSaved(false);
+    try {
+      await api.put('/progress/update', {
+        module_id: moduleId,
+        progress_state: stateFromPct(pct),
+        percentage: pct,
+      });
+      onSaved(pct);
+      setSavedPct(pct);
+      if (pct > lockedMin) setLockedMin(pct);   // lock floor to new committed value
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally { setSaving(false); }
+  }, [pct, savedPct, saving, moduleId, onSaved, lockedMin]);
 
-  const isComplete = state === 'completed';
-  const trackColor = isComplete ? 'oklch(0.78 0.20 150)' : 'linear-gradient(90deg, var(--accent-1), var(--accent-2))';
+  const trackColor = isComplete
+    ? 'oklch(0.78 0.20 150)'
+    : 'linear-gradient(90deg, var(--accent-1), var(--accent-2))';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+      {/* ── Status + percentage row ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', display: 'inline-block', flexShrink: 0, background: STATE_COLOR[state], boxShadow: state !== 'not_started' ? `0 0 8px ${STATE_COLOR[state]}` : 'none', transition: 'background 0.25s' }} />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: STATE_COLOR[state], transition: 'color 0.25s' }}>{STATE_LABEL[state]}</span>
+          <span style={{
+            width: 7, height: 7, borderRadius: '50%', display: 'inline-block', flexShrink: 0,
+            background: STATE_COLOR[state],
+            boxShadow: state !== 'not_started' ? `0 0 8px ${STATE_COLOR[state]}` : 'none',
+            transition: 'background 0.25s',
+          }} />
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.1em',
+            textTransform: 'uppercase', color: STATE_COLOR[state], transition: 'color 0.25s',
+          }}>
+            {STATE_LABEL[state]}
+          </span>
         </div>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: 'var(--ink-80)' }}>
-          {pct}%
-          {saving && <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--ink-40)', letterSpacing: '0.1em' }}>SAVING…</span>}
-          {saved  && <span style={{ marginLeft: 6, fontSize: 9, color: 'oklch(0.78 0.20 150)', letterSpacing: '0.1em' }}>✓ SAVED</span>}
-        </span>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Pending indicator — shown when slider differs from saved value */}
+          {hasUnsaved && !isComplete && (
+            <span style={{
+              fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.08em',
+              color: 'oklch(0.82 0.15 60)', opacity: 0.85,
+            }}>
+              PENDING
+            </span>
+          )}
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: 'var(--ink-80)' }}>
+            {pct}%
+            {saving && <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--ink-40)', letterSpacing: '0.1em' }}>SAVING…</span>}
+            {saved  && <span style={{ marginLeft: 6, fontSize: 9, color: 'oklch(0.78 0.20 150)', letterSpacing: '0.1em' }}>✓ SAVED</span>}
+          </span>
+        </div>
       </div>
 
+      {/* ── Track ── */}
       <div style={{ position: 'relative', height: 22, display: 'flex', alignItems: 'center' }}>
-        <div style={{ position: 'absolute', left: 0, right: 0, height: 6, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
-          <div style={{ width: `${pct}%`, height: '100%', background: trackColor, boxShadow: pct > 0 ? `0 0 10px ${isComplete ? 'oklch(0.78 0.20 150 / 0.5)' : 'oklch(0.78 0.18 285 / 0.4)'}` : 'none', transition: 'width 0.08s linear', borderRadius: 999 }} />
+        <div style={{
+          position: 'absolute', left: 0, right: 0, height: 6,
+          borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden',
+        }}>
+          <div style={{
+            width: `${pct}%`, height: '100%', background: trackColor,
+            boxShadow: pct > 0 ? `0 0 10px ${isComplete ? 'oklch(0.78 0.20 150 / 0.5)' : 'oklch(0.78 0.18 285 / 0.4)'}` : 'none',
+            transition: 'width 0.08s linear', borderRadius: 999,
+          }} />
         </div>
-        <input type="range" min={minPct} max={100} step={5} value={pct} onChange={handleChange} onPointerUp={handlePointerUp}
-          style={{ position: 'absolute', left: 0, width: '100%', height: 22, opacity: 0, cursor: pct === 100 ? 'default' : 'pointer', margin: 0, WebkitAppearance: 'none', appearance: 'none', zIndex: 2, pointerEvents: pct === 100 ? 'none' : 'auto' }} />
-        <div style={{ position: 'absolute', left: `calc(${pct}% - 9px)`, width: 18, height: 18, borderRadius: '50%', background: isComplete ? 'oklch(0.78 0.20 150)' : 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', border: '2.5px solid var(--bg-0)', boxShadow: `0 0 0 2px ${isComplete ? 'oklch(0.78 0.20 150 / 0.4)' : 'oklch(0.78 0.18 285 / 0.4)'}, 0 2px 8px rgba(0,0,0,0.5)`, transition: 'left 0.08s linear', zIndex: 1, pointerEvents: 'none' }} />
+        <input
+          type="range" min={lockedMin} max={100} step={5} value={pct}
+          onChange={handleChange}
+          disabled={isComplete}
+          style={{
+            position: 'absolute', left: 0, width: '100%', height: 22,
+            opacity: 0, cursor: isComplete ? 'default' : 'pointer',
+            margin: 0, WebkitAppearance: 'none', appearance: 'none',
+            zIndex: 2, pointerEvents: isComplete ? 'none' : 'auto',
+          }}
+        />
+        <div style={{
+          position: 'absolute', left: `calc(${pct}% - 9px)`, width: 18, height: 18,
+          borderRadius: '50%',
+          background: isComplete ? 'oklch(0.78 0.20 150)' : 'linear-gradient(135deg, var(--accent-1), var(--accent-2))',
+          border: '2.5px solid var(--bg-0)',
+          boxShadow: `0 0 0 2px ${isComplete ? 'oklch(0.78 0.20 150 / 0.4)' : 'oklch(0.78 0.18 285 / 0.4)'}, 0 2px 8px rgba(0,0,0,0.5)`,
+          transition: 'left 0.08s linear', zIndex: 1, pointerEvents: 'none',
+        }} />
       </div>
 
+      {/* ── Tick labels ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         {[0, 25, 50, 75, 100].map(t => (
-          <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: pct >= t ? 'var(--ink-40)' : 'var(--ink-20)', transition: 'color 0.2s' }}>{t}</span>
+          <span key={t} style={{
+            fontFamily: 'var(--font-mono)', fontSize: 9,
+            color: pct >= t ? 'var(--ink-40)' : 'var(--ink-20)', transition: 'color 0.2s',
+          }}>{t}</span>
         ))}
       </div>
+
+      {/* ── Submit button — hidden when fully completed ── */}
+      {!isComplete && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
+          <button
+            onClick={handleSubmit}
+            disabled={!hasUnsaved || saving}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              padding: '5px 14px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+              fontFamily: 'var(--font-mono)', letterSpacing: '0.05em',
+              cursor: !hasUnsaved || saving ? 'default' : 'pointer',
+              transition: 'all 0.18s',
+              background: hasUnsaved && !saving
+                ? 'linear-gradient(135deg, var(--accent-1), var(--accent-2))'
+                : 'rgba(255,255,255,0.06)',
+              border: hasUnsaved && !saving
+                ? '1px solid transparent'
+                : '1px solid rgba(255,255,255,0.1)',
+              color: hasUnsaved && !saving ? '#fff' : 'var(--ink-30)',
+              boxShadow: hasUnsaved && !saving
+                ? '0 2px 10px oklch(0.78 0.18 285 / 0.35)'
+                : 'none',
+              opacity: saving ? 0.6 : 1,
+            }}
+          >
+            {saving ? (
+              <>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"
+                  style={{ animation: 'spin 1s linear infinite' }}>
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                Saving…
+              </>
+            ) : (
+              <>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Submit
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -585,6 +692,7 @@ export default function RoadmapPage() {
       <style>{`
         input[type=range]::-webkit-slider-thumb { opacity: 0; }
         input[type=range]::-moz-range-thumb { opacity: 0; }
+        @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
     </Layout>
   );
