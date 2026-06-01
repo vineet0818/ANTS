@@ -8,7 +8,7 @@ function isValidNousEmail(email: string) { return email.toLowerCase().endsWith(`
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '11px 14px', borderRadius: 10,
-  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)',
+  background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
   color: 'var(--ink-100)', fontSize: 14, outline: 'none',
   transition: 'border-color 0.15s',
   fontFamily: 'var(--font-sans)',
@@ -53,8 +53,8 @@ export default function LoginPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-0)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', overflow: 'hidden' }}>
       {/* Subtle aurora behind the card */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', width: '60vw', height: '60vw', top: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.72 0.13 285), transparent 70%)', filter: 'blur(90px)', opacity: 0.2 }} />
-        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', right: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.74 0.10 210), transparent 70%)', filter: 'blur(90px)', opacity: 0.15 }} />
+        <div style={{ position: 'absolute', width: '60vw', height: '60vw', top: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-1), transparent 70%)', filter: 'blur(90px)', opacity: 0.2 }} />
+        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', right: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-2), transparent 70%)', filter: 'blur(90px)', opacity: 0.15 }} />
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 420 }}>
@@ -69,13 +69,13 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div style={{ background: 'rgba(13,13,18,0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '40px 44px', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}>
+        <div style={{ background: 'var(--bg-1)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid var(--glass-stroke)', borderRadius: 20, padding: '40px 44px', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}>
 
           {/* Microsoft SSO */}
           <button type="button" onClick={handleSSO} disabled={ssoLoading}
-            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, height: 40, borderRadius: 10, border: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.06)', color: 'var(--ink-70)', fontSize: 13, fontWeight: 500, cursor: ssoLoading ? 'not-allowed' : 'pointer', transition: 'background 0.15s', opacity: ssoLoading ? 0.6 : 1 }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.10)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, height: 40, borderRadius: 10, border: '1px solid var(--glass-stroke)', background: 'var(--glass-fill)', color: 'var(--ink-70)', fontSize: 13, fontWeight: 500, cursor: ssoLoading ? 'not-allowed' : 'pointer', transition: 'background 0.15s', opacity: ssoLoading ? 0.6 : 1 }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--hover-tint)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--glass-fill)')}
           >
             <svg width="18" height="18" viewBox="0 0 21 21" fill="none"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>
             {ssoLoading ? 'Redirecting…' : 'Sign in with Microsoft'}
@@ -83,9 +83,9 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
+            <div style={{ flex: 1, height: 1, background: 'var(--glass-stroke)' }} />
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-40)' }}>or password</span>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
+            <div style={{ flex: 1, height: 1, background: 'var(--glass-stroke)' }} />
           </div>
 
           {/* Form */}
@@ -95,8 +95,8 @@ export default function LoginPage() {
               <input type="email" placeholder={`you@${ALLOWED_DOMAIN}`} value={email}
                 onChange={e => handleEmailChange(e.target.value)} required
                 style={emailError ? inputErrorStyle : inputStyle}
-                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
-                onBlur={e => { e.currentTarget.style.borderColor = emailError ? 'oklch(0.72 0.18 25)' : 'rgba(255,255,255,0.10)'; }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent-2)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = emailError ? 'oklch(0.72 0.18 25)' : 'var(--glass-stroke)'; }}
               />
               {emailError && <p style={{ fontSize: 11.5, color: 'oklch(0.72 0.18 25)', marginTop: 5, paddingLeft: 10, borderLeft: '3px solid oklch(0.72 0.18 25)' }}>{emailError}</p>}
             </div>
@@ -106,8 +106,8 @@ export default function LoginPage() {
               <input type="password" placeholder="Password" value={password}
                 onChange={e => setPassword(e.target.value)} required
                 style={inputStyle}
-                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
-                onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'; }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent-2)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'var(--glass-stroke)'; }}
               />
             </div>
 
