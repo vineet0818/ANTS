@@ -252,6 +252,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
           position: 'relative', width: 520, height: '100%',
           background: '#0e0e14', borderLeft: '1px solid rgba(255,255,255,.1)',
           display: 'flex', flexDirection: 'column', overflow: 'hidden',
+          animation: 'slideInRight .22s ease',
         }}
       >
         {detail ? (
@@ -260,7 +261,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                 <div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', lineHeight: 1.2 }}>{detail.name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--ink-60)', marginTop: 2 }}>{detail.email}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-70)', marginTop: 2 }}>{detail.email}</div>
                 </div>
                 <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-60)', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center' }}>
                   <IcClose size={16} />
@@ -274,9 +275,9 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                 <MiniBar pct={detail.completion_pct} flag={detail.risk_flag} />
               </div>
               {detail.target_date && (
-                <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-40)', display: 'flex', gap: 16 }}>
-                  <span>Started: <b style={{ color: 'var(--ink-60)' }}>{detail.start_date}</b></span>
-                  <span>Target: <b style={{ color: 'var(--ink-60)' }}>{detail.target_date}</b></span>
+                <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-50)', display: 'flex', gap: 16 }}>
+                  <span>Started: <b style={{ color: 'var(--ink-70)' }}>{detail.start_date}</b></span>
+                  <span>Target: <b style={{ color: 'var(--ink-70)' }}>{detail.target_date}</b></span>
                 </div>
               )}
               <button
@@ -324,7 +325,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-90)', lineHeight: 1.3, marginBottom: 4 }}>{m.title}</div>
-                          <div style={{ fontSize: 11, color: 'var(--ink-40)', marginBottom: 6 }}>{m.category}</div>
+                          <div style={{ fontSize: 11, color: 'var(--ink-50)', marginBottom: 6 }}>{m.category}</div>
                           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                             <StateBadge state={m.progress_state} />
                             {m.percentage > 0 && <span style={{ fontSize: 11, color: 'var(--ink-50)', fontFamily: 'var(--font-mono)' }}>{m.percentage}%</span>}
@@ -412,15 +413,15 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 function StatCard({ label, value, sub, color, icon }: { label: string; value: number; sub?: string; color: string; icon: React.ReactNode }) {
   return (
     <div style={{
-      background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)',
-      borderRadius: 14, padding: '18px 20px', backdropFilter: 'blur(12px)', flex: 1, minWidth: 140,
+      background: 'var(--bg-2)', border: '1px solid rgba(255,255,255,.09)',
+      borderRadius: 14, padding: '18px 20px', flex: 1, minWidth: 140,
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
         <div style={{ fontSize: 12, color: 'var(--ink-50)', fontWeight: 500 }}>{label}</div>
         <div style={{ color, opacity: .7 }}>{icon}</div>
       </div>
-      <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--ink-100)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>{value}</div>
-      {sub && <div style={{ fontSize: 11, color: 'var(--ink-40)', marginTop: 6 }}>{sub}</div>}
+      <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--ink-100)', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: 'var(--ink-50)', marginTop: 6 }}>{sub}</div>}
     </div>
   );
 }
@@ -552,7 +553,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 24 }}>
         <StatCard label="Total Learners" value={stats.total}     sub="active on platform"    color="oklch(0.80 0.16 200)" icon={<IcUsers size={16}/>} />
         <StatCard label="Overdue"        value={stats.overdue}   sub="past target date"      color="#f87171"              icon={<IcAlert size={16}/>} />
         <StatCard label="At Risk"        value={stats.at_risk}   sub=">20% behind schedule"  color="#fbbf24"              icon={<IcAlert size={16}/>} />
@@ -608,7 +609,7 @@ export default function AdminDashboard() {
           </button>
         )}
 
-        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--ink-40)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
+        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--ink-50)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
           {filtered.length} of {learners.length}
         </div>
       </div>
@@ -616,7 +617,7 @@ export default function AdminDashboard() {
       {/* Table */}
       <div style={{
         background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.09)',
-        borderRadius: 16, overflow: 'hidden',
+        borderRadius: 14, overflow: 'hidden',
       }}>
         {loading ? (
           <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>Loading learners…</div>
@@ -631,7 +632,7 @@ export default function AdminDashboard() {
                 {['Learner', 'Profile', 'Progress', 'Last Active', 'Status', 'Actions'].map(h => (
                   <th key={h} style={{
                     padding: '11px 16px', textAlign: 'left', fontSize: 11,
-                    fontWeight: 600, color: 'var(--ink-40)', letterSpacing: '.06em',
+                    fontWeight: 600, color: 'var(--ink-50)', letterSpacing: '.06em',
                     textTransform: 'uppercase', whiteSpace: 'nowrap',
                   }}>{h}</th>
                 ))}
@@ -664,8 +665,8 @@ export default function AdminDashboard() {
                           {row.name?.charAt(0)?.toUpperCase() ?? '?'}
                         </div>
                         <div>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-90)' }}>{row.name}</div>
-                          <div style={{ fontSize: 11, color: 'var(--ink-40)' }}>{row.email}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-100)' }}>{row.name}</div>
+                          <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>{row.email}</div>
                         </div>
                       </div>
                     </td>
@@ -680,7 +681,7 @@ export default function AdminDashboard() {
                     {/* Progress */}
                     <td style={{ padding: '14px 16px' }}>
                       <MiniBar pct={row.completion_pct} flag={row.risk_flag} />
-                      <div style={{ fontSize: 11, color: 'var(--ink-40)', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
+                      <div style={{ fontSize: 11, color: 'var(--ink-50)', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
                         {row.total_modules > 0 ? `${row.completed_modules}/${row.total_modules} modules` : 'No modules'}
                       </div>
                     </td>
@@ -776,6 +777,10 @@ export default function AdminDashboard() {
       {selectedId !== null && (
         <DrillDownPanel userId={selectedId} onClose={() => setSelectedId(null)} />
       )}
+
+      <style>{`
+        @keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+      `}</style>
     </AdminLayout>
   );
 }
