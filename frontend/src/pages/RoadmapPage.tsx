@@ -611,11 +611,7 @@ export default function RoadmapPage() {
                   background: isActive ? 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' : 'var(--glass-fill)',
                   border: isActive ? '1px solid transparent' : '1px solid var(--glass-stroke)',
                   color: isActive ? 'white' : 'var(--ink-100)',
-                  boxShadow: isActive
-                    ? isLight
-                      ? '0 0 0 3px rgba(99,102,241,0.18), 0 4px 18px rgba(99,102,241,0.38)'
-                      : '0 2px 12px oklch(0.72 0.13 285 / 0.35)'
-                    : 'none',
+                  boxShadow: isActive ? '0 2px 12px oklch(0.72 0.13 285 / 0.35)' : 'none',
                 }}>
                   {tab.label}
                   <span style={{

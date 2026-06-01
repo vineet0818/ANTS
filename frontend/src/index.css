@@ -519,6 +519,22 @@ button, input, textarea, select { font: inherit; }
   box-shadow: 0 0 14px rgba(99,102,241,0.28);
 }
 
+[data-theme="light"] .ants-card.selected {
+  border-color: var(--c1, var(--accent-1));
+  background: rgba(255,255,255,0.92);
+  box-shadow:
+    0 0 0 2px var(--c1, var(--accent-1)),
+    0 0 28px color-mix(in oklch, var(--c1, var(--accent-1)) 55%, transparent),
+    0 0 56px color-mix(in oklch, var(--c1, var(--accent-1)) 22%, transparent),
+    0 16px 40px rgba(15,23,42,0.10);
+}
+
+[data-theme="light"] .ants-card.selected .ants-card-status {
+  background: color-mix(in oklch, var(--c1, var(--accent-1)) 14%, transparent);
+  border-color: color-mix(in oklch, var(--c1, var(--accent-1)) 40%, transparent);
+  color: var(--c1, var(--accent-1));
+}
+
 [data-theme="light"] .ants-card-status {
   background: rgba(15,23,42,0.05);
   border-color: rgba(15,23,42,0.14);
