@@ -53,42 +53,49 @@ export default function RegisterPage() {
         {/* Brand */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: 'white', boxShadow: '0 0 24px oklch(0.78 0.18 285 / 0.35)', marginBottom: 16 }}>AT</div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-40)', marginBottom: 6 }}>ANTS Trail</div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 30, fontWeight: 400, color: 'var(--ink-100)', margin: 0, letterSpacing: '-0.02em' }}>Join the platform</h1>
-          <p style={{ fontSize: 13, color: 'var(--ink-60)', marginTop: 6 }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginBottom: 6 }}>ANTS Trail</div>
+          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 32, fontWeight: 700, color: 'var(--ink-100)', margin: 0, letterSpacing: '-0.02em', lineHeight: 1.2 }}>Join the platform</h1>
+          <p style={{ fontSize: 13, color: 'var(--ink-70)', marginTop: 6 }}>
             Requires a <span style={{ color: 'var(--accent-2)', fontWeight: 600 }}>@{ALLOWED_DOMAIN}</span> address
           </p>
         </div>
 
         {/* Card */}
-        <div style={{ background: 'rgba(13,13,18,0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '32px 28px', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}>
+        <div style={{ background: 'rgba(13,13,18,0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '40px 44px', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <input type="text" placeholder="Full name" value={name}
-              onChange={e => setName(e.target.value)} required
-              style={inputStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'; }}
-            />
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--ink-70)', marginBottom: 6 }}>Full name</label>
+              <input type="text" placeholder="Full name" value={name}
+                onChange={e => setName(e.target.value)} required
+                style={inputStyle}
+                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'; }}
+              />
+            </div>
 
             <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--ink-70)', marginBottom: 6 }}>Work email</label>
               <input type="email" placeholder={`you@${ALLOWED_DOMAIN}`} value={email}
                 onChange={e => handleEmailChange(e.target.value)} required
                 style={emailError ? inputErrorStyle : inputStyle}
                 onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
                 onBlur={e => { e.currentTarget.style.borderColor = emailError ? 'oklch(0.72 0.18 25)' : 'rgba(255,255,255,0.10)'; }}
               />
-              {emailError && <p style={{ fontSize: 11.5, color: 'oklch(0.72 0.18 25)', marginTop: 5, paddingLeft: 2 }}>{emailError}</p>}
+              {emailError && <p style={{ fontSize: 11.5, color: 'oklch(0.72 0.18 25)', marginTop: 5, paddingLeft: 10, borderLeft: '3px solid oklch(0.72 0.18 25)' }}>{emailError}</p>}
             </div>
 
-            <input type="password" placeholder="Password (min 8 characters)" value={password}
-              onChange={e => setPassword(e.target.value)} required minLength={8}
-              style={inputStyle}
-              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'; }}
-            />
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--ink-70)', marginBottom: 6 }}>Password</label>
+              <input type="password" placeholder="Min 8 characters" value={password}
+                onChange={e => setPassword(e.target.value)} required minLength={8}
+                style={inputStyle}
+                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'; }}
+              />
+            </div>
 
             <button type="submit" disabled={loading || !!emailError}
-              style={{ width: '100%', padding: '12px 0', borderRadius: 10, border: 'none', fontWeight: 600, fontSize: 14, color: 'white', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: loading || !!emailError ? 'not-allowed' : 'pointer', opacity: loading || !!emailError ? 0.5 : 1, boxShadow: '0 4px 20px oklch(0.78 0.18 285 / 0.35)', transition: 'opacity 0.15s' }}
+              style={{ width: '100%', height: 48, borderRadius: 10, border: 'none', fontWeight: 600, fontSize: 14, color: 'white', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: loading || !!emailError ? 'not-allowed' : 'pointer', opacity: loading || !!emailError ? 0.5 : 1, boxShadow: '0 4px 20px oklch(0.78 0.18 285 / 0.35)', transition: 'opacity 0.15s' }}
               onMouseEnter={e => { if (!loading && !emailError) e.currentTarget.style.opacity = '0.88'; }}
               onMouseLeave={e => { e.currentTarget.style.opacity = loading || !!emailError ? '0.5' : '1'; }}
             >
@@ -96,7 +103,7 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-60)', marginTop: 20, marginBottom: 0 }}>
+          <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-70)', marginTop: 20, marginBottom: 0 }}>
             Already have an account?{' '}
             <Link to="/login" style={{ color: 'var(--accent-2)', fontWeight: 600, textDecoration: 'none' }}>Sign in</Link>
           </p>
