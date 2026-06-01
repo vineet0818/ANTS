@@ -8,7 +8,7 @@ function isValidNousEmail(email: string) { return email.toLowerCase().endsWith(`
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '11px 14px', borderRadius: 10,
-  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)',
+  background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
   color: 'var(--ink-100)', fontSize: 14, outline: 'none',
   transition: 'border-color 0.15s', fontFamily: 'var(--font-sans)',
 };
@@ -45,8 +45,8 @@ export default function RegisterPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-0)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', overflow: 'hidden' }}>
       {/* Aurora */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', width: '60vw', height: '60vw', top: '-10%', right: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.80 0.18 330), transparent 70%)', filter: 'blur(90px)', opacity: 0.18 }} />
-        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.74 0.10 210), transparent 70%)', filter: 'blur(90px)', opacity: 0.15 }} />
+        <div style={{ position: 'absolute', width: '60vw', height: '60vw', top: '-10%', right: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-3), transparent 70%)', filter: 'blur(90px)', opacity: 0.18 }} />
+        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-2), transparent 70%)', filter: 'blur(90px)', opacity: 0.15 }} />
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 420 }}>
@@ -61,15 +61,15 @@ export default function RegisterPage() {
         </div>
 
         {/* Card */}
-        <div style={{ background: 'rgba(13,13,18,0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '40px 44px', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}>
+        <div style={{ background: 'var(--bg-1)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid var(--glass-stroke)', borderRadius: 20, padding: '40px 44px', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
               <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--ink-70)', marginBottom: 6 }}>Full name</label>
               <input type="text" placeholder="Full name" value={name}
                 onChange={e => setName(e.target.value)} required
                 style={inputStyle}
-                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
-                onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'; }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent-2)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'var(--glass-stroke)'; }}
               />
             </div>
 
@@ -78,8 +78,8 @@ export default function RegisterPage() {
               <input type="email" placeholder={`you@${ALLOWED_DOMAIN}`} value={email}
                 onChange={e => handleEmailChange(e.target.value)} required
                 style={emailError ? inputErrorStyle : inputStyle}
-                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
-                onBlur={e => { e.currentTarget.style.borderColor = emailError ? 'oklch(0.72 0.18 25)' : 'rgba(255,255,255,0.10)'; }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent-2)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = emailError ? 'oklch(0.72 0.18 25)' : 'var(--glass-stroke)'; }}
               />
               {emailError && <p style={{ fontSize: 11.5, color: 'oklch(0.72 0.18 25)', marginTop: 5, paddingLeft: 10, borderLeft: '3px solid oklch(0.72 0.18 25)' }}>{emailError}</p>}
             </div>
@@ -89,8 +89,8 @@ export default function RegisterPage() {
               <input type="password" placeholder="Min 8 characters" value={password}
                 onChange={e => setPassword(e.target.value)} required minLength={8}
                 style={inputStyle}
-                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
-                onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'; }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent-2)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'var(--glass-stroke)'; }}
               />
             </div>
 
