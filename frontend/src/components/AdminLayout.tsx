@@ -79,6 +79,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
               <span className="ants-crumbs-active">Admin Dashboard</span>
               <span className="ants-crumbs-dot" />
               <span className="ants-live">Live</span>
+              <span className="ants-crumbs-dot" />
+              <span style={{ color: 'var(--ink-70)' }}>
+                {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
             </div>
             <div className="ants-top-actions">
               <ThemeToggle />

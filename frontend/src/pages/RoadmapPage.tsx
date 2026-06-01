@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { Layout } from '../components/Layout';
+import { useTheme } from '../context/ThemeContext';
 
 interface ModuleItem {
   id: number;
@@ -402,6 +403,13 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
   const [open, setOpen] = useState(true);
   const done   = modules.filter(m => m.progress_state === 'completed').length;
   const avgPct = modules.length ? Math.round(modules.reduce((s, m) => s + m.percentage, 0) / modules.length) : 0;
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const rsrcStyle = isLight
+    ? { color: '#6366F1', background: 'rgba(99,102,241,0.10)', border: '1px solid rgba(99,102,241,0.28)' }
+    : { color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)' };
+  const rsrcHoverBg   = isLight ? 'rgba(99,102,241,0.18)' : 'oklch(0.72 0.13 285 / 0.22)';
+  const rsrcHoverBdr  = isLight ? 'rgba(99,102,241,0.44)' : 'oklch(0.72 0.13 285 / 0.25)';
 
   return (
     <div style={{ marginBottom: 32 }}>
@@ -451,9 +459,9 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
                   <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{mod.title}</h3>
                   <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>{mod.resource_name}</p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                    <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.22)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.25)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.12)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.3)'; }}>
+                    <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s', ...rsrcStyle }}
+                      onMouseEnter={e => { e.currentTarget.style.background = rsrcHoverBg; e.currentTarget.style.borderColor = rsrcHoverBdr; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = rsrcStyle.background; e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.28)' : 'oklch(0.72 0.13 285 / 0.3)'; }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                       Open resource
                     </a>
@@ -698,6 +706,13 @@ function FlatModuleCard({ mod, onModuleSaved, startDate, targetDate, totalModule
   mod: ModuleItem; onModuleSaved: (id: number, pct: number) => void;
   startDate: Date | null; targetDate: Date | null; totalModules: number;
 }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const rsrcStyle = isLight
+    ? { color: '#6366F1', background: 'rgba(99,102,241,0.10)', border: '1px solid rgba(99,102,241,0.28)' }
+    : { color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)' };
+  const rsrcHoverBg  = isLight ? 'rgba(99,102,241,0.18)' : 'oklch(0.72 0.13 285 / 0.22)';
+  const rsrcHoverBdr = isLight ? 'rgba(99,102,241,0.44)' : 'oklch(0.72 0.13 285 / 0.25)';
   const tier      = tierPrefix(mod.category);
   const section   = mod.category.replace(/^(Tier\s+\d+|L\d+)\s*[–-]\s*/i, '').trim();
   const TIER_ACCENT: Record<string, string> = {
@@ -733,9 +748,9 @@ function FlatModuleCard({ mod, onModuleSaved, startDate, targetDate, totalModule
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <a href={mod.resource_link} target="_blank" rel="noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.22)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.25)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.12)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.3)'; }}>
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s', ...rsrcStyle }}
+              onMouseEnter={e => { e.currentTarget.style.background = rsrcHoverBg; e.currentTarget.style.borderColor = rsrcHoverBdr; }}
+              onMouseLeave={e => { e.currentTarget.style.background = rsrcStyle.background; e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.28)' : 'oklch(0.72 0.13 285 / 0.3)'; }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Open resource
             </a>

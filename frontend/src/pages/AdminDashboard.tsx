@@ -97,12 +97,12 @@ function Dropdown({ value, onChange, options, placeholder }: {
   const { theme } = useTheme();
   const isLight = theme === 'light';
   const th = {
-    glassFill3:   isLight ? 'rgba(0,0,0,0.06)'       : 'rgba(255,255,255,.06)',
-    glassStroke2: isLight ? 'rgba(0,0,0,0.13)'       : 'rgba(255,255,255,.12)',
-    glassStroke3: isLight ? 'rgba(0,0,0,0.15)'       : 'rgba(255,255,255,.14)',
-    hoverBg:      isLight ? 'rgba(0,0,0,0.05)'       : 'rgba(255,255,255,.05)',
-    hoverBg2:     isLight ? 'rgba(0,0,0,0.07)'       : 'rgba(255,255,255,.08)',
-    dropdownBg:   isLight ? '#eceeff'                : '#16161e',
+    glassFill3:   isLight ? 'rgba(255,255,255,0.85)'  : 'rgba(255,255,255,.06)',
+    glassStroke2: isLight ? 'rgba(15,23,42,0.10)'     : 'rgba(255,255,255,.12)',
+    glassStroke3: isLight ? 'rgba(15,23,42,0.12)'     : 'rgba(255,255,255,.14)',
+    hoverBg:      isLight ? 'rgba(99,102,241,0.06)'   : 'rgba(255,255,255,.05)',
+    hoverBg2:     isLight ? 'rgba(99,102,241,0.08)'   : 'rgba(255,255,255,.08)',
+    dropdownBg:   isLight ? 'rgba(255,255,255,0.95)'  : '#16161e',
   } as const;
 
   const [open, setOpen] = useState(false);
@@ -195,7 +195,7 @@ function MiniBar({ pct, flag }: { pct: number; flag: string }) {
   const color = flag === 'overdue' ? '#f87171' : flag === 'at_risk' ? '#fbbf24' : flag === 'completed' ? '#a5b4fc' : 'oklch(0.80 0.16 200)';
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 120 }}>
-      <div style={{ flex: 1, height: 4, background: isLight ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
+      <div style={{ flex: 1, height: 4, background: isLight ? 'rgba(15,23,42,0.07)' : 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 99, transition: 'width .3s' }} />
       </div>
       <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink-80)', width: 32, textAlign: 'right' }}>{pct}%</span>
@@ -219,7 +219,7 @@ function relTime(ts: string | null): string {
 function StateBadge({ state }: { state: string }) {
   const { theme } = useTheme();
   const isLight = theme === 'light';
-  const glassFill = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,.04)';
+  const glassFill = isLight ? 'rgba(15,23,42,0.05)' : 'rgba(255,255,255,.04)';
   const map: Record<string, [string, string]> = {
     completed:   ['oklch(0.80 0.16 200)', 'rgba(99,102,241,.15)'],
     in_progress: ['#fbbf24', 'rgba(234,179,8,.1)'],
@@ -238,13 +238,13 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
   const { theme } = useTheme();
   const isLight = theme === 'light';
   const th = {
-    glassFill:    isLight ? 'rgba(0,0,0,0.04)'       : 'rgba(255,255,255,.04)',
-    glassFill2:   isLight ? 'rgba(0,0,0,0.05)'       : 'rgba(255,255,255,.05)',
-    glassFill3:   isLight ? 'rgba(0,0,0,0.06)'       : 'rgba(255,255,255,.06)',
-    glassStroke:  isLight ? 'rgba(0,0,0,0.10)'       : 'rgba(255,255,255,.09)',
-    glassStroke2: isLight ? 'rgba(0,0,0,0.13)'       : 'rgba(255,255,255,.12)',
-    panelBg:      isLight ? '#e6e8ff'                : '#0e0e14',
-    overlayBg:    isLight ? 'rgba(242,243,255,0.82)' : 'rgba(7,7,11,.6)',
+    glassFill:    isLight ? 'rgba(255,255,255,0.72)'  : 'rgba(255,255,255,.04)',
+    glassFill2:   isLight ? 'rgba(255,255,255,0.80)'  : 'rgba(255,255,255,.05)',
+    glassFill3:   isLight ? 'rgba(255,255,255,0.85)'  : 'rgba(255,255,255,.06)',
+    glassStroke:  isLight ? 'rgba(15,23,42,0.08)'     : 'rgba(255,255,255,.09)',
+    glassStroke2: isLight ? 'rgba(15,23,42,0.10)'     : 'rgba(255,255,255,.12)',
+    panelBg:      isLight ? 'rgba(255,255,255,0.92)'  : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(248,250,252,0.92)'  : 'rgba(7,7,11,.6)',
   } as const;
 
   const [detail, setDetail] = useState<LearnerDetail | null>(null);
@@ -442,7 +442,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 function StatCard({ label, value, sub, color, icon }: { label: string; value: number; sub?: string; color: string; icon: React.ReactNode }) {
   const { theme } = useTheme();
   const isLight = theme === 'light';
-  const glassStroke = isLight ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,.09)';
+  const glassStroke = isLight ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,.09)';
   return (
     <div style={{
       background: 'var(--bg-2)', border: `1px solid ${glassStroke}`,
@@ -531,19 +531,19 @@ export default function AdminDashboard() {
   const isLight = theme === 'light';
 
   const th = {
-    glassFill:    isLight ? 'rgba(0,0,0,0.04)'           : 'rgba(255,255,255,.04)',
-    glassFill2:   isLight ? 'rgba(0,0,0,0.05)'           : 'rgba(255,255,255,.05)',
-    glassFill3:   isLight ? 'rgba(0,0,0,0.06)'           : 'rgba(255,255,255,.06)',
-    glassStroke:  isLight ? 'rgba(0,0,0,0.10)'           : 'rgba(255,255,255,.09)',
-    glassStroke2: isLight ? 'rgba(0,0,0,0.13)'           : 'rgba(255,255,255,.12)',
-    glassStroke3: isLight ? 'rgba(0,0,0,0.15)'           : 'rgba(255,255,255,.14)',
-    hoverBg:      isLight ? 'rgba(0,0,0,0.05)'           : 'rgba(255,255,255,.05)',
-    hoverBg2:     isLight ? 'rgba(0,0,0,0.07)'           : 'rgba(255,255,255,.08)',
-    rowHover:     isLight ? 'rgba(0,0,0,0.03)'           : 'rgba(255,255,255,.03)',
-    progressTrack:isLight ? 'rgba(0,0,0,0.07)'           : 'rgba(255,255,255,.08)',
-    dropdownBg:   isLight ? '#eceeff'                    : '#16161e',
-    panelBg:      isLight ? '#e6e8ff'                    : '#0e0e14',
-    overlayBg:    isLight ? 'rgba(242,243,255,0.82)'     : 'rgba(7,7,11,.6)',
+    glassFill:    isLight ? 'rgba(255,255,255,0.72)'     : 'rgba(255,255,255,.04)',
+    glassFill2:   isLight ? 'rgba(255,255,255,0.80)'     : 'rgba(255,255,255,.05)',
+    glassFill3:   isLight ? 'rgba(255,255,255,0.85)'     : 'rgba(255,255,255,.06)',
+    glassStroke:  isLight ? 'rgba(15,23,42,0.08)'        : 'rgba(255,255,255,.09)',
+    glassStroke2: isLight ? 'rgba(15,23,42,0.10)'        : 'rgba(255,255,255,.12)',
+    glassStroke3: isLight ? 'rgba(15,23,42,0.12)'        : 'rgba(255,255,255,.14)',
+    hoverBg:      isLight ? 'rgba(99,102,241,0.06)'      : 'rgba(255,255,255,.05)',
+    hoverBg2:     isLight ? 'rgba(99,102,241,0.08)'      : 'rgba(255,255,255,.08)',
+    rowHover:     isLight ? 'rgba(99,102,241,0.04)'      : 'rgba(255,255,255,.03)',
+    progressTrack:isLight ? 'rgba(15,23,42,0.07)'        : 'rgba(255,255,255,.08)',
+    dropdownBg:   isLight ? 'rgba(255,255,255,0.95)'     : '#16161e',
+    panelBg:      isLight ? 'rgba(255,255,255,0.92)'     : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(248,250,252,0.92)'     : 'rgba(7,7,11,.6)',
   } as const;
 
   const inputStyle: React.CSSProperties = {
