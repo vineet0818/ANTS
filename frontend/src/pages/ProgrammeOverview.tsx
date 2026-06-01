@@ -56,7 +56,7 @@ const SPRINT_PHASES = [
 // ─── Shared card helpers ──────────────────────────────────────────────────────
 const card = (children: React.ReactNode, style?: React.CSSProperties) => (
   <div style={{
-    background: 'var(--bg-2)', border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--bg-2)', border: '1px solid var(--glass-stroke)',
     borderRadius: 14, padding: 24, ...style,
   }}>{children}</div>
 );
@@ -70,8 +70,8 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
     <>
       {/* Leadership Snapshot Hero */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-        border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, padding: '36px 40px',
+        background: 'linear-gradient(135deg, var(--glass-fill) 0%, var(--glass-fill) 100%)',
+        border: '1px solid var(--glass-stroke)', borderRadius: 14, padding: '36px 40px',
         marginBottom: 24, position: 'relative', overflow: 'hidden',
       }}>
         <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.72 0.13 285 / 0.2), transparent 70%)', pointerEvents: 'none' }} />
@@ -193,7 +193,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                     universal: { background: 'rgba(45,212,191,.08)',  border: '1px solid rgba(45,212,191,.22)',  borderRadius: 10 },
                     role:      { background: 'rgba(99,102,241,.10)',  border: '1px solid rgba(99,102,241,.25)',  borderRadius: 10, borderStyle: 'dashed' },
                     cert:      { background: 'rgba(251,146,60,.10)',  border: '1px solid rgba(251,146,60,.28)',  borderRadius: 10 },
-                    neutral:   { background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)', borderRadius: 10, borderStyle: 'dashed' },
+                    neutral:   { background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', borderRadius: 10, borderStyle: 'dashed' },
                     done:      { background: 'rgba(52,211,153,.08)',  border: '1px solid rgba(52,211,153,.22)',  borderRadius: 10 },
                   };
                   const titleColors: Record<string, string> = {
@@ -231,7 +231,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           </div>
 
           {/* Legend */}
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,.07)' }}>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--glass-stroke)' }}>
             {[
               { color: '#2dd4bf', label: 'Universal foundations (Tier 0 + Tier 1)' },
               { color: '#818cf8', borderDash: true, label: 'Role-specific Tier 2 in flight' },
@@ -260,10 +260,10 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
             {TIERS.map(tier => (
-              <div key={tier.id} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: 20, borderLeft: `3px solid ${tier.color}` }}>
+              <div key={tier.id} style={{ background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', borderRadius: 14, padding: 20, borderLeft: `3px solid ${tier.color}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: tier.color, fontWeight: 700 }}>{tier.id}</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'rgba(255,255,255,0.05)', padding: '2px 7px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.08)' }}>{tier.courses} courses</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'var(--glass-fill)', padding: '2px 7px', borderRadius: 4, border: '1px solid var(--glass-stroke)' }}>{tier.courses} courses</span>
                 </div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-100)', marginBottom: 6, letterSpacing: '-0.01em' }}>{tier.name}</div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', color: 'var(--ink-50)', marginBottom: 10, textTransform: 'uppercase' }}>{tier.weeks}</div>
@@ -292,14 +292,14 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
               <div style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, borderRadius: '50%', background: `radial-gradient(circle, ${profile.c1}25, transparent 70%)`, pointerEvents: 'none' }} />
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: profile.c1, fontWeight: 700 }}>{profile.level}</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'rgba(255,255,255,0.05)', padding: '2px 7px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.08)' }}>{profile.modules} modules</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'var(--glass-fill)', padding: '2px 7px', borderRadius: 4, border: '1px solid var(--glass-stroke)' }}>{profile.modules} modules</span>
               </div>
               <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink-100)', margin: '0 0 8px', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{profile.key}</h3>
               <p style={{ fontSize: 12.5, color: 'var(--ink-70)', lineHeight: 1.55, margin: '0 0 16px' }}>{profile.desc}</p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                 <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                   {profile.tiers.map(t => (
-                    <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-60)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 4 }}>{t}</span>
+                    <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-60)', background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', padding: '2px 6px', borderRadius: 4 }}>{t}</span>
                   ))}
                 </div>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-50)' }}>{profile.duration}</span>
@@ -377,8 +377,8 @@ export default function ProgrammeOverview() {
         position: 'sticky', top: 0, zIndex: 100,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 40px', height: 60,
-        background: 'rgba(7,7,11,0.7)', backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        background: 'color-mix(in srgb, var(--bg-0) 80%, transparent)', backdropFilter: 'blur(16px)',
+        borderBottom: '1px solid var(--glass-stroke)',
       }}>
         {/* Brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => navigate('/')}>
@@ -396,7 +396,7 @@ export default function ProgrammeOverview() {
           <button
             onClick={() => navigate('/')}
             style={{
-              background: 'none', border: '1px solid rgba(255,255,255,0.12)',
+              background: 'none', border: '1px solid var(--glass-stroke)',
               borderRadius: 8, padding: '7px 16px', color: 'var(--ink-70)', fontSize: 13,
               cursor: 'pointer', fontFamily: 'var(--font-sans)', transition: 'color .15s',
             }}
@@ -408,12 +408,12 @@ export default function ProgrammeOverview() {
           <button
             onClick={() => navigate('/login')}
             style={{
-              background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)',
+              background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
               borderRadius: 8, padding: '7px 16px', color: 'var(--ink-100)', fontSize: 13, fontWeight: 600,
               cursor: 'pointer', fontFamily: 'var(--font-sans)', transition: 'background .15s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--hover-tint)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--glass-fill)')}
           >
             Sign in
           </button>
