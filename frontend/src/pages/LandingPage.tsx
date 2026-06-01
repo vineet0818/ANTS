@@ -29,7 +29,7 @@ export default function LandingPage() {
             <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'white', boxShadow: '0 0 20px oklch(0.78 0.18 285 / 0.4)', flexShrink: 0 }}>AT</div>
             <div>
               <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.01em' }}>ANTS Trail</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-40)', marginTop: 1 }}>AI-Native Testing Specialists</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginTop: 1 }}>AI-Native Testing Specialists</div>
             </div>
           </div>
 
@@ -71,7 +71,7 @@ export default function LandingPage() {
           </div>
 
           {/* Headline */}
-          <h1 style={{ fontSize: 'clamp(38px, 6vw, 72px)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em', margin: '0 0 28px', maxWidth: 840 }}>
+          <h1 style={{ fontSize: 'clamp(36px, 4vw, 52px)', fontFamily: 'var(--font-serif)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em', margin: '0 0 28px', maxWidth: 840 }}>
             From{' '}
             <span style={{ color: 'var(--ink-60)' }}>QA</span>
             {' '}to{' '}
@@ -85,12 +85,12 @@ export default function LandingPage() {
           </h1>
 
           {/* Sub */}
-          <p style={{ fontSize: 17, color: 'var(--ink-60)', lineHeight: 1.65, maxWidth: 560, margin: '0 0 44px' }}>
+          <p style={{ fontSize: 16, color: 'var(--ink-70)', lineHeight: 1.65, maxWidth: 560, margin: '0 0 44px' }}>
             394 engineers. 2 hours a day. Zero cost. One destination. A 3-tier programme built on 100% free curriculum, tuned to your role on day one — June through December 2026.
           </p>
 
           {/* Stats row */}
-          <div style={{ display: 'flex', gap: 14, marginBottom: 44, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 14, marginTop: 48, marginBottom: 44, flexWrap: 'wrap' }}>
             {[
               { n: '394', u: 'QE engineers in flight', color: 'var(--accent-2)' },
               { n: '2 hrs', u: 'Per day, every weekday', color: 'var(--ink-80)' },
@@ -98,7 +98,7 @@ export default function LandingPage() {
             ].map(stat => (
               <div key={stat.n} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, padding: '18px 28px', backdropFilter: 'blur(12px)', minWidth: 160 }}>
                 <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', color: stat.color, lineHeight: 1.1, marginBottom: 6 }}>{stat.n}</div>
-                <div style={{ fontSize: 12.5, color: 'var(--ink-60)' }}>{stat.u}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink-50)' }}>{stat.u}</div>
               </div>
             ))}
           </div>
@@ -127,16 +127,16 @@ export default function LandingPage() {
         </section>
 
         {/* ── Timeline bar ── */}
-        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 48px 80px' }}>
+        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 48px 80px', marginTop: 80 }}>
           <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '24px 32px' }}>
             {/* Labels */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
               <div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-40)', marginBottom: 4 }}>June 1, 2026 · Kickoff</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginBottom: 4 }}>June 1, 2026 · Kickoff</div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, color: 'var(--ink-60)' }}>QA</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-40)', marginBottom: 4 }}>Dec 31, 2026 · Destination</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginBottom: 4 }}>Dec 31, 2026 · Destination</div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ANTS</div>
               </div>
             </div>
@@ -154,15 +154,15 @@ export default function LandingPage() {
                 { label: 'Sep–Nov · Specialisation' },
                 { label: 'Dec · 100% ANTS' },
               ].map(m => (
-                <span key={m.label} style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-40)', letterSpacing: '0.06em' }}>{m.label}</span>
+                <span key={m.label} style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-50)', letterSpacing: '0.06em' }}>{m.label}</span>
               ))}
             </div>
           </div>
         </section>
 
         {/* ── Feature cards ── */}
-        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 48px 100px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
+        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 48px 100px', marginTop: 80 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
             {[
               {
                 icon: '🎯',
@@ -194,8 +194,8 @@ export default function LandingPage() {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
                 <div style={{ fontSize: 26, marginBottom: 14 }}>{card.icon}</div>
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: card.accent, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{card.title}</h3>
-                <p style={{ fontSize: 13, color: 'var(--ink-60)', lineHeight: 1.6, margin: 0 }}>{card.desc}</p>
+                <h3 style={{ fontSize: 15, fontWeight: 600, color: card.accent, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{card.title}</h3>
+                <p style={{ fontSize: 13, color: 'var(--ink-70)', lineHeight: 1.6, margin: 0 }}>{card.desc}</p>
               </div>
             ))}
           </div>
@@ -203,7 +203,7 @@ export default function LandingPage() {
 
         {/* ── Footer ── */}
         <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)' }}>© 2026 ANTS Trail · Nous QE Practice</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)' }}>© 2026 ANTS Trail · Nous QE Practice</span>
           <div style={{ display: 'flex', gap: 16 }}>
             <button onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Sign In</button>
             <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Sign Up</button>
