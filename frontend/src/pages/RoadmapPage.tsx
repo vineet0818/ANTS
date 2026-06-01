@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { Layout } from '../components/Layout';
+import { useTheme } from '../context/ThemeContext';
 
 interface ModuleItem {
   id: number;
@@ -48,8 +49,8 @@ const TIER_ORDER: Record<string, number> = {
 
 const STATE_COLOR: Record<string, string> = {
   completed:   'oklch(0.78 0.20 150)',
-  in_progress: 'var(--accent-2)',
-  not_started: 'rgba(255,255,255,0.25)',
+  in_progress: 'oklch(0.82 0.16 75)',
+  not_started: 'var(--glass-stroke)',
 };
 const STATE_LABEL: Record<string, string> = {
   completed:   'Completed',
@@ -99,7 +100,7 @@ function timelineStatus(
   }
   if (today > plannedEnd)
     return { label: 'NOT STARTED', color: '#f87171', bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)' };
-  return { label: 'UPCOMING', color: 'var(--ink-50)', bg: 'rgba(255,255,255,.05)', border: 'rgba(255,255,255,.1)' };
+  return { label: 'UPCOMING', color: 'var(--ink-50)', bg: 'var(--glass-fill)', border: 'var(--glass-stroke)' };
 }
 
 // ── Progress Slider ────────────────────────────────────────────────────────────
@@ -169,18 +170,9 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* Pending indicator — shown when slider differs from saved value */}
-          {hasUnsaved && !isComplete && (
-            <span style={{
-              fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.08em',
-              color: 'oklch(0.82 0.15 60)', opacity: 0.85,
-            }}>
-              PENDING
-            </span>
-          )}
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: 'var(--ink-80)' }}>
             {pct}%
-            {saving && <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--ink-40)', letterSpacing: '0.1em' }}>SAVING…</span>}
+            {saving && <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--ink-50)', letterSpacing: '0.1em' }}>SAVING…</span>}
             {saved  && <span style={{ marginLeft: 6, fontSize: 9, color: 'oklch(0.78 0.20 150)', letterSpacing: '0.1em' }}>✓ SAVED</span>}
           </span>
         </div>
@@ -190,11 +182,11 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
       <div style={{ position: 'relative', height: 22, display: 'flex', alignItems: 'center' }}>
         <div style={{
           position: 'absolute', left: 0, right: 0, height: 6,
-          borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden',
+          borderRadius: 999, background: 'var(--glass-fill)', overflow: 'hidden',
         }}>
           <div style={{
             width: `${pct}%`, height: '100%', background: trackColor,
-            boxShadow: pct > 0 ? `0 0 10px ${isComplete ? 'oklch(0.78 0.20 150 / 0.5)' : 'oklch(0.78 0.18 285 / 0.4)'}` : 'none',
+            boxShadow: pct > 0 ? `0 0 10px ${isComplete ? 'oklch(0.78 0.20 150 / 0.5)' : 'oklch(0.72 0.13 285 / 0.2)'}` : 'none',
             transition: 'width 0.08s linear', borderRadius: 999,
           }} />
         </div>
@@ -214,7 +206,7 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
           borderRadius: '50%',
           background: isComplete ? 'oklch(0.78 0.20 150)' : 'linear-gradient(135deg, var(--accent-1), var(--accent-2))',
           border: '2.5px solid var(--bg-0)',
-          boxShadow: `0 0 0 2px ${isComplete ? 'oklch(0.78 0.20 150 / 0.4)' : 'oklch(0.78 0.18 285 / 0.4)'}, 0 2px 8px rgba(0,0,0,0.5)`,
+          boxShadow: `0 0 0 2px ${isComplete ? 'oklch(0.78 0.20 150 / 0.4)' : 'oklch(0.72 0.13 285 / 0.2)'}, 0 2px 8px rgba(0,0,0,0.5)`,
           transition: 'left 0.08s linear', zIndex: 1, pointerEvents: 'none',
         }} />
       </div>
@@ -224,7 +216,7 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
         {[0, 25, 50, 75, 100].map(t => (
           <span key={t} style={{
             fontFamily: 'var(--font-mono)', fontSize: 9,
-            color: pct >= t ? 'var(--ink-40)' : 'var(--ink-20)', transition: 'color 0.2s',
+            color: pct >= t ? 'var(--ink-50)' : 'var(--ink-30)', transition: 'color 0.2s',
           }}>{t}</span>
         ))}
       </div>
@@ -243,13 +235,13 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
               transition: 'all 0.18s',
               background: hasUnsaved && !saving
                 ? 'linear-gradient(135deg, var(--accent-1), var(--accent-2))'
-                : 'rgba(255,255,255,0.06)',
+                : 'var(--glass-fill)',
               border: hasUnsaved && !saving
                 ? '1px solid transparent'
-                : '1px solid rgba(255,255,255,0.1)',
+                : '1px solid var(--glass-stroke)',
               color: hasUnsaved && !saving ? '#fff' : 'var(--ink-30)',
               boxShadow: hasUnsaved && !saving
-                ? '0 2px 10px oklch(0.78 0.18 285 / 0.35)'
+                ? '0 2px 10px oklch(0.72 0.13 285 / 0.35)'
                 : 'none',
               opacity: saving ? 0.6 : 1,
             }}
@@ -303,14 +295,14 @@ function TierSummaryCards({ grouped, tiers }: {
         const sectionName = tierSectionName(mods[0]?.category ?? '');
 
         const pctColor = pct === 0
-          ? (inProgress > 0 ? 'var(--accent-2)' : 'rgba(255,255,255,0.3)')
+          ? (inProgress > 0 ? 'var(--accent-2)' : 'var(--glass-stroke)')
           : pct === 100 ? 'oklch(0.78 0.20 150)'
           : 'var(--accent-2)';
 
         return (
           <div key={tier} style={{
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 16, padding: '18px 20px',
+            background: 'var(--bg-2)', border: '1px solid var(--glass-stroke)',
+            borderRadius: 14, padding: '18px 20px',
             borderTop: `3px solid ${color}`,
           }}>
             {/* Tier label */}
@@ -319,14 +311,14 @@ function TierSummaryCards({ grouped, tiers }: {
             </div>
 
             {/* Section title */}
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-90)', marginBottom: 12, lineHeight: 1.3, letterSpacing: '-0.01em' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-100)', marginBottom: 12, lineHeight: 1.3, letterSpacing: '-0.01em' }}>
               {sectionName}
             </div>
 
             {/* Done count */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 10 }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-60)' }}>
-                <b style={{ color: 'var(--ink-90)' }}>{done}</b> / {mods.length} done
+                <b style={{ color: 'var(--ink-100)' }}>{done}</b> / {mods.length} done
               </span>
               <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, color: pctColor }}>
                 {pct}%
@@ -334,7 +326,7 @@ function TierSummaryCards({ grouped, tiers }: {
             </div>
 
             {/* Progress bar */}
-            <div style={{ height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+            <div style={{ height: 4, borderRadius: 999, background: 'var(--glass-fill)', overflow: 'hidden' }}>
               <div style={{ width: `${pct}%`, height: '100%', background: pct === 100 ? 'oklch(0.78 0.20 150)' : color, borderRadius: 999, transition: 'width 0.4s ease' }} />
             </div>
           </div>
@@ -359,27 +351,27 @@ function TimelineStrip({ mod, totalModules, startDate, targetDate }: {
     <div style={{
       display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
       marginTop: 14, paddingTop: 12,
-      borderTop: '1px solid rgba(255,255,255,0.06)',
+      borderTop: '1px solid var(--glass-stroke)',
       fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-50)',
     }}>
       {/* Calendar icon + planned range */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ink-40)', flexShrink: 0 }}>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ink-50)', flexShrink: 0 }}>
           <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
         </svg>
-        <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-40)' }}>PLANNED</span>
+        <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-50)' }}>PLANNED</span>
         <span style={{ color: 'var(--ink-70)', fontWeight: 600 }}>{fmtShort(planStart)}</span>
         <span style={{ color: 'var(--ink-30)' }}>→</span>
         <span style={{ color: 'var(--ink-70)', fontWeight: 600 }}>{fmtShort(planEnd)}</span>
       </div>
 
       {/* Dot separator */}
-      <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', flexShrink: 0 }} />
+      <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--glass-stroke)', flexShrink: 0 }} />
 
       {/* Started */}
       {startedAt ? (
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-40)' }}>STARTED</span>
+          <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-50)' }}>STARTED</span>
           <span style={{ color: 'var(--ink-70)', fontWeight: 600 }}>{fmtShort(startedAt)}</span>
         </div>
       ) : (
@@ -411,64 +403,76 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
   const [open, setOpen] = useState(true);
   const done   = modules.filter(m => m.progress_state === 'completed').length;
   const avgPct = modules.length ? Math.round(modules.reduce((s, m) => s + m.percentage, 0) / modules.length) : 0;
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const rsrcStyle = isLight
+    ? { color: '#6366F1', background: 'rgba(99,102,241,0.10)', border: '1px solid rgba(99,102,241,0.28)' }
+    : { color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)' };
+  const rsrcHoverBg   = isLight ? 'rgba(99,102,241,0.18)' : 'oklch(0.72 0.13 285 / 0.22)';
+  const rsrcHoverBdr  = isLight ? 'rgba(99,102,241,0.44)' : 'oklch(0.72 0.13 285 / 0.25)';
 
   return (
-    <div style={{ marginBottom: 12 }}>
+    <div style={{ marginBottom: 32 }}>
+
+      {/* ── Tier label-divider ── */}
       <button onClick={() => setOpen(o => !o)} style={{
-        width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-        padding: '14px 20px', borderRadius: open ? '16px 16px 0 0' : 16,
-        background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
-        borderBottom: open ? '1px solid rgba(255,255,255,0.04)' : undefined,
-        cursor: 'pointer', transition: 'background 0.15s', textAlign: 'left',
-      }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-60)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-          style={{ flexShrink: 0, transition: 'transform 0.2s', transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+        width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+        padding: '6px 0', background: 'none', border: 'none',
+        cursor: 'pointer', textAlign: 'left', marginBottom: open ? 14 : 0,
+      }}>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"
+          style={{ flexShrink: 0, color: 'var(--ink-30)', transition: 'transform 0.2s', transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}>
           <path d="M9 18l6-6-6-6" />
         </svg>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{tier}</span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-40)' }}>{done}/{modules.length} modules</span>
-        <div style={{ flex: 1, maxWidth: 140, height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden', marginLeft: 'auto' }}>
-          <div style={{ width: `${avgPct}%`, height: '100%', background: avgPct === 100 ? 'oklch(0.78 0.20 150)' : 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', transition: 'width 0.4s ease', borderRadius: 999 }} />
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--ink-50)', whiteSpace: 'nowrap' }}>{tier}</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-30)', whiteSpace: 'nowrap' }}>{done}/{modules.length}</span>
+        <div style={{ flex: 1, height: 2, background: 'var(--glass-stroke)', borderRadius: 999 }} />
+        <div style={{ width: 72, height: 3, borderRadius: 999, background: 'var(--glass-fill)', overflow: 'hidden', flexShrink: 0 }}>
+          <div style={{ width: `${avgPct}%`, height: '100%', background: avgPct === 100 ? 'oklch(0.78 0.20 150)' : 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', borderRadius: 999, transition: 'width 0.4s ease' }} />
         </div>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-60)', width: 32, textAlign: 'right' }}>{avgPct}%</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-50)', whiteSpace: 'nowrap' }}>{avgPct}%</span>
       </button>
 
+      {/* ── Individual module cards ── */}
       {open && (
-        <div style={{ border: '1px solid rgba(255,255,255,0.09)', borderTop: 'none', borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
-          {modules.map((mod, idx) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {modules.map(mod => (
             <div key={mod.id} className={`ants-module-card${mod.progress_state === 'completed' ? ' completed' : ''}`}
-              style={{ borderRadius: 0, border: 'none', borderTop: idx > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none', padding: '20px 24px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap' }}>
+              style={{
+                borderRadius: 12, padding: '22px 26px',
+                background: 'var(--bg-2)',
+                border: '2px solid var(--glass-stroke)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+                transition: 'box-shadow 0.18s, border-color 0.18s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.6)'; e.currentTarget.style.borderColor = 'var(--hover-tint)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'; e.currentTarget.style.borderColor = 'var(--glass-stroke)'; }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
                 {/* Left: module info */}
                 <div style={{ flex: 1, minWidth: 200 }}>
                   <div style={{ marginBottom: 6 }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-40)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', padding: '2px 7px', borderRadius: 4 }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-40)', background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', padding: '2px 7px', borderRadius: 4 }}>
                       {mod.category.replace(/^(Tier\s+\d+|L\d+)\s*[–-]\s*/i, '')}
                     </span>
                   </div>
-                  <h3 style={{ margin: '0 0 6px', fontSize: 14.5, fontWeight: 600, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{mod.title}</h3>
-                  <p style={{ fontSize: 12, color: 'var(--ink-60)', margin: '0 0 12px' }}>{mod.resource_name}</p>
+                  <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{mod.title}</h3>
+                  <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>{mod.resource_name}</p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                    <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; e.currentTarget.style.color = 'var(--ink-100)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'var(--ink-80)'; }}>
+                    <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s', ...rsrcStyle }}
+                      onMouseEnter={e => { e.currentTarget.style.background = rsrcHoverBg; e.currentTarget.style.borderColor = rsrcHoverBdr; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = rsrcStyle.background; e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.28)' : 'oklch(0.72 0.13 285 / 0.3)'; }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                       Open resource
                     </a>
                     {mod.estimated_time && (
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--ink-40)' }}>⏱ {mod.estimated_time}</span>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--ink-50)' }}>⏱ {mod.estimated_time}</span>
                     )}
                   </div>
-
-                  {/* Timeline strip */}
                   <TimelineStrip mod={mod} totalModules={totalModules} startDate={startDate} targetDate={targetDate} />
                 </div>
-
-                {/* Right: slider */}
-                <div style={{ width: 210, flexShrink: 0 }}>
+                {/* Right: slider — wider for better usability */}
+                <div style={{ width: 280, flexShrink: 0 }}>
                   <ProgressSlider moduleId={mod.id} initial={mod.percentage} onSaved={(pct) => onModuleSaved(mod.id, pct)} />
                 </div>
               </div>
@@ -487,6 +491,8 @@ export default function RoadmapPage() {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery]   = useState('');
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   useEffect(() => { fetchRoadmap(); }, []);
 
@@ -514,7 +520,7 @@ export default function RoadmapPage() {
   if (!roadmap) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg-0)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-40)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Loading roadmap…</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-50)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Loading roadmap…</span>
       </div>
     );
   }
@@ -566,13 +572,12 @@ export default function RoadmapPage() {
             <div className="ants-hello" style={{ fontSize: 30 }}>{roadmap.profile_name}</div>
           </div>
           <div className="ants-step-pill">
-            <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3" fill="currentColor"/></svg>
             <span className="num">{roadmap.overall_percentage}%</span> complete
           </div>
         </div>
         <div style={{ marginTop: 16, maxWidth: 480 }}>
-          <div style={{ height: 6, borderRadius: 999, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-            <div style={{ width: `${roadmap.overall_percentage}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', boxShadow: '0 0 12px oklch(0.78 0.18 285 / 0.5)', transition: 'width 0.5s cubic-bezier(0.34,1.56,0.64,1)' }} />
+          <div style={{ height: 6, borderRadius: 999, background: 'var(--glass-fill)', overflow: 'hidden' }}>
+            <div style={{ width: `${roadmap.overall_percentage}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', boxShadow: '0 0 12px oklch(0.72 0.13 285 / 0.25)', transition: 'width 0.5s cubic-bezier(0.34,1.56,0.64,1)' }} />
           </div>
         </div>
       </div>
@@ -587,7 +592,7 @@ export default function RoadmapPage() {
           <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.02em' }}>
             Your <em style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>modules</em>
           </h2>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)' }}>
             <b style={{ color: 'var(--ink-70)' }}>{modules.length} total</b> · drag slider to update progress
           </span>
         </div>
@@ -603,17 +608,17 @@ export default function RoadmapPage() {
                   display: 'inline-flex', alignItems: 'center', gap: 5,
                   padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: isActive ? 700 : 500,
                   cursor: 'pointer', transition: 'all .15s', fontFamily: 'var(--font-sans)',
-                  background: isActive ? 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' : 'rgba(255,255,255,0.05)',
-                  border: isActive ? '1px solid transparent' : '1px solid rgba(255,255,255,0.1)',
-                  color: isActive ? 'white' : 'var(--ink-60)',
-                  boxShadow: isActive ? '0 2px 12px oklch(0.78 0.18 285 / 0.35)' : 'none',
+                  background: isActive ? 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' : 'var(--glass-fill)',
+                  border: isActive ? '1px solid transparent' : '1px solid var(--glass-stroke)',
+                  color: isActive ? 'white' : 'var(--ink-100)',
+                  boxShadow: isActive ? '0 2px 12px oklch(0.72 0.13 285 / 0.35)' : 'none',
                 }}>
                   {tab.label}
                   <span style={{
                     fontFamily: 'var(--font-mono)', fontSize: 10,
-                    background: isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)',
+                    background: isActive ? 'var(--hover-tint)' : 'var(--glass-fill)',
                     padding: '1px 6px', borderRadius: 10,
-                    color: isActive ? 'white' : 'var(--ink-50)',
+                    color: isActive ? 'white' : 'var(--ink-70)',
                   }}>{tab.count}</span>
                 </button>
               );
@@ -623,7 +628,7 @@ export default function RoadmapPage() {
           {/* Search */}
           <div style={{ position: 'relative', flexShrink: 0 }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-40)', pointerEvents: 'none' }}>
+              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-50)', pointerEvents: 'none' }}>
               <circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/>
             </svg>
             <input
@@ -633,17 +638,17 @@ export default function RoadmapPage() {
               style={{
                 paddingLeft: 30, paddingRight: 12, paddingTop: 7, paddingBottom: 7,
                 borderRadius: 20, fontSize: 12, width: 180,
-                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                color: 'var(--ink-90)', outline: 'none', fontFamily: 'var(--font-sans)',
+                background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
+                color: 'var(--ink-100)', outline: 'none', fontFamily: 'var(--font-sans)',
                 transition: 'border-color .15s, width .2s',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = 'oklch(0.78 0.18 285 / 0.5)'; e.currentTarget.style.width = '220px'; }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.width = '180px'; }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.25)'; e.currentTarget.style.width = '220px'; }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'var(--glass-stroke)'; e.currentTarget.style.width = '180px'; }}
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} style={{
                 position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
-                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-40)',
+                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-50)',
                 display: 'flex', alignItems: 'center', padding: 0,
               }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -657,7 +662,7 @@ export default function RoadmapPage() {
       {isFiltered ? (
         // Flat filtered list
         filteredModules.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--ink-40)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+          <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--ink-50)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
             No modules match your filter
           </div>
         ) : (
@@ -703,6 +708,13 @@ function FlatModuleCard({ mod, onModuleSaved, startDate, targetDate, totalModule
   mod: ModuleItem; onModuleSaved: (id: number, pct: number) => void;
   startDate: Date | null; targetDate: Date | null; totalModules: number;
 }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const rsrcStyle = isLight
+    ? { color: '#6366F1', background: 'rgba(99,102,241,0.10)', border: '1px solid rgba(99,102,241,0.28)' }
+    : { color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)' };
+  const rsrcHoverBg  = isLight ? 'rgba(99,102,241,0.18)' : 'oklch(0.72 0.13 285 / 0.22)';
+  const rsrcHoverBdr = isLight ? 'rgba(99,102,241,0.44)' : 'oklch(0.72 0.13 285 / 0.25)';
   const tier      = tierPrefix(mod.category);
   const section   = mod.category.replace(/^(Tier\s+\d+|L\d+)\s*[–-]\s*/i, '').trim();
   const TIER_ACCENT: Record<string, string> = {
@@ -714,11 +726,10 @@ function FlatModuleCard({ mod, onModuleSaved, startDate, targetDate, totalModule
 
   return (
     <div className={`ants-module-card${mod.progress_state === 'completed' ? ' completed' : ''}`}
-      style={{ marginBottom: 8, borderRadius: 14, padding: '20px 24px' }}>
+      style={{ marginBottom: 16, borderRadius: 14, padding: '20px 24px' }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap' }}>
         {/* Left */}
         <div style={{ flex: 1, minWidth: 200 }}>
-          {/* Tier + type badge */}
           <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
             <span style={{
               fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase',
@@ -733,15 +744,15 @@ function FlatModuleCard({ mod, onModuleSaved, startDate, targetDate, totalModule
             {mod.title}
           </h3>
 
-          <p style={{ fontSize: 12, color: 'var(--ink-50)', margin: '0 0 12px' }}>
+          <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>
             {mod.resource_name}{mod.resource_name ? ' · ' : ''}{mod.estimated_time ?? ''}
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <a href={mod.resource_link} target="_blank" rel="noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}>
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s', ...rsrcStyle }}
+              onMouseEnter={e => { e.currentTarget.style.background = rsrcHoverBg; e.currentTarget.style.borderColor = rsrcHoverBdr; }}
+              onMouseLeave={e => { e.currentTarget.style.background = rsrcStyle.background; e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.28)' : 'oklch(0.72 0.13 285 / 0.3)'; }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Open resource
             </a>

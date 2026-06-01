@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import { cn } from '../lib/utils';
 
 interface SidebarItem {
   label: string;
@@ -12,19 +11,36 @@ interface SidebarProps {
 
 export function Sidebar({ items }: SidebarProps) {
   return (
-    <nav className="space-y-1">
+    <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {items.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
-          className={({ isActive }) =>
-            cn(
-              'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-200 transition',
-              isActive
-                ? 'bg-slate-800 text-sky-300 shadow-slate-900/20 shadow-inner'
-                : 'hover:bg-slate-800 hover:text-white'
-            )
-          }
+          style={({ isActive }) => ({
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            borderRadius: 14,
+            padding: '10px 16px',
+            fontSize: 13,
+            fontWeight: 500,
+            textDecoration: 'none',
+            color: isActive ? 'var(--accent-2)' : 'var(--ink-100)',
+            background: isActive ? 'var(--bg-2)' : 'transparent',
+            transition: 'background 0.15s, color 0.15s',
+          })}
+          onMouseEnter={(e) => {
+            const el = e.currentTarget as HTMLAnchorElement;
+            if (!el.getAttribute('aria-current')) {
+              el.style.background = 'var(--bg-2)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            const el = e.currentTarget as HTMLAnchorElement;
+            if (!el.getAttribute('aria-current')) {
+              el.style.background = 'transparent';
+            }
+          }}
         >
           {item.label}
         </NavLink>

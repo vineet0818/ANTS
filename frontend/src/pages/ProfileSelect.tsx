@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { Layout } from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 interface ApiProfile {
   id: number;
@@ -79,8 +80,8 @@ const PROFILE_META: Record<string, ProfileMeta> = {
     level: 'Level 01 · Foundation',
     track: 'Foundation',
     skills: ['Playwright', 'Reflect', 'AI prompts'],
-    c1: 'oklch(0.82 0.16 200)',
-    c2: 'oklch(0.78 0.18 285)',
+    c1: 'oklch(0.74 0.10 210)',
+    c2: 'oklch(0.72 0.13 285)',
     icon: SproutIcon,
   },
   mid_level: {
@@ -89,7 +90,7 @@ const PROFILE_META: Record<string, ProfileMeta> = {
     track: 'Build',
     skills: ['API tests', 'CI/CD', 'Codegen'],
     c1: 'oklch(0.80 0.16 150)',
-    c2: 'oklch(0.82 0.16 200)',
+    c2: 'oklch(0.74 0.10 210)',
     icon: RobotIcon,
   },
   senior_sdet: {
@@ -97,7 +98,7 @@ const PROFILE_META: Record<string, ProfileMeta> = {
     level: 'Level 03 · Architect',
     track: 'Architect',
     skills: ['Agents', 'MCP', 'Healer'],
-    c1: 'oklch(0.78 0.18 285)',
+    c1: 'oklch(0.72 0.13 285)',
     c2: 'oklch(0.80 0.18 330)',
     icon: RocketIcon,
   },
@@ -119,8 +120,8 @@ function getMetaForProfile(profile: ApiProfile): ProfileMeta {
     level: 'Level · Custom',
     track: 'Custom',
     skills: [],
-    c1: 'oklch(0.78 0.18 285)',
-    c2: 'oklch(0.82 0.16 200)',
+    c1: 'oklch(0.72 0.13 285)',
+    c2: 'oklch(0.74 0.10 210)',
     icon: SproutIcon,
   };
 }
@@ -139,6 +140,16 @@ function ProfileCard({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const Icon = meta.icon;
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
+  const emblemBg = isLight
+    ? `linear-gradient(135deg, color-mix(in oklch, ${meta.c1} 42%, white), color-mix(in oklch, ${meta.c2} 36%, white))`
+    : `linear-gradient(135deg, color-mix(in oklch, ${meta.c1} 20%, transparent), color-mix(in oklch, ${meta.c2} 15%, transparent))`;
+  const emblemBorder = isLight
+    ? `color-mix(in oklch, ${meta.c1} 55%, white)`
+    : `color-mix(in oklch, ${meta.c1} 35%, transparent)`;
+  const iconColor = isLight ? 'rgba(15,23,42,0.78)' : 'white';
 
   const onMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const el = ref.current;
@@ -165,11 +176,8 @@ function ProfileCard({
       </div>
 
       <div className="ants-card-emblem"
-        style={{
-          background: `linear-gradient(135deg, color-mix(in oklch, ${meta.c1} 20%, transparent), color-mix(in oklch, ${meta.c2} 15%, transparent))`,
-          borderColor: `color-mix(in oklch, ${meta.c1} 35%, transparent)`,
-        }}>
-        <Icon size={20} color="white" />
+        style={{ background: emblemBg, borderColor: emblemBorder }}>
+        <Icon size={20} color={iconColor} />
       </div>
 
       <div className="ants-card-level">{meta.level}</div>
@@ -251,11 +259,16 @@ export default function ProfileSelect() {
               Hey, {firstName} <span style={{ display: 'inline-block', animation: 'wave 1.8s ease-in-out infinite' }}>👋</span>
             </div>
           </div>
-          <div className="ants-step-pill">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <circle cx="5" cy="5" r="3" fill="currentColor" />
-            </svg>
-            Step <span className="num">1</span> / 4
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 5 }}>
+            <div className="ants-step-pill">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <circle cx="5" cy="5" r="3" fill="currentColor" />
+              </svg>
+              Step <span className="num">1</span>
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-50)' }}>
+              {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+            </div>
           </div>
         </div>
         <p className="ants-hero-sub">

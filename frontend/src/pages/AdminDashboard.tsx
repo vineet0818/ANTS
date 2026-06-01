@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import api from '../api';
 import { AdminLayout } from '../components/AdminLayout';
+import { useTheme } from '../context/ThemeContext';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface LearnerRow {
@@ -93,6 +94,17 @@ function Dropdown({ value, onChange, options, placeholder }: {
   options: DropdownOption[];
   placeholder: string;
 }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const th = {
+    glassFill3:   isLight ? 'rgba(255,255,255,0.85)'  : 'rgba(255,255,255,.06)',
+    glassStroke2: isLight ? 'rgba(15,23,42,0.10)'     : 'rgba(255,255,255,.12)',
+    glassStroke3: isLight ? 'rgba(15,23,42,0.12)'     : 'rgba(255,255,255,.14)',
+    hoverBg:      isLight ? 'rgba(99,102,241,0.06)'   : 'rgba(255,255,255,.05)',
+    hoverBg2:     isLight ? 'rgba(99,102,241,0.08)'   : 'rgba(255,255,255,.08)',
+    dropdownBg:   isLight ? 'rgba(255,255,255,0.95)'  : '#16161e',
+  } as const;
+
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -114,8 +126,8 @@ function Dropdown({ value, onChange, options, placeholder }: {
         style={{
           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
           padding: '8px 12px', borderRadius: 8, fontSize: 13, cursor: 'pointer',
-          background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
-          color: selected ? 'var(--ink-90)' : 'var(--ink-50)',
+          background: th.glassFill3, border: `1px solid ${th.glassStroke2}`,
+          color: selected ? 'var(--ink-100)' : 'var(--ink-50)',
           fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
         }}
       >
@@ -126,7 +138,7 @@ function Dropdown({ value, onChange, options, placeholder }: {
       {open && (
         <div style={{
           position: 'absolute', top: 'calc(100% + 6px)', left: 0, minWidth: '100%',
-          background: '#16161e', border: '1px solid rgba(255,255,255,.14)',
+          background: th.dropdownBg, border: `1px solid ${th.glassStroke3}`,
           borderRadius: 10, padding: '4px', zIndex: 9999,
           boxShadow: '0 8px 32px rgba(0,0,0,.6)',
         }}>
@@ -137,11 +149,11 @@ function Dropdown({ value, onChange, options, placeholder }: {
               style={{
                 padding: '8px 12px', borderRadius: 7, fontSize: 13, cursor: 'pointer',
                 color: opt.value === value ? 'var(--ink-100)' : 'var(--ink-70)',
-                background: opt.value === value ? 'rgba(255,255,255,.08)' : 'transparent',
+                background: opt.value === value ? th.hoverBg2 : 'transparent',
                 fontWeight: opt.value === value ? 600 : 400,
                 transition: 'background .1s',
               }}
-              onMouseEnter={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,.05)'; }}
+              onMouseEnter={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = th.hoverBg; }}
               onMouseLeave={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
             >
               {opt.label}
@@ -178,10 +190,12 @@ function RiskBadge({ flag }: { flag: string }) {
 
 // ─── Mini progress bar ────────────────────────────────────────────────────────
 function MiniBar({ pct, flag }: { pct: number; flag: string }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const color = flag === 'overdue' ? '#f87171' : flag === 'at_risk' ? '#fbbf24' : flag === 'completed' ? '#a5b4fc' : 'oklch(0.80 0.16 200)';
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 120 }}>
-      <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
+      <div style={{ flex: 1, height: 4, background: isLight ? 'rgba(15,23,42,0.07)' : 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 99, transition: 'width .3s' }} />
       </div>
       <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink-80)', width: 32, textAlign: 'right' }}>{pct}%</span>
@@ -203,10 +217,13 @@ function relTime(ts: string | null): string {
 }
 
 function StateBadge({ state }: { state: string }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const glassFill = isLight ? 'rgba(15,23,42,0.05)' : 'rgba(255,255,255,.04)';
   const map: Record<string, [string, string]> = {
     completed:   ['oklch(0.80 0.16 200)', 'rgba(99,102,241,.15)'],
     in_progress: ['#fbbf24', 'rgba(234,179,8,.1)'],
-    not_started: ['var(--ink-40)', 'rgba(255,255,255,.04)'],
+    not_started: ['var(--ink-50)', glassFill],
   };
   const [color, bg] = map[state] ?? map.not_started;
   return (
@@ -218,6 +235,18 @@ function StateBadge({ state }: { state: string }) {
 
 // ─── Drill-down panel ─────────────────────────────────────────────────────────
 function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => void }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const th = {
+    glassFill:    isLight ? 'rgba(255,255,255,0.72)'  : 'rgba(255,255,255,.04)',
+    glassFill2:   isLight ? 'rgba(255,255,255,0.80)'  : 'rgba(255,255,255,.05)',
+    glassFill3:   isLight ? 'rgba(255,255,255,0.85)'  : 'rgba(255,255,255,.06)',
+    glassStroke:  isLight ? 'rgba(15,23,42,0.08)'     : 'rgba(255,255,255,.09)',
+    glassStroke2: isLight ? 'rgba(15,23,42,0.10)'     : 'rgba(255,255,255,.12)',
+    panelBg:      isLight ? 'rgba(255,255,255,0.92)'  : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(248,250,252,0.92)'  : 'rgba(7,7,11,.6)',
+  } as const;
+
   const [detail, setDetail] = useState<LearnerDetail | null>(null);
   const [tab, setTab] = useState<'modules' | 'events' | 'nudges'>('modules');
   const [nudging, setNudging] = useState(false);
@@ -245,22 +274,23 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }} onClick={onClose}>
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(7,7,11,.6)', backdropFilter: 'blur(4px)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: th.overlayBg, backdropFilter: 'blur(4px)' }} />
       <div
         onClick={e => e.stopPropagation()}
         style={{
           position: 'relative', width: 520, height: '100%',
-          background: '#0e0e14', borderLeft: '1px solid rgba(255,255,255,.1)',
+          background: th.panelBg, borderLeft: `1px solid ${th.glassStroke}`,
           display: 'flex', flexDirection: 'column', overflow: 'hidden',
+          animation: 'slideInRight .22s ease',
         }}
       >
         {detail ? (
           <>
-            <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid rgba(255,255,255,.08)', flexShrink: 0 }}>
+            <div style={{ padding: '20px 24px 16px', borderBottom: `1px solid ${th.glassStroke2}`, flexShrink: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                 <div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', lineHeight: 1.2 }}>{detail.name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--ink-60)', marginTop: 2 }}>{detail.email}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-70)', marginTop: 2 }}>{detail.email}</div>
                 </div>
                 <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-60)', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center' }}>
                   <IcClose size={16} />
@@ -268,15 +298,15 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               </div>
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 <RiskBadge flag={detail.risk_flag} />
-                <span style={{ fontSize: 12, color: 'var(--ink-60)', background: 'rgba(255,255,255,.05)', padding: '3px 10px', borderRadius: 20, border: '1px solid rgba(255,255,255,.1)' }}>
+                <span style={{ fontSize: 12, color: 'var(--ink-60)', background: th.glassFill2, padding: '3px 10px', borderRadius: 20, border: `1px solid ${th.glassStroke}` }}>
                   {detail.profile_name}
                 </span>
                 <MiniBar pct={detail.completion_pct} flag={detail.risk_flag} />
               </div>
               {detail.target_date && (
-                <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-40)', display: 'flex', gap: 16 }}>
-                  <span>Started: <b style={{ color: 'var(--ink-60)' }}>{detail.start_date}</b></span>
-                  <span>Target: <b style={{ color: 'var(--ink-60)' }}>{detail.target_date}</b></span>
+                <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-50)', display: 'flex', gap: 16 }}>
+                  <span>Started: <b style={{ color: 'var(--ink-70)' }}>{detail.start_date}</b></span>
+                  <span>Target: <b style={{ color: 'var(--ink-70)' }}>{detail.target_date}</b></span>
                 </div>
               )}
               <button
@@ -296,7 +326,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: 2, padding: '12px 24px 0', borderBottom: '1px solid rgba(255,255,255,.08)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: 2, padding: '12px 24px 0', borderBottom: `1px solid ${th.glassStroke2}`, flexShrink: 0 }}>
               {(['modules', 'events', 'nudges'] as const).map(t => (
                 <button key={t} onClick={() => setTab(t)} style={{
                   background: 'none', border: 'none', cursor: 'pointer',
@@ -315,16 +345,16 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               {tab === 'modules' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {detail.modules.length === 0
-                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No modules assigned yet</div>
+                    ? <div style={{ color: 'var(--ink-50)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No modules assigned yet</div>
                     : detail.modules.map(m => (
                     <div key={m.module_id} style={{
-                      background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)',
+                      background: th.glassFill, border: `1px solid ${th.glassFill3}`,
                       borderRadius: 10, padding: '12px 14px',
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-90)', lineHeight: 1.3, marginBottom: 4 }}>{m.title}</div>
-                          <div style={{ fontSize: 11, color: 'var(--ink-40)', marginBottom: 6 }}>{m.category}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-100)', lineHeight: 1.3, marginBottom: 4 }}>{m.title}</div>
+                          <div style={{ fontSize: 11, color: 'var(--ink-50)', marginBottom: 6 }}>{m.category}</div>
                           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                             <StateBadge state={m.progress_state} />
                             {m.percentage > 0 && <span style={{ fontSize: 11, color: 'var(--ink-50)', fontFamily: 'var(--font-mono)' }}>{m.percentage}%</span>}
@@ -350,16 +380,16 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               {tab === 'events' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {detail.event_log.length === 0
-                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No activity yet</div>
+                    ? <div style={{ color: 'var(--ink-50)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No activity yet</div>
                     : detail.event_log.map(ev => (
                     <div key={ev.event_id} style={{
                       display: 'flex', gap: 12, alignItems: 'flex-start',
-                      padding: '10px 12px', background: 'rgba(255,255,255,.03)',
-                      border: '1px solid rgba(255,255,255,.07)', borderRadius: 8,
+                      padding: '10px 12px', background: th.glassFill,
+                      border: `1px solid ${th.glassFill3}`, borderRadius: 8,
                     }}>
                       <div style={{
                         width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                        background: 'rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: th.glassFill3, display: 'flex', alignItems: 'center', justifyContent: 'center',
                         color: 'var(--ink-60)',
                       }}>
                         <IcClock size={12} />
@@ -367,10 +397,10 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-80)', marginBottom: 2 }}>{ev.module_title}</div>
                         <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>
-                          <span style={{ color: 'var(--ink-40)' }}>{ev.old_state}</span>
+                          <span style={{ color: 'var(--ink-50)' }}>{ev.old_state}</span>
                           {' → '}
                           <span style={{ color: 'oklch(0.80 0.16 200)' }}>{ev.new_state}</span>
-                          {ev.percentage > 0 && <span style={{ color: 'var(--ink-40)' }}> · {ev.percentage}%</span>}
+                          {ev.percentage > 0 && <span style={{ color: 'var(--ink-50)' }}> · {ev.percentage}%</span>}
                         </div>
                       </div>
                       <div style={{ fontSize: 11, color: 'var(--ink-30)', whiteSpace: 'nowrap', marginTop: 2 }}>{relTime(ev.created_at)}</div>
@@ -382,7 +412,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               {tab === 'nudges' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {detail.nudge_history.length === 0
-                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No nudges sent yet</div>
+                    ? <div style={{ color: 'var(--ink-50)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No nudges sent yet</div>
                     : detail.nudge_history.map((n, i) => (
                     <div key={i} style={{
                       padding: '10px 14px', background: 'rgba(251,191,36,.05)',
@@ -400,7 +430,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
           </>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <div style={{ color: 'var(--ink-40)', fontSize: 13 }}>Loading…</div>
+            <div style={{ color: 'var(--ink-50)', fontSize: 13 }}>Loading…</div>
           </div>
         )}
       </div>
@@ -410,17 +440,20 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 
 // ─── Stat card ────────────────────────────────────────────────────────────────
 function StatCard({ label, value, sub, color, icon }: { label: string; value: number; sub?: string; color: string; icon: React.ReactNode }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const glassStroke = isLight ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,.09)';
   return (
     <div style={{
-      background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)',
-      borderRadius: 14, padding: '18px 20px', backdropFilter: 'blur(12px)', flex: 1, minWidth: 140,
+      background: 'var(--bg-2)', border: `1px solid ${glassStroke}`,
+      borderRadius: 14, padding: '18px 20px', flex: 1, minWidth: 140,
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
         <div style={{ fontSize: 12, color: 'var(--ink-50)', fontWeight: 500 }}>{label}</div>
         <div style={{ color, opacity: .7 }}>{icon}</div>
       </div>
-      <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--ink-100)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>{value}</div>
-      {sub && <div style={{ fontSize: 11, color: 'var(--ink-40)', marginTop: 6 }}>{sub}</div>}
+      <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--ink-100)', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: 'var(--ink-50)', marginTop: 6 }}>{sub}</div>}
     </div>
   );
 }
@@ -494,9 +527,28 @@ export default function AdminDashboard() {
 
   const hasFilters = search || profileFilter || riskFilter;
 
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
+  const th = {
+    glassFill:    isLight ? 'rgba(255,255,255,0.72)'     : 'rgba(255,255,255,.04)',
+    glassFill2:   isLight ? 'rgba(255,255,255,0.80)'     : 'rgba(255,255,255,.05)',
+    glassFill3:   isLight ? 'rgba(255,255,255,0.85)'     : 'rgba(255,255,255,.06)',
+    glassStroke:  isLight ? 'rgba(15,23,42,0.08)'        : 'rgba(255,255,255,.09)',
+    glassStroke2: isLight ? 'rgba(15,23,42,0.10)'        : 'rgba(255,255,255,.12)',
+    glassStroke3: isLight ? 'rgba(15,23,42,0.12)'        : 'rgba(255,255,255,.14)',
+    hoverBg:      isLight ? 'rgba(99,102,241,0.06)'      : 'rgba(255,255,255,.05)',
+    hoverBg2:     isLight ? 'rgba(99,102,241,0.08)'      : 'rgba(255,255,255,.08)',
+    rowHover:     isLight ? 'rgba(99,102,241,0.04)'      : 'rgba(255,255,255,.03)',
+    progressTrack:isLight ? 'rgba(15,23,42,0.07)'        : 'rgba(255,255,255,.08)',
+    dropdownBg:   isLight ? 'rgba(255,255,255,0.95)'     : '#16161e',
+    panelBg:      isLight ? 'rgba(255,255,255,0.92)'     : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(248,250,252,0.92)'     : 'rgba(7,7,11,.6)',
+  } as const;
+
   const inputStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
-    borderRadius: 8, padding: '8px 12px', color: 'var(--ink-90)', fontSize: 13,
+    background: th.glassFill3, border: `1px solid ${th.glassStroke2}`,
+    borderRadius: 8, padding: '8px 12px', color: 'var(--ink-100)', fontSize: 13,
     outline: 'none', fontFamily: 'var(--font-sans)', boxSizing: 'border-box' as const,
   };
 
@@ -532,12 +584,12 @@ export default function AdminDashboard() {
               style={{
                 display: 'flex', alignItems: 'center', gap: 6,
                 padding: '6px 14px', borderRadius: 10, fontSize: 12, fontWeight: 600,
-                background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)',
+                background: th.glassFill2, border: `1px solid ${th.glassStroke2}`,
                 color: 'var(--ink-70)', cursor: 'pointer', fontFamily: 'var(--font-sans)',
                 transition: 'all .18s',
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.1)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-100)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-70)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = th.hoverBg2; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-100)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = th.glassFill2; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-70)'; }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
@@ -552,7 +604,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 24 }}>
         <StatCard label="Total Learners" value={stats.total}     sub="active on platform"    color="oklch(0.80 0.16 200)" icon={<IcUsers size={16}/>} />
         <StatCard label="Overdue"        value={stats.overdue}   sub="past target date"      color="#f87171"              icon={<IcAlert size={16}/>} />
         <StatCard label="At Risk"        value={stats.at_risk}   sub=">20% behind schedule"  color="#fbbf24"              icon={<IcAlert size={16}/>} />
@@ -561,13 +613,13 @@ export default function AdminDashboard() {
 
       {/* Filters */}
       <div style={{
-        background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)',
+        background: th.glassFill, border: `1px solid ${th.glassStroke}`,
         borderRadius: 14, padding: '12px 16px', marginBottom: 18,
         display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
       }}>
         {/* Search */}
         <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 180 }}>
-          <div style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-40)', pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-50)', pointerEvents: 'none' }}>
             <IcSearch size={13} />
           </div>
           <input
@@ -599,7 +651,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => { setSearch(''); setProfileFilter(''); setRiskFilter(''); }}
             style={{
-              background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)',
+              background: th.glassFill2, border: `1px solid ${th.glassStroke2}`,
               borderRadius: 8, padding: '8px 12px', color: 'var(--ink-60)', fontSize: 13, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--font-sans)',
             }}
@@ -608,30 +660,30 @@ export default function AdminDashboard() {
           </button>
         )}
 
-        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--ink-40)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
+        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--ink-50)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
           {filtered.length} of {learners.length}
         </div>
       </div>
 
       {/* Table */}
       <div style={{
-        background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.09)',
-        borderRadius: 16, overflow: 'hidden',
+        background: th.rowHover, border: `1px solid ${th.glassStroke}`,
+        borderRadius: 14, overflow: 'hidden',
       }}>
         {loading ? (
-          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>Loading learners…</div>
+          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-50)', fontSize: 13 }}>Loading learners…</div>
         ) : filtered.length === 0 ? (
-          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>
+          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-50)', fontSize: 13 }}>
             {learners.length === 0 ? 'No learners on the platform yet' : 'No learners match your filters'}
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,.08)' }}>
+              <tr style={{ borderBottom: `1px solid ${th.progressTrack}` }}>
                 {['Learner', 'Profile', 'Progress', 'Last Active', 'Status', 'Actions'].map(h => (
                   <th key={h} style={{
                     padding: '11px 16px', textAlign: 'left', fontSize: 11,
-                    fontWeight: 600, color: 'var(--ink-40)', letterSpacing: '.06em',
+                    fontWeight: 600, color: 'var(--ink-50)', letterSpacing: '.06em',
                     textTransform: 'uppercase', whiteSpace: 'nowrap',
                   }}>{h}</th>
                 ))}
@@ -646,10 +698,10 @@ export default function AdminDashboard() {
                     key={row.user_id}
                     onClick={() => setSelectedId(row.user_id)}
                     style={{
-                      borderBottom: i < paginated.length - 1 ? '1px solid rgba(255,255,255,.06)' : 'none',
+                      borderBottom: i < paginated.length - 1 ? `1px solid ${th.glassFill3}` : 'none',
                       cursor: 'pointer', transition: 'background .12s',
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,.03)')}
+                    onMouseEnter={e => (e.currentTarget.style.background = th.rowHover)}
                     onMouseLeave={e => (e.currentTarget.style.background = '')}
                   >
                     {/* Learner */}
@@ -657,15 +709,15 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{
                           width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                          background: 'linear-gradient(135deg, oklch(0.78 0.18 285), oklch(0.80 0.16 200))',
+                          background: 'linear-gradient(135deg, oklch(0.72 0.13 285), oklch(0.80 0.16 200))',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: 13, fontWeight: 700, color: 'white',
                         }}>
                           {row.name?.charAt(0)?.toUpperCase() ?? '?'}
                         </div>
                         <div>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-90)' }}>{row.name}</div>
-                          <div style={{ fontSize: 11, color: 'var(--ink-40)' }}>{row.email}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-100)' }}>{row.name}</div>
+                          <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>{row.email}</div>
                         </div>
                       </div>
                     </td>
@@ -680,7 +732,7 @@ export default function AdminDashboard() {
                     {/* Progress */}
                     <td style={{ padding: '14px 16px' }}>
                       <MiniBar pct={row.completion_pct} flag={row.risk_flag} />
-                      <div style={{ fontSize: 11, color: 'var(--ink-40)', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
+                      <div style={{ fontSize: 11, color: 'var(--ink-50)', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
                         {row.total_modules > 0 ? `${row.completed_modules}/${row.total_modules} modules` : 'No modules'}
                       </div>
                     </td>
@@ -720,8 +772,8 @@ export default function AdminDashboard() {
                           style={{
                             display: 'flex', alignItems: 'center', gap: 5,
                             padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600,
-                            cursor: 'pointer', background: 'rgba(255,255,255,.05)',
-                            border: '1px solid rgba(255,255,255,.1)', color: 'var(--ink-60)',
+                            cursor: 'pointer', background: th.glassFill2,
+                            border: `1px solid ${th.glassStroke2}`, color: 'var(--ink-60)',
                             transition: 'all .2s', whiteSpace: 'nowrap', fontFamily: 'var(--font-sans)',
                           }}
                         >
@@ -751,10 +803,10 @@ export default function AdminDashboard() {
                 width: 36, height: 36, borderRadius: '50%',
                 border: page === currentPage
                   ? '2px solid oklch(0.78 0.20 150)'
-                  : '1px solid rgba(255,255,255,.12)',
+                  : `1px solid ${th.glassStroke2}`,
                 background: page === currentPage
                   ? 'rgba(34,197,94,.08)'
-                  : 'rgba(255,255,255,.04)',
+                  : th.glassFill,
                 backdropFilter: 'blur(12px)',
                 WebkitBackdropFilter: 'blur(12px)',
                 color: page === currentPage ? 'oklch(0.78 0.20 150)' : 'var(--ink-50)',
@@ -764,8 +816,8 @@ export default function AdminDashboard() {
                 fontFamily: 'var(--font-mono)',
                 boxShadow: page === currentPage ? '0 0 12px oklch(0.78 0.20 150 / 0.35)' : 'none',
               }}
-              onMouseEnter={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.08)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-80)'; } }}
-              onMouseLeave={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.04)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-50)'; } }}
+              onMouseEnter={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = th.hoverBg2; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-80)'; } }}
+              onMouseLeave={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = th.glassFill; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-50)'; } }}
             >
               {page}
             </button>
@@ -776,6 +828,10 @@ export default function AdminDashboard() {
       {selectedId !== null && (
         <DrillDownPanel userId={selectedId} onClose={() => setSelectedId(null)} />
       )}
+
+      <style>{`
+        @keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+      `}</style>
     </AdminLayout>
   );
 }

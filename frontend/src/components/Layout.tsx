@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { ThemeToggle } from './ThemeToggle';
 
 const Icon = ({
   size = 15, sw = 1.6, children, ...rest
@@ -114,8 +115,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="ants-crumbs-active">{currentNav?.label ?? 'Dashboard'}</span>
               <span className="ants-crumbs-dot" />
               <span className="ants-live">Live</span>
+              <span className="ants-crumbs-dot" />
+              <span style={{ color: 'var(--ink-70)' }}>
+                {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
             </div>
             <div className="ants-top-actions">
+              <ThemeToggle />
               <button className="ants-icon-btn" title="Notifications">
                 <IconBell size={15} /><span className="ants-dot-badge" />
               </button>

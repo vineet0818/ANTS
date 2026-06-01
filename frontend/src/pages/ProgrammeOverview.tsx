@@ -17,19 +17,19 @@ const PROFILES = [
   {
     key: 'Junior QA / Manual Tester', level: 'L1 · Foundation', modules: 44,
     duration: '8–12 weeks', tiers: ['Tier 0', 'Tier 1', 'L1'],
-    c1: 'oklch(0.82 0.16 200)', c2: 'oklch(0.78 0.18 285)',
+    c1: 'oklch(0.74 0.10 210)', c2: 'oklch(0.72 0.13 285)',
     desc: 'Write & run Playwright E2E tests, use AI to generate test cases, work within Reflect for no-code scenarios.',
   },
   {
     key: 'Mid-level Automation Engineer', level: 'L2 · Build', modules: 55,
     duration: '10–14 weeks', tiers: ['Tier 0', 'Tier 1', 'L1', 'L2'],
-    c1: 'oklch(0.80 0.16 150)', c2: 'oklch(0.82 0.16 200)',
+    c1: 'oklch(0.80 0.16 150)', c2: 'oklch(0.74 0.10 210)',
     desc: 'Build full Playwright framework with API layer, AI-assisted code generation, CI/CD integrated suite.',
   },
   {
     key: 'Senior SDET', level: 'L3 · Architect', modules: 58,
     duration: '12–16 weeks', tiers: ['Tier 0', 'Tier 1', 'L1', 'L2', 'L3'],
-    c1: 'oklch(0.78 0.18 285)', c2: 'oklch(0.80 0.18 330)',
+    c1: 'oklch(0.72 0.13 285)', c2: 'oklch(0.80 0.18 330)',
     desc: 'Design AI-augmented Playwright frameworks with Planner/Generator/Healer agents and agentic MCP workflows.',
   },
   {
@@ -56,8 +56,8 @@ const SPRINT_PHASES = [
 // ─── Shared card helpers ──────────────────────────────────────────────────────
 const card = (children: React.ReactNode, style?: React.CSSProperties) => (
   <div style={{
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: 18, padding: 24, backdropFilter: 'blur(12px)', ...style,
+    background: 'var(--bg-2)', border: '1px solid var(--glass-stroke)',
+    borderRadius: 14, padding: 24, ...style,
   }}>{children}</div>
 );
 const mono = (text: string, color = 'var(--ink-40)') => (
@@ -70,11 +70,11 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
     <>
       {/* Leadership Snapshot Hero */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-        border: '1px solid rgba(255,255,255,0.09)', borderRadius: 22, padding: '36px 40px',
+        background: 'linear-gradient(135deg, var(--glass-fill) 0%, var(--glass-fill) 100%)',
+        border: '1px solid var(--glass-stroke)', borderRadius: 14, padding: '36px 40px',
         marginBottom: 24, position: 'relative', overflow: 'hidden',
       }}>
-        <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.78 0.18 285 / 0.2), transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.72 0.13 285 / 0.2), transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-2)', boxShadow: '0 0 8px var(--accent-2)', display: 'inline-block' }} />
@@ -88,7 +88,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
         <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(28px, 4vw, 46px)', fontWeight: 400, color: 'var(--ink-100)', margin: '0 0 16px', letterSpacing: '-0.02em', lineHeight: 1.15 }}>
           ANTS programme <em style={{ background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>at a glance.</em>
         </h1>
-        <p style={{ fontSize: 15, color: 'var(--ink-60)', lineHeight: 1.65, maxWidth: 680, margin: 0 }}>
+        <p style={{ fontSize: 15, color: 'var(--ink-70)', lineHeight: 1.65, maxWidth: 680, margin: 0 }}>
           A 6-month, role-tuned upskilling sprint to convert <b style={{ color: 'var(--ink-80)' }}>394 QE engineers</b> into AI-Native Testing Specialists between <b style={{ color: 'var(--ink-80)' }}>June 1</b> and <b style={{ color: 'var(--ink-80)' }}>December 31, 2026</b> — at zero curriculum cost.
         </p>
       </div>
@@ -104,7 +104,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           { n: '$0',                   unit: '',        label: 'Curriculum cost',        sub: '100% free resources',     color: 'oklch(0.82 0.15 60)' },
         ].map(s => card(
           <>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-40)', marginBottom: 12 }}>{s.label}</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginBottom: 12 }}>{s.label}</div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 8 }}>
               <span style={{ fontSize: 34, fontWeight: 800, color: s.color, letterSpacing: '-0.04em', lineHeight: 1 }}>{s.n}</span>
               {s.unit && <span style={{ fontSize: 14, color: 'var(--ink-60)' }}>{s.unit}</span>}
@@ -122,7 +122,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
             <div>
               {mono('The 6-Month Sprint')}
-              <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>Each level’s journey, side by side.</h2>
+              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.02em' }}>Each level’s journey, side by side.</h2>
             </div>
           </div>
           <p style={{ fontSize: 12, color: 'var(--ink-50)', marginBottom: 20, lineHeight: 1.55 }}>
@@ -144,7 +144,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                   ].map((ph, i) => (
                     <th key={i} style={{ padding: '0 8px 14px', textAlign: 'left', verticalAlign: 'bottom', minWidth: 165 }}>
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: ph.color, marginBottom: 5 }}>{ph.label}</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-90)', marginBottom: 4 }}>{ph.title}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-100)', marginBottom: 4 }}>{ph.title}</div>
                       <div style={{ fontSize: 12, color: 'var(--ink-50)', lineHeight: 1.4 }}>{ph.sub}</div>
                     </th>
                   ))}
@@ -193,7 +193,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                     universal: { background: 'rgba(45,212,191,.08)',  border: '1px solid rgba(45,212,191,.22)',  borderRadius: 10 },
                     role:      { background: 'rgba(99,102,241,.10)',  border: '1px solid rgba(99,102,241,.25)',  borderRadius: 10, borderStyle: 'dashed' },
                     cert:      { background: 'rgba(251,146,60,.10)',  border: '1px solid rgba(251,146,60,.28)',  borderRadius: 10 },
-                    neutral:   { background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)', borderRadius: 10, borderStyle: 'dashed' },
+                    neutral:   { background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', borderRadius: 10, borderStyle: 'dashed' },
                     done:      { background: 'rgba(52,211,153,.08)',  border: '1px solid rgba(52,211,153,.22)',  borderRadius: 10 },
                   };
                   const titleColors: Record<string, string> = {
@@ -203,7 +203,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                     <tr key={ri}>
                       <td style={{ padding: '8px 12px 8px 0', verticalAlign: 'top' }}>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 700, color: 'var(--ink-100)' }}>{row.level}</div>
-                        <div style={{ fontSize: 12, color: 'var(--ink-40)', marginTop: 3 }}>{row.sub}</div>
+                        <div style={{ fontSize: 12, color: 'var(--ink-50)', marginTop: 3 }}>{row.sub}</div>
                       </td>
                       {row.cells.map((cell, ci) => (
                         <td key={ci} style={{ padding: '0 6px 10px', verticalAlign: 'top' }}>
@@ -231,7 +231,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           </div>
 
           {/* Legend */}
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,.07)' }}>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--glass-stroke)' }}>
             {[
               { color: '#2dd4bf', label: 'Universal foundations (Tier 0 + Tier 1)' },
               { color: '#818cf8', borderDash: true, label: 'Role-specific Tier 2 in flight' },
@@ -256,18 +256,18 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
         {card(<>
           <div style={{ marginBottom: 20 }}>
             {mono('Curriculum Architecture')}
-            <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>3-tier learning structure</h2>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.02em' }}>3-tier learning structure</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
             {TIERS.map(tier => (
-              <div key={tier.id} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: 20, borderLeft: `3px solid ${tier.color}` }}>
+              <div key={tier.id} style={{ background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', borderRadius: 14, padding: 20, borderLeft: `3px solid ${tier.color}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: tier.color, fontWeight: 700 }}>{tier.id}</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'rgba(255,255,255,0.05)', padding: '2px 7px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.08)' }}>{tier.courses} courses</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'var(--glass-fill)', padding: '2px 7px', borderRadius: 4, border: '1px solid var(--glass-stroke)' }}>{tier.courses} courses</span>
                 </div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-100)', marginBottom: 6, letterSpacing: '-0.01em' }}>{tier.name}</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', color: 'var(--ink-40)', marginBottom: 10, textTransform: 'uppercase' }}>{tier.weeks}</div>
-                <div style={{ fontSize: 12.5, color: 'var(--ink-60)', lineHeight: 1.55 }}>{tier.desc}</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', color: 'var(--ink-50)', marginBottom: 10, textTransform: 'uppercase' }}>{tier.weeks}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink-70)', lineHeight: 1.55 }}>{tier.desc}</div>
               </div>
             ))}
           </div>
@@ -278,13 +278,13 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
       <div style={{ marginBottom: 24 }}>
         <div style={{ marginBottom: 16 }}>
           {mono('Learning Profiles')}
-          <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>Pick your path — tuned from day one</h2>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.02em' }}>Pick your path — tuned from day one</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
           {PROFILES.map(profile => (
             <div key={profile.key} style={{
-              background: 'rgba(255,255,255,0.04)', border: `1px solid ${profile.c1}33`,
-              borderRadius: 18, padding: 22, position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s, transform 0.18s',
+              background: 'var(--bg-2)', border: `1px solid ${profile.c1}33`,
+              borderRadius: 14, padding: 22, position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s, transform 0.18s',
             }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = profile.c1 + '80'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = profile.c1 + '33'; e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -292,17 +292,17 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
               <div style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, borderRadius: '50%', background: `radial-gradient(circle, ${profile.c1}25, transparent 70%)`, pointerEvents: 'none' }} />
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: profile.c1, fontWeight: 700 }}>{profile.level}</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'rgba(255,255,255,0.05)', padding: '2px 7px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.08)' }}>{profile.modules} modules</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'var(--glass-fill)', padding: '2px 7px', borderRadius: 4, border: '1px solid var(--glass-stroke)' }}>{profile.modules} modules</span>
               </div>
               <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink-100)', margin: '0 0 8px', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{profile.key}</h3>
-              <p style={{ fontSize: 12.5, color: 'var(--ink-60)', lineHeight: 1.55, margin: '0 0 16px' }}>{profile.desc}</p>
+              <p style={{ fontSize: 12.5, color: 'var(--ink-70)', lineHeight: 1.55, margin: '0 0 16px' }}>{profile.desc}</p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                 <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                   {profile.tiers.map(t => (
-                    <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-60)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 4 }}>{t}</span>
+                    <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-60)', background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', padding: '2px 6px', borderRadius: 4 }}>{t}</span>
                   ))}
                 </div>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-40)' }}>{profile.duration}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-50)' }}>{profile.duration}</span>
               </div>
             </div>
           ))}
@@ -311,9 +311,9 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
 
       {/* CTA Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, oklch(0.78 0.18 285 / 0.15), oklch(0.82 0.16 200 / 0.10))',
-        border: '1px solid oklch(0.78 0.18 285 / 0.25)',
-        borderRadius: 18, padding: '28px 32px',
+        background: 'linear-gradient(135deg, oklch(0.72 0.13 285 / 0.15), oklch(0.74 0.10 210 / 0.10))',
+        border: '1px solid oklch(0.72 0.13 285 / 0.25)',
+        borderRadius: 14, padding: '28px 32px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20,
       }}>
         <div>
@@ -327,7 +327,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           fontSize: 14, fontWeight: 600, color: 'white',
           background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))',
           padding: '12px 24px', borderRadius: 12, textDecoration: 'none',
-          boxShadow: '0 4px 20px oklch(0.78 0.18 285 / 0.4)',
+          boxShadow: '0 4px 20px oklch(0.72 0.13 285 / 0.2)',
           transition: 'opacity 0.15s, transform 0.15s', whiteSpace: 'nowrap',
         }}
           onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
@@ -377,18 +377,18 @@ export default function ProgrammeOverview() {
         position: 'sticky', top: 0, zIndex: 100,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 40px', height: 60,
-        background: 'rgba(7,7,11,0.7)', backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        background: 'color-mix(in srgb, var(--bg-0) 80%, transparent)', backdropFilter: 'blur(16px)',
+        borderBottom: '1px solid var(--glass-stroke)',
       }}>
         {/* Brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => navigate('/')}>
           <div style={{
             width: 30, height: 30, borderRadius: 8,
-            background: 'linear-gradient(135deg, oklch(0.78 0.18 285), oklch(0.80 0.16 200))',
+            background: 'linear-gradient(135deg, oklch(0.72 0.13 285), oklch(0.80 0.16 200))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 11, fontWeight: 800, color: 'white', letterSpacing: '-0.02em',
           }}>AT</div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-90)', letterSpacing: '-0.01em' }}>ANTS Trail</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.01em' }}>ANTS Trail</span>
         </div>
 
         {/* Nav actions */}
@@ -396,7 +396,7 @@ export default function ProgrammeOverview() {
           <button
             onClick={() => navigate('/')}
             style={{
-              background: 'none', border: '1px solid rgba(255,255,255,0.12)',
+              background: 'none', border: '1px solid var(--glass-stroke)',
               borderRadius: 8, padding: '7px 16px', color: 'var(--ink-70)', fontSize: 13,
               cursor: 'pointer', fontFamily: 'var(--font-sans)', transition: 'color .15s',
             }}
@@ -408,12 +408,12 @@ export default function ProgrammeOverview() {
           <button
             onClick={() => navigate('/login')}
             style={{
-              background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)',
-              borderRadius: 8, padding: '7px 16px', color: 'var(--ink-90)', fontSize: 13, fontWeight: 600,
+              background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)',
+              borderRadius: 8, padding: '7px 16px', color: 'var(--ink-100)', fontSize: 13, fontWeight: 600,
               cursor: 'pointer', fontFamily: 'var(--font-sans)', transition: 'background .15s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--hover-tint)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--glass-fill)')}
           >
             Sign in
           </button>
