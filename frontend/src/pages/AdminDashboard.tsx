@@ -115,7 +115,7 @@ function Dropdown({ value, onChange, options, placeholder }: {
           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
           padding: '8px 12px', borderRadius: 8, fontSize: 13, cursor: 'pointer',
           background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
-          color: selected ? 'var(--ink-90)' : 'var(--ink-50)',
+          color: selected ? 'var(--ink-100)' : 'var(--ink-50)',
           fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
         }}
       >
@@ -206,7 +206,7 @@ function StateBadge({ state }: { state: string }) {
   const map: Record<string, [string, string]> = {
     completed:   ['oklch(0.80 0.16 200)', 'rgba(99,102,241,.15)'],
     in_progress: ['#fbbf24', 'rgba(234,179,8,.1)'],
-    not_started: ['var(--ink-40)', 'rgba(255,255,255,.04)'],
+    not_started: ['var(--ink-50)', 'rgba(255,255,255,.04)'],
   };
   const [color, bg] = map[state] ?? map.not_started;
   return (
@@ -316,7 +316,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               {tab === 'modules' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {detail.modules.length === 0
-                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No modules assigned yet</div>
+                    ? <div style={{ color: 'var(--ink-50)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No modules assigned yet</div>
                     : detail.modules.map(m => (
                     <div key={m.module_id} style={{
                       background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)',
@@ -324,7 +324,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-90)', lineHeight: 1.3, marginBottom: 4 }}>{m.title}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-100)', lineHeight: 1.3, marginBottom: 4 }}>{m.title}</div>
                           <div style={{ fontSize: 11, color: 'var(--ink-50)', marginBottom: 6 }}>{m.category}</div>
                           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                             <StateBadge state={m.progress_state} />
@@ -351,7 +351,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               {tab === 'events' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {detail.event_log.length === 0
-                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No activity yet</div>
+                    ? <div style={{ color: 'var(--ink-50)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No activity yet</div>
                     : detail.event_log.map(ev => (
                     <div key={ev.event_id} style={{
                       display: 'flex', gap: 12, alignItems: 'flex-start',
@@ -368,10 +368,10 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-80)', marginBottom: 2 }}>{ev.module_title}</div>
                         <div style={{ fontSize: 11, color: 'var(--ink-50)' }}>
-                          <span style={{ color: 'var(--ink-40)' }}>{ev.old_state}</span>
+                          <span style={{ color: 'var(--ink-50)' }}>{ev.old_state}</span>
                           {' → '}
                           <span style={{ color: 'oklch(0.80 0.16 200)' }}>{ev.new_state}</span>
-                          {ev.percentage > 0 && <span style={{ color: 'var(--ink-40)' }}> · {ev.percentage}%</span>}
+                          {ev.percentage > 0 && <span style={{ color: 'var(--ink-50)' }}> · {ev.percentage}%</span>}
                         </div>
                       </div>
                       <div style={{ fontSize: 11, color: 'var(--ink-30)', whiteSpace: 'nowrap', marginTop: 2 }}>{relTime(ev.created_at)}</div>
@@ -383,7 +383,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               {tab === 'nudges' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {detail.nudge_history.length === 0
-                    ? <div style={{ color: 'var(--ink-40)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No nudges sent yet</div>
+                    ? <div style={{ color: 'var(--ink-50)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No nudges sent yet</div>
                     : detail.nudge_history.map((n, i) => (
                     <div key={i} style={{
                       padding: '10px 14px', background: 'rgba(251,191,36,.05)',
@@ -401,7 +401,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
           </>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <div style={{ color: 'var(--ink-40)', fontSize: 13 }}>Loading…</div>
+            <div style={{ color: 'var(--ink-50)', fontSize: 13 }}>Loading…</div>
           </div>
         )}
       </div>
@@ -497,7 +497,7 @@ export default function AdminDashboard() {
 
   const inputStyle: React.CSSProperties = {
     background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
-    borderRadius: 8, padding: '8px 12px', color: 'var(--ink-90)', fontSize: 13,
+    borderRadius: 8, padding: '8px 12px', color: 'var(--ink-100)', fontSize: 13,
     outline: 'none', fontFamily: 'var(--font-sans)', boxSizing: 'border-box' as const,
   };
 
@@ -568,7 +568,7 @@ export default function AdminDashboard() {
       }}>
         {/* Search */}
         <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 180 }}>
-          <div style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-40)', pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-50)', pointerEvents: 'none' }}>
             <IcSearch size={13} />
           </div>
           <input
@@ -620,9 +620,9 @@ export default function AdminDashboard() {
         borderRadius: 14, overflow: 'hidden',
       }}>
         {loading ? (
-          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>Loading learners…</div>
+          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-50)', fontSize: 13 }}>Loading learners…</div>
         ) : filtered.length === 0 ? (
-          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-40)', fontSize: 13 }}>
+          <div style={{ padding: 48, textAlign: 'center', color: 'var(--ink-50)', fontSize: 13 }}>
             {learners.length === 0 ? 'No learners on the platform yet' : 'No learners match your filters'}
           </div>
         ) : (

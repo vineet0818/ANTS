@@ -88,7 +88,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
         <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(28px, 4vw, 46px)', fontWeight: 400, color: 'var(--ink-100)', margin: '0 0 16px', letterSpacing: '-0.02em', lineHeight: 1.15 }}>
           ANTS programme <em style={{ background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>at a glance.</em>
         </h1>
-        <p style={{ fontSize: 15, color: 'var(--ink-60)', lineHeight: 1.65, maxWidth: 680, margin: 0 }}>
+        <p style={{ fontSize: 15, color: 'var(--ink-70)', lineHeight: 1.65, maxWidth: 680, margin: 0 }}>
           A 6-month, role-tuned upskilling sprint to convert <b style={{ color: 'var(--ink-80)' }}>394 QE engineers</b> into AI-Native Testing Specialists between <b style={{ color: 'var(--ink-80)' }}>June 1</b> and <b style={{ color: 'var(--ink-80)' }}>December 31, 2026</b> — at zero curriculum cost.
         </p>
       </div>
@@ -388,7 +388,7 @@ export default function ProgrammeOverview() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 11, fontWeight: 800, color: 'white', letterSpacing: '-0.02em',
           }}>AT</div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-90)', letterSpacing: '-0.01em' }}>ANTS Trail</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.01em' }}>ANTS Trail</span>
         </div>
 
         {/* Nav actions */}
@@ -409,7 +409,7 @@ export default function ProgrammeOverview() {
             onClick={() => navigate('/login')}
             style={{
               background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)',
-              borderRadius: 8, padding: '7px 16px', color: 'var(--ink-90)', fontSize: 13, fontWeight: 600,
+              borderRadius: 8, padding: '7px 16px', color: 'var(--ink-100)', fontSize: 13, fontWeight: 600,
               cursor: 'pointer', fontFamily: 'var(--font-sans)', transition: 'background .15s',
             }}
             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}

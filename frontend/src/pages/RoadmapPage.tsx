@@ -319,14 +319,14 @@ function TierSummaryCards({ grouped, tiers }: {
             </div>
 
             {/* Section title */}
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-90)', marginBottom: 12, lineHeight: 1.3, letterSpacing: '-0.01em' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-100)', marginBottom: 12, lineHeight: 1.3, letterSpacing: '-0.01em' }}>
               {sectionName}
             </div>
 
             {/* Done count */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 10 }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-60)' }}>
-                <b style={{ color: 'var(--ink-90)' }}>{done}</b> / {mods.length} done
+                <b style={{ color: 'var(--ink-100)' }}>{done}</b> / {mods.length} done
               </span>
               <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, color: pctColor }}>
                 {pct}%
@@ -364,10 +364,10 @@ function TimelineStrip({ mod, totalModules, startDate, targetDate }: {
     }}>
       {/* Calendar icon + planned range */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ink-40)', flexShrink: 0 }}>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ink-50)', flexShrink: 0 }}>
           <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
         </svg>
-        <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-40)' }}>PLANNED</span>
+        <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-50)' }}>PLANNED</span>
         <span style={{ color: 'var(--ink-70)', fontWeight: 600 }}>{fmtShort(planStart)}</span>
         <span style={{ color: 'var(--ink-30)' }}>→</span>
         <span style={{ color: 'var(--ink-70)', fontWeight: 600 }}>{fmtShort(planEnd)}</span>
@@ -379,7 +379,7 @@ function TimelineStrip({ mod, totalModules, startDate, targetDate }: {
       {/* Started */}
       {startedAt ? (
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-40)' }}>STARTED</span>
+          <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-50)' }}>STARTED</span>
           <span style={{ color: 'var(--ink-70)', fontWeight: 600 }}>{fmtShort(startedAt)}</span>
         </div>
       ) : (
@@ -416,7 +416,7 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
     <div style={{ marginBottom: 12 }}>
       <button onClick={() => setOpen(o => !o)} style={{
         width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-        padding: '14px 20px', borderRadius: open ? '16px 16px 0 0' : 16,
+        padding: '14px 20px', borderRadius: open ? '14px 14px 0 0' : 14,
         background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
         borderBottom: open ? '1px solid rgba(255,255,255,0.04)' : undefined,
         cursor: 'pointer', transition: 'background 0.15s', textAlign: 'left',
@@ -437,7 +437,7 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
       </button>
 
       {open && (
-        <div style={{ border: '1px solid rgba(255,255,255,0.09)', borderTop: 'none', borderRadius: '0 0 16px 16px', overflow: 'hidden' }}>
+        <div style={{ border: '1px solid rgba(255,255,255,0.09)', borderTop: 'none', borderRadius: '0 0 14px 14px', overflow: 'hidden' }}>
           {modules.map((mod, idx) => (
             <div key={mod.id} className={`ants-module-card${mod.progress_state === 'completed' ? ' completed' : ''}`}
               style={{ borderRadius: 0, border: 'none', borderTop: idx > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none', padding: '20px 24px' }}>
@@ -509,7 +509,7 @@ export default function RoadmapPage() {
   if (!roadmap) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg-0)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-40)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Loading roadmap…</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-50)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Loading roadmap…</span>
       </div>
     );
   }
@@ -582,7 +582,7 @@ export default function RoadmapPage() {
           <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.02em' }}>
             Your <em style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>modules</em>
           </h2>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)' }}>
             <b style={{ color: 'var(--ink-70)' }}>{modules.length} total</b> · drag slider to update progress
           </span>
         </div>
@@ -618,7 +618,7 @@ export default function RoadmapPage() {
           {/* Search */}
           <div style={{ position: 'relative', flexShrink: 0 }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-40)', pointerEvents: 'none' }}>
+              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-50)', pointerEvents: 'none' }}>
               <circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/>
             </svg>
             <input
@@ -629,7 +629,7 @@ export default function RoadmapPage() {
                 paddingLeft: 30, paddingRight: 12, paddingTop: 7, paddingBottom: 7,
                 borderRadius: 20, fontSize: 12, width: 180,
                 background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                color: 'var(--ink-90)', outline: 'none', fontFamily: 'var(--font-sans)',
+                color: 'var(--ink-100)', outline: 'none', fontFamily: 'var(--font-sans)',
                 transition: 'border-color .15s, width .2s',
               }}
               onFocus={e => { e.currentTarget.style.borderColor = 'oklch(0.78 0.18 285 / 0.5)'; e.currentTarget.style.width = '220px'; }}
@@ -638,7 +638,7 @@ export default function RoadmapPage() {
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} style={{
                 position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
-                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-40)',
+                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-50)',
                 display: 'flex', alignItems: 'center', padding: 0,
               }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -652,7 +652,7 @@ export default function RoadmapPage() {
       {isFiltered ? (
         // Flat filtered list
         filteredModules.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--ink-40)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+          <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--ink-50)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
             No modules match your filter
           </div>
         ) : (

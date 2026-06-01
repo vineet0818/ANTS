@@ -128,7 +128,7 @@ export default function LandingPage() {
 
         {/* ── Timeline bar ── */}
         <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 48px 80px', marginTop: 80 }}>
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '24px 32px' }}>
+          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '24px 32px' }}>
             {/* Labels */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
               <div>
@@ -189,7 +189,7 @@ export default function LandingPage() {
                 accent: 'oklch(0.82 0.15 60)',
               },
             ].map(card => (
-              <div key={card.title} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '24px', backdropFilter: 'blur(12px)', transition: 'border-color 0.18s, transform 0.18s' }}
+              <div key={card.title} style={{ background: 'var(--bg-2)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '24px', transition: 'border-color 0.18s, transform 0.18s' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
@@ -205,9 +205,9 @@ export default function LandingPage() {
         <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)' }}>© 2026 ANTS Trail · Nous QE Practice</span>
           <div style={{ display: 'flex', gap: 16 }}>
-            <button onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Sign In</button>
-            <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Sign Up</button>
-            <button onClick={() => window.location.href = '/programme-overview'} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-40)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-80)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-40)'}>Programme Overview</button>
+            <button onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-100)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-50)'}>Sign In</button>
+            <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-100)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-50)'}>Sign Up</button>
+            <button onClick={() => window.location.href = '/programme-overview'} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-100)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-50)'}>Programme Overview</button>
           </div>
         </footer>
       </div>
