@@ -56,8 +56,8 @@ const SPRINT_PHASES = [
 // ─── Shared card helpers ──────────────────────────────────────────────────────
 const card = (children: React.ReactNode, style?: React.CSSProperties) => (
   <div style={{
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: 18, padding: 24, backdropFilter: 'blur(12px)', ...style,
+    background: 'var(--bg-2)', border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: 14, padding: 24, ...style,
   }}>{children}</div>
 );
 const mono = (text: string, color = 'var(--ink-40)') => (
@@ -71,7 +71,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
       {/* Leadership Snapshot Hero */}
       <div style={{
         background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-        border: '1px solid rgba(255,255,255,0.09)', borderRadius: 22, padding: '36px 40px',
+        border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, padding: '36px 40px',
         marginBottom: 24, position: 'relative', overflow: 'hidden',
       }}>
         <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.78 0.18 285 / 0.2), transparent 70%)', pointerEvents: 'none' }} />
@@ -104,7 +104,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           { n: '$0',                   unit: '',        label: 'Curriculum cost',        sub: '100% free resources',     color: 'oklch(0.82 0.15 60)' },
         ].map(s => card(
           <>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-40)', marginBottom: 12 }}>{s.label}</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginBottom: 12 }}>{s.label}</div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 8 }}>
               <span style={{ fontSize: 34, fontWeight: 800, color: s.color, letterSpacing: '-0.04em', lineHeight: 1 }}>{s.n}</span>
               {s.unit && <span style={{ fontSize: 14, color: 'var(--ink-60)' }}>{s.unit}</span>}
@@ -122,7 +122,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
             <div>
               {mono('The 6-Month Sprint')}
-              <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>Each level’s journey, side by side.</h2>
+              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.02em' }}>Each level’s journey, side by side.</h2>
             </div>
           </div>
           <p style={{ fontSize: 12, color: 'var(--ink-50)', marginBottom: 20, lineHeight: 1.55 }}>
@@ -144,7 +144,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                   ].map((ph, i) => (
                     <th key={i} style={{ padding: '0 8px 14px', textAlign: 'left', verticalAlign: 'bottom', minWidth: 165 }}>
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: ph.color, marginBottom: 5 }}>{ph.label}</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-90)', marginBottom: 4 }}>{ph.title}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-100)', marginBottom: 4 }}>{ph.title}</div>
                       <div style={{ fontSize: 12, color: 'var(--ink-50)', lineHeight: 1.4 }}>{ph.sub}</div>
                     </th>
                   ))}
@@ -203,7 +203,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                     <tr key={ri}>
                       <td style={{ padding: '8px 12px 8px 0', verticalAlign: 'top' }}>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 700, color: 'var(--ink-100)' }}>{row.level}</div>
-                        <div style={{ fontSize: 12, color: 'var(--ink-40)', marginTop: 3 }}>{row.sub}</div>
+                        <div style={{ fontSize: 12, color: 'var(--ink-50)', marginTop: 3 }}>{row.sub}</div>
                       </td>
                       {row.cells.map((cell, ci) => (
                         <td key={ci} style={{ padding: '0 6px 10px', verticalAlign: 'top' }}>
@@ -256,7 +256,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
         {card(<>
           <div style={{ marginBottom: 20 }}>
             {mono('Curriculum Architecture')}
-            <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>3-tier learning structure</h2>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.02em' }}>3-tier learning structure</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
             {TIERS.map(tier => (
@@ -266,8 +266,8 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'rgba(255,255,255,0.05)', padding: '2px 7px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.08)' }}>{tier.courses} courses</span>
                 </div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-100)', marginBottom: 6, letterSpacing: '-0.01em' }}>{tier.name}</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', color: 'var(--ink-40)', marginBottom: 10, textTransform: 'uppercase' }}>{tier.weeks}</div>
-                <div style={{ fontSize: 12.5, color: 'var(--ink-60)', lineHeight: 1.55 }}>{tier.desc}</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', color: 'var(--ink-50)', marginBottom: 10, textTransform: 'uppercase' }}>{tier.weeks}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink-70)', lineHeight: 1.55 }}>{tier.desc}</div>
               </div>
             ))}
           </div>
@@ -278,13 +278,13 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
       <div style={{ marginBottom: 24 }}>
         <div style={{ marginBottom: 16 }}>
           {mono('Learning Profiles')}
-          <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.01em' }}>Pick your path — tuned from day one</h2>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 700, color: 'var(--ink-100)', margin: '8px 0 0', letterSpacing: '-0.02em' }}>Pick your path — tuned from day one</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
           {PROFILES.map(profile => (
             <div key={profile.key} style={{
-              background: 'rgba(255,255,255,0.04)', border: `1px solid ${profile.c1}33`,
-              borderRadius: 18, padding: 22, position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s, transform 0.18s',
+              background: 'var(--bg-2)', border: `1px solid ${profile.c1}33`,
+              borderRadius: 14, padding: 22, position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s, transform 0.18s',
             }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = profile.c1 + '80'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = profile.c1 + '33'; e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -295,14 +295,14 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-40)', background: 'rgba(255,255,255,0.05)', padding: '2px 7px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.08)' }}>{profile.modules} modules</span>
               </div>
               <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--ink-100)', margin: '0 0 8px', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{profile.key}</h3>
-              <p style={{ fontSize: 12.5, color: 'var(--ink-60)', lineHeight: 1.55, margin: '0 0 16px' }}>{profile.desc}</p>
+              <p style={{ fontSize: 12.5, color: 'var(--ink-70)', lineHeight: 1.55, margin: '0 0 16px' }}>{profile.desc}</p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                 <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                   {profile.tiers.map(t => (
                     <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-60)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 4 }}>{t}</span>
                   ))}
                 </div>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-40)' }}>{profile.duration}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-50)' }}>{profile.duration}</span>
               </div>
             </div>
           ))}
@@ -313,7 +313,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
       <div style={{
         background: 'linear-gradient(135deg, oklch(0.78 0.18 285 / 0.15), oklch(0.82 0.16 200 / 0.10))',
         border: '1px solid oklch(0.78 0.18 285 / 0.25)',
-        borderRadius: 18, padding: '28px 32px',
+        borderRadius: 14, padding: '28px 32px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20,
       }}>
         <div>
