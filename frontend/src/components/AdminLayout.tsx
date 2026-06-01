@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { ThemeToggle } from './ThemeToggle';
 
 const Ic = ({ size = 15, sw = 1.6, children, ...rest }: { size?: number; sw?: number; children?: React.ReactNode; [k: string]: unknown }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -80,6 +81,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
               <span className="ants-live">Live</span>
             </div>
             <div className="ants-top-actions">
+              <ThemeToggle />
               <button className="ants-icon-btn" title="Notifications">
                 <IconBell size={15} /><span className="ants-dot-badge" />
               </button>
