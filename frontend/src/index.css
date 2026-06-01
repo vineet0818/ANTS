@@ -65,12 +65,12 @@
 
   --ink-100: rgba(20,15,10,0.90);
   --ink-70:  rgba(20,15,10,0.60);
-  --ink-50:  rgba(20,15,10,0.45);
+  --ink-50:  rgba(20,15,10,0.62);
   --ink-30:  rgba(20,15,10,0.22);
 
   --ink-80:  rgba(20,15,10,0.60);
   --ink-60:  rgba(20,15,10,0.45);
-  --ink-40:  rgba(20,15,10,0.22);
+  --ink-40:  rgba(20,15,10,0.50);
   --ink-20:  rgba(20,15,10,0.10);
 
   --accent-1: oklch(0.52 0.14 285);
@@ -466,6 +466,23 @@ button, input, textarea, select { font: inherit; }
 
 [data-theme="light"] .ants-card:hover {
   box-shadow: 0 16px 48px rgba(0,0,0,0.10);
+}
+
+[data-theme="light"] .ants-card-emblem {
+  border-color: rgba(0,0,0,0.10);
+}
+
+[data-theme="light"] .ants-step-pill {
+  background: oklch(0.52 0.14 285 / 0.10);
+  border-color: oklch(0.52 0.14 285 / 0.25);
+}
+
+[data-theme="light"] .ants-progress-fill {
+  box-shadow: 0 0 8px oklch(0.52 0.14 285 / 0.20);
+}
+
+[data-theme="light"] .ants-brand-mark {
+  box-shadow: 0 0 14px oklch(0.52 0.14 285 / 0.22);
 }
 
 [data-theme="light"] .ants-card-status {
