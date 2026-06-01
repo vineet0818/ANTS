@@ -22,6 +22,7 @@ export function ThemeToggle() {
       className="ants-icon-btn"
       onClick={toggleTheme}
       title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
     </button>
