@@ -271,7 +271,7 @@ button, input, textarea, select { font: inherit; }
 .ants-hint kbd { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-size: 10px; color: var(--ink-60); }
 
 /* ── PROFILE CARDS ── */
-.ants-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.ants-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
 .ants-card {
   position: relative; border-radius: var(--r-md);
   border: 1px solid var(--glass-stroke);
