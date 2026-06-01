@@ -216,7 +216,8 @@ button, input, textarea, select { font: inherit; }
 
 /* ── MAIN AREA ── */
 .ants-main { position: relative; z-index: 5; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-.ants-main-inner { max-width: clamp(1100px, 85vw, 1600px); padding: 24px 32px 120px; width: 100%; margin: 0 auto; }
+.ants-main-inner { max-width: 1100px; padding: 24px 32px 120px; width: 100%; margin: 0 auto; }
+@media (min-width: 1800px) { .ants-main-inner { max-width: 1400px; } }
 .ants-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
 .ants-crumbs { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-50); letter-spacing: 0.06em; }
 .ants-crumbs-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-50); }
