@@ -8,9 +8,9 @@ export default function LandingPage() {
 
       {/* ── Aurora background ── */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', width: '70vw', height: '70vw', maxWidth: 900, maxHeight: 900, top: '-15%', left: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.72 0.13 285), transparent 70%)', filter: 'blur(100px)', opacity: 0.22, animation: 'blobDrift1 28s ease-in-out infinite alternate' }} />
-        <div style={{ position: 'absolute', width: '55vw', height: '55vw', maxWidth: 700, maxHeight: 700, top: '30%', right: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.74 0.10 210), transparent 70%)', filter: 'blur(90px)', opacity: 0.18, animation: 'blobDrift2 34s ease-in-out infinite alternate' }} />
-        <div style={{ position: 'absolute', width: '45vw', height: '45vw', maxWidth: 600, maxHeight: 600, bottom: '-10%', left: '35%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.80 0.18 330), transparent 70%)', filter: 'blur(90px)', opacity: 0.15, animation: 'blobDrift3 22s ease-in-out infinite alternate' }} />
+        <div style={{ position: 'absolute', width: '70vw', height: '70vw', maxWidth: 900, maxHeight: 900, top: '-15%', left: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-1), transparent 70%)', filter: 'blur(100px)', opacity: 0.22, animation: 'blobDrift1 28s ease-in-out infinite alternate' }} />
+        <div style={{ position: 'absolute', width: '55vw', height: '55vw', maxWidth: 700, maxHeight: 700, top: '30%', right: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-2), transparent 70%)', filter: 'blur(90px)', opacity: 0.18, animation: 'blobDrift2 34s ease-in-out infinite alternate' }} />
+        <div style={{ position: 'absolute', width: '45vw', height: '45vw', maxWidth: 600, maxHeight: 600, bottom: '-10%', left: '35%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-3), transparent 70%)', filter: 'blur(90px)', opacity: 0.15, animation: 'blobDrift3 22s ease-in-out infinite alternate' }} />
       </div>
 
       <div style={{ position: 'relative', zIndex: 1 }}>
@@ -19,9 +19,9 @@ export default function LandingPage() {
         <nav style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '18px 48px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid var(--glass-stroke)',
           backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
-          background: 'rgba(7,7,11,0.7)',
+          background: 'color-mix(in srgb, var(--bg-0) 80%, transparent)',
           position: 'sticky', top: 0, zIndex: 100,
         }}>
           {/* Brand */}
@@ -43,9 +43,9 @@ export default function LandingPage() {
 
             <button
               onClick={() => navigate('/login')}
-              style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--ink-80)', padding: '8px 20px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', cursor: 'pointer', transition: 'background 0.15s, color 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'var(--ink-100)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'var(--ink-80)'; }}
+              style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--ink-80)', padding: '8px 20px', borderRadius: 10, border: '1px solid var(--glass-stroke)', background: 'var(--glass-fill)', cursor: 'pointer', transition: 'background 0.15s, color 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--hover-tint)'; e.currentTarget.style.color = 'var(--ink-100)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--glass-fill)'; e.currentTarget.style.color = 'var(--ink-80)'; }}
             >Sign In</button>
 
             <button
@@ -61,7 +61,7 @@ export default function LandingPage() {
         <section style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 48px 60px' }}>
 
           {/* Badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 36, padding: '7px 16px', borderRadius: 999, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(8px)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 36, padding: '7px 16px', borderRadius: 999, border: '1px solid var(--glass-stroke)', background: 'var(--glass-fill)', backdropFilter: 'blur(8px)' }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent-1)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
             </svg>
@@ -96,7 +96,7 @@ export default function LandingPage() {
               { n: '2 hrs', u: 'Per day, every weekday', color: 'var(--ink-80)' },
               { n: '$0', u: 'Curriculum cost', color: 'oklch(0.80 0.18 330)' },
             ].map(stat => (
-              <div key={stat.n} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, padding: '18px 28px', backdropFilter: 'blur(12px)', minWidth: 160 }}>
+              <div key={stat.n} style={{ background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', borderRadius: 14, padding: '18px 28px', backdropFilter: 'blur(12px)', minWidth: 160 }}>
                 <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', color: stat.color, lineHeight: 1.1, marginBottom: 6 }}>{stat.n}</div>
                 <div style={{ fontSize: 12.5, color: 'var(--ink-50)' }}>{stat.u}</div>
               </div>
@@ -117,9 +117,9 @@ export default function LandingPage() {
 
             <button
               onClick={() => window.location.href = '/programme-overview'}
-              style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 14.5, fontWeight: 500, color: 'var(--ink-80)', padding: '13px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.05)', cursor: 'pointer', transition: 'background 0.15s, color 0.15s, border-color 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = 'var(--ink-100)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'var(--ink-80)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}
+              style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 14.5, fontWeight: 500, color: 'var(--ink-80)', padding: '13px 28px', borderRadius: 12, border: '1px solid var(--glass-stroke)', background: 'var(--glass-fill)', cursor: 'pointer', transition: 'background 0.15s, color 0.15s, border-color 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--hover-tint)'; e.currentTarget.style.color = 'var(--ink-100)'; e.currentTarget.style.borderColor = 'var(--glass-stroke)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--glass-fill)'; e.currentTarget.style.color = 'var(--ink-80)'; e.currentTarget.style.borderColor = 'var(--glass-stroke)'; }}
             >
               View Programme Overview
             </button>
@@ -128,7 +128,7 @@ export default function LandingPage() {
 
         {/* ── Timeline bar ── */}
         <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 48px 80px', marginTop: 80 }}>
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '24px 32px' }}>
+          <div style={{ background: 'var(--glass-fill)', border: '1px solid var(--glass-stroke)', borderRadius: 14, padding: '24px 32px' }}>
             {/* Labels */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
               <div>
@@ -142,7 +142,7 @@ export default function LandingPage() {
             </div>
 
             {/* Progress track */}
-            <div style={{ height: 8, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden', position: 'relative', marginBottom: 14 }}>
+            <div style={{ height: 8, borderRadius: 999, background: 'var(--glass-stroke)', overflow: 'hidden', position: 'relative', marginBottom: 14 }}>
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2), oklch(0.80 0.18 330))', borderRadius: 999 }} />
             </div>
 
