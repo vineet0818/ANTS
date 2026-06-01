@@ -13,10 +13,16 @@
   --bg-2:   #13131a;
   --bg-3:   rgba(255,255,255,0.04);
 
-  --ink-100: rgba(255,255,255,0.96);
-  --ink-80:  rgba(255,255,255,0.72);
+  /* Ink scale — 4 semantic tiers */
+  --ink-100: rgba(255,255,255,0.95);
+  --ink-70:  rgba(255,255,255,0.65);
+  --ink-50:  rgba(255,255,255,0.48);
+  --ink-30:  rgba(255,255,255,0.22);
+
+  /* Legacy aliases — keeps existing var() references working with updated values */
+  --ink-80:  rgba(255,255,255,0.65);
   --ink-60:  rgba(255,255,255,0.48);
-  --ink-40:  rgba(255,255,255,0.28);
+  --ink-40:  rgba(255,255,255,0.22);
   --ink-20:  rgba(255,255,255,0.10);
 
   --accent-1: oklch(0.78 0.18 285);
@@ -32,12 +38,12 @@
   --r-lg:  18px;
   --r-xl:  24px;
 
-  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Code', monospace;
-  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans:  'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:  'Geist Mono', ui-monospace, 'Cascadia Code', monospace;
+  --font-serif: 'Syne', ui-sans-serif, system-ui;
 
   --background: #07070b;
-  --foreground: rgba(255,255,255,0.96);
+  --foreground: rgba(255,255,255,0.95);
   --border: rgba(255,255,255,0.08);
   --radius: 1rem;
   --sans: var(--font-sans);
@@ -139,24 +145,25 @@ button, input, textarea, select { font: inherit; }
 .ants-brand-name { font-size: 14px; font-weight: 600; color: var(--ink-100); letter-spacing: -0.01em; }
 .ants-brand-tag {
   font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--ink-40); margin-top: 1px;
+  text-transform: uppercase; color: var(--ink-50); margin-top: 1px;
 }
 .ants-nav-section { margin-bottom: 24px; }
 .ants-nav-label {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--ink-40); padding: 0 8px; margin: 0 0 6px;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-50); padding: 0 8px; margin: 0 0 6px;
 }
 .ants-nav-item {
   display: flex; align-items: center; gap: 10px;
   padding: 8px 10px; border-radius: var(--r-md);
-  cursor: pointer; color: var(--ink-60); font-size: 13.5px; font-weight: 500;
+  cursor: pointer; color: var(--ink-70); font-size: 13.5px; font-weight: 500;
   transition: background 0.18s, color 0.18s; user-select: none; position: relative;
 }
-.ants-nav-item:hover { background: var(--glass-fill); color: var(--ink-80); }
+.ants-nav-item:hover { background: rgba(255,255,255,0.05); color: var(--ink-100); }
 .ants-nav-item.active {
-  background: linear-gradient(120deg, oklch(0.78 0.18 285 / 0.18), oklch(0.82 0.16 200 / 0.08));
+  background: rgba(99,102,241,0.15);
   color: var(--ink-100);
-  border: 1px solid oklch(0.78 0.18 285 / 0.22);
+  border-left: 2px solid var(--accent-1);
+  padding-left: 8px;
 }
 .ants-nav-badge {
   margin-left: auto; font-family: var(--font-mono); font-size: 8px;
@@ -204,16 +211,16 @@ button, input, textarea, select { font: inherit; }
   font-size: 13px; font-weight: 700; color: white;
 }
 .ants-user-name { font-size: 13px; font-weight: 600; color: var(--ink-100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ants-user-role { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--ink-40); }
+.ants-user-role { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--ink-50); }
 .ants-user-dot { width: 8px; height: 8px; border-radius: 50%; background: oklch(0.78 0.20 150); box-shadow: 0 0 8px oklch(0.78 0.20 150); flex-shrink: 0; margin-left: auto; }
 
 /* ── MAIN AREA ── */
 .ants-main { position: relative; z-index: 5; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
 .ants-main-inner { max-width: 1100px; padding: 24px 32px 120px; width: 100%; margin: 0 auto; }
 .ants-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
-.ants-crumbs { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-40); letter-spacing: 0.06em; }
-.ants-crumbs-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-40); }
-.ants-crumbs-active { color: var(--ink-80); }
+.ants-crumbs { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-50); letter-spacing: 0.06em; }
+.ants-crumbs-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-50); }
+.ants-crumbs-active { color: var(--ink-70); }
 .ants-live {
   font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
   color: oklch(0.78 0.20 150); background: oklch(0.78 0.20 150 / 0.12);
@@ -243,8 +250,8 @@ button, input, textarea, select { font: inherit; }
 .ants-hero { margin-bottom: 32px; }
 .ants-hero-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
 .ants-welcome { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-1); margin-bottom: 6px; }
-.ants-hello { font-family: var(--font-serif); font-size: 36px; font-weight: 400; color: var(--ink-100); letter-spacing: -0.03em; line-height: 1.1; }
-.ants-hero-sub { font-size: 14px; color: var(--ink-60); line-height: 1.6; max-width: 560px; }
+.ants-hello { font-family: var(--font-serif); font-size: 28px; font-weight: 700; color: var(--ink-100); letter-spacing: -0.02em; line-height: 1.2; }
+.ants-hero-sub { font-size: 14px; color: var(--ink-70); line-height: 1.6; max-width: 560px; }
 .ants-step-pill {
   display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px;
   color: var(--ink-60); background: var(--glass-fill); border: 1px solid var(--glass-stroke);
@@ -259,7 +266,7 @@ button, input, textarea, select { font: inherit; }
   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   font-family: var(--font-serif);
 }
-.ants-hint { font-family: var(--font-mono); font-size: 11px; color: var(--ink-40); display: flex; align-items: center; gap: 4px; }
+.ants-hint { font-family: var(--font-mono); font-size: 11px; color: var(--ink-50); display: flex; align-items: center; gap: 4px; }
 .ants-hint kbd { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-size: 10px; color: var(--ink-60); }
 
 /* ── PROFILE CARDS ── */
@@ -310,14 +317,14 @@ button, input, textarea, select { font: inherit; }
 .ants-meta-block .v { font-size: 12px; font-weight: 600; color: var(--ink-80); }
 
 /* ── COHORT / STATS ── */
-.ants-cohort { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.ants-cohort { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
 .ants-info-card { background: var(--glass-fill); border: 1px solid var(--glass-stroke); border-radius: var(--r-lg); padding: 18px; }
-.ants-info-card .label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-40); margin-bottom: 12px; }
+.ants-info-card .label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-50); margin-bottom: 12px; }
 .ants-avatar-stack { display: flex; }
 .ants-av { width: 28px; height: 28px; border-radius: 9px; background: linear-gradient(135deg, var(--ac1), var(--ac2)); font-size: 10px; font-weight: 700; color: white; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-0); margin-right: -6px; }
 .ants-stat { display: flex; align-items: baseline; gap: 5px; }
 .ants-stat .n { font-size: 28px; font-weight: 700; color: var(--ink-100); letter-spacing: -0.03em; }
-.ants-stat .u { font-size: 12px; color: var(--ink-60); }
+.ants-stat .u { font-size: 12px; color: var(--ink-50); }
 .ants-stat .delta { font-family: var(--font-mono); font-size: 11px; color: oklch(0.78 0.18 150); margin-left: 4px; }
 
 /* ── CTA DOCK ── */
@@ -355,6 +362,6 @@ button, input, textarea, select { font: inherit; }
 }
 
 /* ── ROADMAP MODULE CARDS ── */
-.ants-module-card { background: var(--glass-fill); border: 1px solid var(--glass-stroke); border-radius: var(--r-lg); transition: border-color 0.18s; }
+.ants-module-card { background: var(--bg-2); border: 1px solid var(--glass-stroke); border-radius: var(--r-md); transition: border-color 0.18s; }
 .ants-module-card:hover { border-color: rgba(255,255,255,0.14); }
 .ants-module-card.completed { border-color: oklch(0.78 0.20 150 / 0.4); }
