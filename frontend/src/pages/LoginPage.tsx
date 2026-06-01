@@ -53,8 +53,8 @@ export default function LoginPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-0)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', overflow: 'hidden' }}>
       {/* Subtle aurora behind the card */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', width: '60vw', height: '60vw', top: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-1), transparent 70%)', filter: 'blur(90px)', opacity: 0.2 }} />
-        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', right: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-2), transparent 70%)', filter: 'blur(90px)', opacity: 0.15 }} />
+        <div style={{ position: 'absolute', width: '60vw', height: '60vw', top: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-1), transparent 70%)', filter: 'blur(90px)', opacity: 0.45 }} />
+        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', right: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, var(--aurora-2), transparent 70%)', filter: 'blur(90px)', opacity: 0.38 }} />
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 420 }}>

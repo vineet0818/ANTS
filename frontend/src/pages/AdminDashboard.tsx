@@ -102,7 +102,7 @@ function Dropdown({ value, onChange, options, placeholder }: {
     glassStroke3: isLight ? 'rgba(0,0,0,0.15)'       : 'rgba(255,255,255,.14)',
     hoverBg:      isLight ? 'rgba(0,0,0,0.05)'       : 'rgba(255,255,255,.05)',
     hoverBg2:     isLight ? 'rgba(0,0,0,0.07)'       : 'rgba(255,255,255,.08)',
-    dropdownBg:   isLight ? '#f3efe8'                : '#16161e',
+    dropdownBg:   isLight ? '#eceeff'                : '#16161e',
   } as const;
 
   const [open, setOpen] = useState(false);
@@ -243,8 +243,8 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
     glassFill3:   isLight ? 'rgba(0,0,0,0.06)'       : 'rgba(255,255,255,.06)',
     glassStroke:  isLight ? 'rgba(0,0,0,0.10)'       : 'rgba(255,255,255,.09)',
     glassStroke2: isLight ? 'rgba(0,0,0,0.13)'       : 'rgba(255,255,255,.12)',
-    panelBg:      isLight ? '#ede8df'                : '#0e0e14',
-    overlayBg:    isLight ? 'rgba(250,247,242,0.70)' : 'rgba(7,7,11,.6)',
+    panelBg:      isLight ? '#e6e8ff'                : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(242,243,255,0.82)' : 'rgba(7,7,11,.6)',
   } as const;
 
   const [detail, setDetail] = useState<LearnerDetail | null>(null);
@@ -541,9 +541,9 @@ export default function AdminDashboard() {
     hoverBg2:     isLight ? 'rgba(0,0,0,0.07)'           : 'rgba(255,255,255,.08)',
     rowHover:     isLight ? 'rgba(0,0,0,0.03)'           : 'rgba(255,255,255,.03)',
     progressTrack:isLight ? 'rgba(0,0,0,0.07)'           : 'rgba(255,255,255,.08)',
-    dropdownBg:   isLight ? '#f3efe8'                    : '#16161e',
-    panelBg:      isLight ? '#ede8df'                    : '#0e0e14',
-    overlayBg:    isLight ? 'rgba(250,247,242,0.70)'     : 'rgba(7,7,11,.6)',
+    dropdownBg:   isLight ? '#eceeff'                    : '#16161e',
+    panelBg:      isLight ? '#e6e8ff'                    : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(242,243,255,0.82)'     : 'rgba(7,7,11,.6)',
   } as const;
 
   const inputStyle: React.CSSProperties = {
