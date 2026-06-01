@@ -94,6 +94,17 @@ function Dropdown({ value, onChange, options, placeholder }: {
   options: DropdownOption[];
   placeholder: string;
 }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const th = {
+    glassFill3:   isLight ? 'rgba(0,0,0,0.06)'       : 'rgba(255,255,255,.06)',
+    glassStroke2: isLight ? 'rgba(0,0,0,0.13)'       : 'rgba(255,255,255,.12)',
+    glassStroke3: isLight ? 'rgba(0,0,0,0.15)'       : 'rgba(255,255,255,.14)',
+    hoverBg:      isLight ? 'rgba(0,0,0,0.05)'       : 'rgba(255,255,255,.05)',
+    hoverBg2:     isLight ? 'rgba(0,0,0,0.07)'       : 'rgba(255,255,255,.08)',
+    dropdownBg:   isLight ? '#f3efe8'                : '#16161e',
+  } as const;
+
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -115,7 +126,7 @@ function Dropdown({ value, onChange, options, placeholder }: {
         style={{
           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
           padding: '8px 12px', borderRadius: 8, fontSize: 13, cursor: 'pointer',
-          background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
+          background: th.glassFill3, border: `1px solid ${th.glassStroke2}`,
           color: selected ? 'var(--ink-100)' : 'var(--ink-50)',
           fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
         }}
@@ -127,7 +138,7 @@ function Dropdown({ value, onChange, options, placeholder }: {
       {open && (
         <div style={{
           position: 'absolute', top: 'calc(100% + 6px)', left: 0, minWidth: '100%',
-          background: '#16161e', border: '1px solid rgba(255,255,255,.14)',
+          background: th.dropdownBg, border: `1px solid ${th.glassStroke3}`,
           borderRadius: 10, padding: '4px', zIndex: 9999,
           boxShadow: '0 8px 32px rgba(0,0,0,.6)',
         }}>
@@ -138,11 +149,11 @@ function Dropdown({ value, onChange, options, placeholder }: {
               style={{
                 padding: '8px 12px', borderRadius: 7, fontSize: 13, cursor: 'pointer',
                 color: opt.value === value ? 'var(--ink-100)' : 'var(--ink-70)',
-                background: opt.value === value ? 'rgba(255,255,255,.08)' : 'transparent',
+                background: opt.value === value ? th.hoverBg2 : 'transparent',
                 fontWeight: opt.value === value ? 600 : 400,
                 transition: 'background .1s',
               }}
-              onMouseEnter={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,.05)'; }}
+              onMouseEnter={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = th.hoverBg; }}
               onMouseLeave={e => { if (opt.value !== value) (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
             >
               {opt.label}
@@ -179,10 +190,12 @@ function RiskBadge({ flag }: { flag: string }) {
 
 // ─── Mini progress bar ────────────────────────────────────────────────────────
 function MiniBar({ pct, flag }: { pct: number; flag: string }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const color = flag === 'overdue' ? '#f87171' : flag === 'at_risk' ? '#fbbf24' : flag === 'completed' ? '#a5b4fc' : 'oklch(0.80 0.16 200)';
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 120 }}>
-      <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
+      <div style={{ flex: 1, height: 4, background: isLight ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 99, transition: 'width .3s' }} />
       </div>
       <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink-80)', width: 32, textAlign: 'right' }}>{pct}%</span>
@@ -204,10 +217,13 @@ function relTime(ts: string | null): string {
 }
 
 function StateBadge({ state }: { state: string }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const glassFill = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,.04)';
   const map: Record<string, [string, string]> = {
     completed:   ['oklch(0.80 0.16 200)', 'rgba(99,102,241,.15)'],
     in_progress: ['#fbbf24', 'rgba(234,179,8,.1)'],
-    not_started: ['var(--ink-50)', 'rgba(255,255,255,.04)'],
+    not_started: ['var(--ink-50)', glassFill],
   };
   const [color, bg] = map[state] ?? map.not_started;
   return (
@@ -219,6 +235,18 @@ function StateBadge({ state }: { state: string }) {
 
 // ─── Drill-down panel ─────────────────────────────────────────────────────────
 function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => void }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const th = {
+    glassFill:    isLight ? 'rgba(0,0,0,0.04)'       : 'rgba(255,255,255,.04)',
+    glassFill2:   isLight ? 'rgba(0,0,0,0.05)'       : 'rgba(255,255,255,.05)',
+    glassFill3:   isLight ? 'rgba(0,0,0,0.06)'       : 'rgba(255,255,255,.06)',
+    glassStroke:  isLight ? 'rgba(0,0,0,0.10)'       : 'rgba(255,255,255,.09)',
+    glassStroke2: isLight ? 'rgba(0,0,0,0.13)'       : 'rgba(255,255,255,.12)',
+    panelBg:      isLight ? '#ede8df'                : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(250,247,242,0.70)' : 'rgba(7,7,11,.6)',
+  } as const;
+
   const [detail, setDetail] = useState<LearnerDetail | null>(null);
   const [tab, setTab] = useState<'modules' | 'events' | 'nudges'>('modules');
   const [nudging, setNudging] = useState(false);
@@ -246,19 +274,19 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }} onClick={onClose}>
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(7,7,11,.6)', backdropFilter: 'blur(4px)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: th.overlayBg, backdropFilter: 'blur(4px)' }} />
       <div
         onClick={e => e.stopPropagation()}
         style={{
           position: 'relative', width: 520, height: '100%',
-          background: '#0e0e14', borderLeft: '1px solid rgba(255,255,255,.1)',
+          background: th.panelBg, borderLeft: `1px solid ${th.glassStroke}`,
           display: 'flex', flexDirection: 'column', overflow: 'hidden',
           animation: 'slideInRight .22s ease',
         }}
       >
         {detail ? (
           <>
-            <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid rgba(255,255,255,.08)', flexShrink: 0 }}>
+            <div style={{ padding: '20px 24px 16px', borderBottom: `1px solid ${th.glassStroke2}`, flexShrink: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                 <div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink-100)', lineHeight: 1.2 }}>{detail.name}</div>
@@ -270,7 +298,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
               </div>
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 <RiskBadge flag={detail.risk_flag} />
-                <span style={{ fontSize: 12, color: 'var(--ink-60)', background: 'rgba(255,255,255,.05)', padding: '3px 10px', borderRadius: 20, border: '1px solid rgba(255,255,255,.1)' }}>
+                <span style={{ fontSize: 12, color: 'var(--ink-60)', background: th.glassFill2, padding: '3px 10px', borderRadius: 20, border: `1px solid ${th.glassStroke}` }}>
                   {detail.profile_name}
                 </span>
                 <MiniBar pct={detail.completion_pct} flag={detail.risk_flag} />
@@ -298,7 +326,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: 2, padding: '12px 24px 0', borderBottom: '1px solid rgba(255,255,255,.08)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: 2, padding: '12px 24px 0', borderBottom: `1px solid ${th.glassStroke2}`, flexShrink: 0 }}>
               {(['modules', 'events', 'nudges'] as const).map(t => (
                 <button key={t} onClick={() => setTab(t)} style={{
                   background: 'none', border: 'none', cursor: 'pointer',
@@ -320,7 +348,7 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                     ? <div style={{ color: 'var(--ink-50)', fontSize: 13, textAlign: 'center', marginTop: 40 }}>No modules assigned yet</div>
                     : detail.modules.map(m => (
                     <div key={m.module_id} style={{
-                      background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)',
+                      background: th.glassFill, border: `1px solid ${th.glassFill3}`,
                       borderRadius: 10, padding: '12px 14px',
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
@@ -356,12 +384,12 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
                     : detail.event_log.map(ev => (
                     <div key={ev.event_id} style={{
                       display: 'flex', gap: 12, alignItems: 'flex-start',
-                      padding: '10px 12px', background: 'rgba(255,255,255,.03)',
-                      border: '1px solid rgba(255,255,255,.07)', borderRadius: 8,
+                      padding: '10px 12px', background: th.glassFill,
+                      border: `1px solid ${th.glassFill3}`, borderRadius: 8,
                     }}>
                       <div style={{
                         width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                        background: 'rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: th.glassFill3, display: 'flex', alignItems: 'center', justifyContent: 'center',
                         color: 'var(--ink-60)',
                       }}>
                         <IcClock size={12} />
@@ -412,9 +440,12 @@ function DrillDownPanel({ userId, onClose }: { userId: number; onClose: () => vo
 
 // ─── Stat card ────────────────────────────────────────────────────────────────
 function StatCard({ label, value, sub, color, icon }: { label: string; value: number; sub?: string; color: string; icon: React.ReactNode }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const glassStroke = isLight ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,.09)';
   return (
     <div style={{
-      background: 'var(--bg-2)', border: '1px solid rgba(255,255,255,.09)',
+      background: 'var(--bg-2)', border: `1px solid ${glassStroke}`,
       borderRadius: 14, padding: '18px 20px', flex: 1, minWidth: 140,
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
