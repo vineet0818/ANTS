@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import api from '../api';
 import { AdminLayout } from '../components/AdminLayout';
+import { useTheme } from '../context/ThemeContext';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface LearnerRow {
@@ -495,8 +496,27 @@ export default function AdminDashboard() {
 
   const hasFilters = search || profileFilter || riskFilter;
 
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
+  const th = {
+    glassFill:    isLight ? 'rgba(0,0,0,0.04)'           : 'rgba(255,255,255,.04)',
+    glassFill2:   isLight ? 'rgba(0,0,0,0.05)'           : 'rgba(255,255,255,.05)',
+    glassFill3:   isLight ? 'rgba(0,0,0,0.06)'           : 'rgba(255,255,255,.06)',
+    glassStroke:  isLight ? 'rgba(0,0,0,0.10)'           : 'rgba(255,255,255,.09)',
+    glassStroke2: isLight ? 'rgba(0,0,0,0.13)'           : 'rgba(255,255,255,.12)',
+    glassStroke3: isLight ? 'rgba(0,0,0,0.15)'           : 'rgba(255,255,255,.14)',
+    hoverBg:      isLight ? 'rgba(0,0,0,0.05)'           : 'rgba(255,255,255,.05)',
+    hoverBg2:     isLight ? 'rgba(0,0,0,0.07)'           : 'rgba(255,255,255,.08)',
+    rowHover:     isLight ? 'rgba(0,0,0,0.03)'           : 'rgba(255,255,255,.03)',
+    progressTrack:isLight ? 'rgba(0,0,0,0.07)'           : 'rgba(255,255,255,.08)',
+    dropdownBg:   isLight ? '#f3efe8'                    : '#16161e',
+    panelBg:      isLight ? '#ede8df'                    : '#0e0e14',
+    overlayBg:    isLight ? 'rgba(250,247,242,0.70)'     : 'rgba(7,7,11,.6)',
+  } as const;
+
   const inputStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)',
+    background: th.glassFill3, border: `1px solid ${th.glassStroke2}`,
     borderRadius: 8, padding: '8px 12px', color: 'var(--ink-100)', fontSize: 13,
     outline: 'none', fontFamily: 'var(--font-sans)', boxSizing: 'border-box' as const,
   };
@@ -533,12 +553,12 @@ export default function AdminDashboard() {
               style={{
                 display: 'flex', alignItems: 'center', gap: 6,
                 padding: '6px 14px', borderRadius: 10, fontSize: 12, fontWeight: 600,
-                background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)',
+                background: th.glassFill2, border: `1px solid ${th.glassStroke2}`,
                 color: 'var(--ink-70)', cursor: 'pointer', fontFamily: 'var(--font-sans)',
                 transition: 'all .18s',
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.1)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-100)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-70)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = th.hoverBg2; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-100)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = th.glassFill2; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-70)'; }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
@@ -562,7 +582,7 @@ export default function AdminDashboard() {
 
       {/* Filters */}
       <div style={{
-        background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)',
+        background: th.glassFill, border: `1px solid ${th.glassStroke}`,
         borderRadius: 14, padding: '12px 16px', marginBottom: 18,
         display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
       }}>
@@ -600,7 +620,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => { setSearch(''); setProfileFilter(''); setRiskFilter(''); }}
             style={{
-              background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)',
+              background: th.glassFill2, border: `1px solid ${th.glassStroke2}`,
               borderRadius: 8, padding: '8px 12px', color: 'var(--ink-60)', fontSize: 13, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--font-sans)',
             }}
@@ -616,7 +636,7 @@ export default function AdminDashboard() {
 
       {/* Table */}
       <div style={{
-        background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.09)',
+        background: th.rowHover, border: `1px solid ${th.glassStroke}`,
         borderRadius: 14, overflow: 'hidden',
       }}>
         {loading ? (
@@ -628,7 +648,7 @@ export default function AdminDashboard() {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,.08)' }}>
+              <tr style={{ borderBottom: `1px solid ${th.progressTrack}` }}>
                 {['Learner', 'Profile', 'Progress', 'Last Active', 'Status', 'Actions'].map(h => (
                   <th key={h} style={{
                     padding: '11px 16px', textAlign: 'left', fontSize: 11,
@@ -647,10 +667,10 @@ export default function AdminDashboard() {
                     key={row.user_id}
                     onClick={() => setSelectedId(row.user_id)}
                     style={{
-                      borderBottom: i < paginated.length - 1 ? '1px solid rgba(255,255,255,.06)' : 'none',
+                      borderBottom: i < paginated.length - 1 ? `1px solid ${th.glassFill3}` : 'none',
                       cursor: 'pointer', transition: 'background .12s',
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,.03)')}
+                    onMouseEnter={e => (e.currentTarget.style.background = th.rowHover)}
                     onMouseLeave={e => (e.currentTarget.style.background = '')}
                   >
                     {/* Learner */}
@@ -721,8 +741,8 @@ export default function AdminDashboard() {
                           style={{
                             display: 'flex', alignItems: 'center', gap: 5,
                             padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600,
-                            cursor: 'pointer', background: 'rgba(255,255,255,.05)',
-                            border: '1px solid rgba(255,255,255,.1)', color: 'var(--ink-60)',
+                            cursor: 'pointer', background: th.glassFill2,
+                            border: `1px solid ${th.glassStroke2}`, color: 'var(--ink-60)',
                             transition: 'all .2s', whiteSpace: 'nowrap', fontFamily: 'var(--font-sans)',
                           }}
                         >
@@ -752,10 +772,10 @@ export default function AdminDashboard() {
                 width: 36, height: 36, borderRadius: '50%',
                 border: page === currentPage
                   ? '2px solid oklch(0.78 0.20 150)'
-                  : '1px solid rgba(255,255,255,.12)',
+                  : `1px solid ${th.glassStroke2}`,
                 background: page === currentPage
                   ? 'rgba(34,197,94,.08)'
-                  : 'rgba(255,255,255,.04)',
+                  : th.glassFill,
                 backdropFilter: 'blur(12px)',
                 WebkitBackdropFilter: 'blur(12px)',
                 color: page === currentPage ? 'oklch(0.78 0.20 150)' : 'var(--ink-50)',
@@ -765,8 +785,8 @@ export default function AdminDashboard() {
                 fontFamily: 'var(--font-mono)',
                 boxShadow: page === currentPage ? '0 0 12px oklch(0.78 0.20 150 / 0.35)' : 'none',
               }}
-              onMouseEnter={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.08)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-80)'; } }}
-              onMouseLeave={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.04)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-50)'; } }}
+              onMouseEnter={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = th.hoverBg2; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-80)'; } }}
+              onMouseLeave={e => { if (page !== currentPage) { (e.currentTarget as HTMLButtonElement).style.background = th.glassFill; (e.currentTarget as HTMLButtonElement).style.color = 'var(--ink-50)'; } }}
             >
               {page}
             </button>
