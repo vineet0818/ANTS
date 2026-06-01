@@ -189,9 +189,9 @@ export default function LandingPage() {
                 accent: 'oklch(0.82 0.15 60)',
               },
             ].map(card => (
-              <div key={card.title} style={{ background: 'var(--bg-2)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '24px', transition: 'border-color 0.18s, transform 0.18s' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              <div key={card.title} style={{ background: 'var(--bg-2)', border: '1px solid var(--glass-stroke)', borderRadius: 14, padding: '24px', transition: 'border-color 0.18s, transform 0.18s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--glass-stroke)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-stroke)'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
                 <div style={{ fontSize: 26, marginBottom: 14 }}>{card.icon}</div>
                 <h3 style={{ fontSize: 15, fontWeight: 600, color: card.accent, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{card.title}</h3>
@@ -202,7 +202,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── Footer ── */}
-        <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <footer style={{ borderTop: '1px solid var(--glass-stroke)', padding: '24px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)' }}>© 2026 ANTS Trail · Nous QE Practice</span>
           <div style={{ display: 'flex', gap: 16 }}>
             <button onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-50)', cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--ink-100)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-50)'}>Sign In</button>
