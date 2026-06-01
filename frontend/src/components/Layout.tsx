@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { ThemeToggle } from './ThemeToggle';
 
 const Icon = ({
   size = 15, sw = 1.6, children, ...rest
@@ -116,6 +117,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="ants-live">Live</span>
             </div>
             <div className="ants-top-actions">
+              <ThemeToggle />
               <button className="ants-icon-btn" title="Notifications">
                 <IconBell size={15} /><span className="ants-dot-badge" />
               </button>
