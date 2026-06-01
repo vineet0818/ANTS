@@ -46,13 +46,13 @@ export default function RegisterPage() {
       {/* Aurora */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', width: '60vw', height: '60vw', top: '-10%', right: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.80 0.18 330), transparent 70%)', filter: 'blur(90px)', opacity: 0.18 }} />
-        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.82 0.16 200), transparent 70%)', filter: 'blur(90px)', opacity: 0.15 }} />
+        <div style={{ position: 'absolute', width: '50vw', height: '50vw', bottom: '-10%', left: '-5%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.74 0.10 210), transparent 70%)', filter: 'blur(90px)', opacity: 0.15 }} />
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 420 }}>
         {/* Brand */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: 'white', boxShadow: '0 0 24px oklch(0.78 0.18 285 / 0.35)', marginBottom: 16 }}>AT</div>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: 'white', boxShadow: '0 0 24px oklch(0.72 0.13 285 / 0.35)', marginBottom: 16 }}>AT</div>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginBottom: 6 }}>ANTS Trail</div>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 32, fontWeight: 700, color: 'var(--ink-100)', margin: 0, letterSpacing: '-0.02em', lineHeight: 1.2 }}>Join the platform</h1>
           <p style={{ fontSize: 13, color: 'var(--ink-70)', marginTop: 6 }}>
@@ -95,7 +95,7 @@ export default function RegisterPage() {
             </div>
 
             <button type="submit" disabled={loading || !!emailError}
-              style={{ width: '100%', height: 48, borderRadius: 10, border: 'none', fontWeight: 600, fontSize: 14, color: 'white', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: loading || !!emailError ? 'not-allowed' : 'pointer', opacity: loading || !!emailError ? 0.5 : 1, boxShadow: '0 4px 20px oklch(0.78 0.18 285 / 0.35)', transition: 'opacity 0.15s' }}
+              style={{ width: '100%', height: 48, borderRadius: 10, border: 'none', fontWeight: 600, fontSize: 14, color: 'white', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: loading || !!emailError ? 'not-allowed' : 'pointer', opacity: loading || !!emailError ? 0.5 : 1, boxShadow: '0 4px 20px oklch(0.72 0.13 285 / 0.35)', transition: 'opacity 0.15s' }}
               onMouseEnter={e => { if (!loading && !emailError) e.currentTarget.style.opacity = '0.88'; }}
               onMouseLeave={e => { e.currentTarget.style.opacity = loading || !!emailError ? '0.5' : '1'; }}
             >

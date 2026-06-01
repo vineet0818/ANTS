@@ -8,8 +8,8 @@ export default function LandingPage() {
 
       {/* ── Aurora background ── */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', width: '70vw', height: '70vw', maxWidth: 900, maxHeight: 900, top: '-15%', left: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.78 0.18 285), transparent 70%)', filter: 'blur(100px)', opacity: 0.22, animation: 'blobDrift1 28s ease-in-out infinite alternate' }} />
-        <div style={{ position: 'absolute', width: '55vw', height: '55vw', maxWidth: 700, maxHeight: 700, top: '30%', right: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.82 0.16 200), transparent 70%)', filter: 'blur(90px)', opacity: 0.18, animation: 'blobDrift2 34s ease-in-out infinite alternate' }} />
+        <div style={{ position: 'absolute', width: '70vw', height: '70vw', maxWidth: 900, maxHeight: 900, top: '-15%', left: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.72 0.13 285), transparent 70%)', filter: 'blur(100px)', opacity: 0.22, animation: 'blobDrift1 28s ease-in-out infinite alternate' }} />
+        <div style={{ position: 'absolute', width: '55vw', height: '55vw', maxWidth: 700, maxHeight: 700, top: '30%', right: '-10%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.74 0.10 210), transparent 70%)', filter: 'blur(90px)', opacity: 0.18, animation: 'blobDrift2 34s ease-in-out infinite alternate' }} />
         <div style={{ position: 'absolute', width: '45vw', height: '45vw', maxWidth: 600, maxHeight: 600, bottom: '-10%', left: '35%', borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.80 0.18 330), transparent 70%)', filter: 'blur(90px)', opacity: 0.15, animation: 'blobDrift3 22s ease-in-out infinite alternate' }} />
       </div>
 
@@ -26,7 +26,7 @@ export default function LandingPage() {
         }}>
           {/* Brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'white', boxShadow: '0 0 20px oklch(0.78 0.18 285 / 0.4)', flexShrink: 0 }}>AT</div>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'white', boxShadow: '0 0 20px oklch(0.72 0.13 285 / 0.2)', flexShrink: 0 }}>AT</div>
             <div>
               <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.01em' }}>ANTS Trail</div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink-50)', marginTop: 1 }}>AI-Native Testing Specialists</div>
@@ -50,7 +50,7 @@ export default function LandingPage() {
 
             <button
               onClick={() => navigate('/register')}
-              style={{ fontSize: 13.5, fontWeight: 600, color: 'white', padding: '8px 20px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: 'pointer', boxShadow: '0 4px 18px oklch(0.78 0.18 285 / 0.35)', transition: 'opacity 0.15s, transform 0.15s' }}
+              style={{ fontSize: 13.5, fontWeight: 600, color: 'white', padding: '8px 20px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: 'pointer', boxShadow: '0 4px 18px oklch(0.72 0.13 285 / 0.35)', transition: 'opacity 0.15s, transform 0.15s' }}
               onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
               onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
             >Sign Up</button>
@@ -107,7 +107,7 @@ export default function LandingPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
             <button
               onClick={() => navigate('/register')}
-              style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 14.5, fontWeight: 600, color: 'white', padding: '13px 28px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: 'pointer', boxShadow: '0 6px 24px oklch(0.78 0.18 285 / 0.4)', transition: 'opacity 0.15s, transform 0.15s' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 14.5, fontWeight: 600, color: 'white', padding: '13px 28px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))', cursor: 'pointer', boxShadow: '0 6px 24px oklch(0.72 0.13 285 / 0.2)', transition: 'opacity 0.15s, transform 0.15s' }}
               onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
               onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
             >

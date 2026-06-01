@@ -79,8 +79,8 @@ const PROFILE_META: Record<string, ProfileMeta> = {
     level: 'Level 01 · Foundation',
     track: 'Foundation',
     skills: ['Playwright', 'Reflect', 'AI prompts'],
-    c1: 'oklch(0.82 0.16 200)',
-    c2: 'oklch(0.78 0.18 285)',
+    c1: 'oklch(0.74 0.10 210)',
+    c2: 'oklch(0.72 0.13 285)',
     icon: SproutIcon,
   },
   mid_level: {
@@ -89,7 +89,7 @@ const PROFILE_META: Record<string, ProfileMeta> = {
     track: 'Build',
     skills: ['API tests', 'CI/CD', 'Codegen'],
     c1: 'oklch(0.80 0.16 150)',
-    c2: 'oklch(0.82 0.16 200)',
+    c2: 'oklch(0.74 0.10 210)',
     icon: RobotIcon,
   },
   senior_sdet: {
@@ -97,7 +97,7 @@ const PROFILE_META: Record<string, ProfileMeta> = {
     level: 'Level 03 · Architect',
     track: 'Architect',
     skills: ['Agents', 'MCP', 'Healer'],
-    c1: 'oklch(0.78 0.18 285)',
+    c1: 'oklch(0.72 0.13 285)',
     c2: 'oklch(0.80 0.18 330)',
     icon: RocketIcon,
   },
@@ -119,8 +119,8 @@ function getMetaForProfile(profile: ApiProfile): ProfileMeta {
     level: 'Level · Custom',
     track: 'Custom',
     skills: [],
-    c1: 'oklch(0.78 0.18 285)',
-    c2: 'oklch(0.82 0.16 200)',
+    c1: 'oklch(0.72 0.13 285)',
+    c2: 'oklch(0.74 0.10 210)',
     icon: SproutIcon,
   };
 }

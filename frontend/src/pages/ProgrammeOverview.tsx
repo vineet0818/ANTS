@@ -17,19 +17,19 @@ const PROFILES = [
   {
     key: 'Junior QA / Manual Tester', level: 'L1 · Foundation', modules: 44,
     duration: '8–12 weeks', tiers: ['Tier 0', 'Tier 1', 'L1'],
-    c1: 'oklch(0.82 0.16 200)', c2: 'oklch(0.78 0.18 285)',
+    c1: 'oklch(0.74 0.10 210)', c2: 'oklch(0.72 0.13 285)',
     desc: 'Write & run Playwright E2E tests, use AI to generate test cases, work within Reflect for no-code scenarios.',
   },
   {
     key: 'Mid-level Automation Engineer', level: 'L2 · Build', modules: 55,
     duration: '10–14 weeks', tiers: ['Tier 0', 'Tier 1', 'L1', 'L2'],
-    c1: 'oklch(0.80 0.16 150)', c2: 'oklch(0.82 0.16 200)',
+    c1: 'oklch(0.80 0.16 150)', c2: 'oklch(0.74 0.10 210)',
     desc: 'Build full Playwright framework with API layer, AI-assisted code generation, CI/CD integrated suite.',
   },
   {
     key: 'Senior SDET', level: 'L3 · Architect', modules: 58,
     duration: '12–16 weeks', tiers: ['Tier 0', 'Tier 1', 'L1', 'L2', 'L3'],
-    c1: 'oklch(0.78 0.18 285)', c2: 'oklch(0.80 0.18 330)',
+    c1: 'oklch(0.72 0.13 285)', c2: 'oklch(0.80 0.18 330)',
     desc: 'Design AI-augmented Playwright frameworks with Planner/Generator/Healer agents and agentic MCP workflows.',
   },
   {
@@ -74,7 +74,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
         border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, padding: '36px 40px',
         marginBottom: 24, position: 'relative', overflow: 'hidden',
       }}>
-        <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.78 0.18 285 / 0.2), transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, oklch(0.72 0.13 285 / 0.2), transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-2)', boxShadow: '0 0 8px var(--accent-2)', display: 'inline-block' }} />
@@ -311,8 +311,8 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
 
       {/* CTA Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, oklch(0.78 0.18 285 / 0.15), oklch(0.82 0.16 200 / 0.10))',
-        border: '1px solid oklch(0.78 0.18 285 / 0.25)',
+        background: 'linear-gradient(135deg, oklch(0.72 0.13 285 / 0.15), oklch(0.74 0.10 210 / 0.10))',
+        border: '1px solid oklch(0.72 0.13 285 / 0.25)',
         borderRadius: 14, padding: '28px 32px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20,
       }}>
@@ -327,7 +327,7 @@ function OverviewContent({ daysToKickoff, daysToDec }: { daysToKickoff: number; 
           fontSize: 14, fontWeight: 600, color: 'white',
           background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))',
           padding: '12px 24px', borderRadius: 12, textDecoration: 'none',
-          boxShadow: '0 4px 20px oklch(0.78 0.18 285 / 0.4)',
+          boxShadow: '0 4px 20px oklch(0.72 0.13 285 / 0.2)',
           transition: 'opacity 0.15s, transform 0.15s', whiteSpace: 'nowrap',
         }}
           onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
@@ -384,7 +384,7 @@ export default function ProgrammeOverview() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => navigate('/')}>
           <div style={{
             width: 30, height: 30, borderRadius: 8,
-            background: 'linear-gradient(135deg, oklch(0.78 0.18 285), oklch(0.80 0.16 200))',
+            background: 'linear-gradient(135deg, oklch(0.72 0.13 285), oklch(0.80 0.16 200))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 11, fontWeight: 800, color: 'white', letterSpacing: '-0.02em',
           }}>AT</div>

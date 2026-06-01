@@ -658,7 +658,7 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{
                           width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                          background: 'linear-gradient(135deg, oklch(0.78 0.18 285), oklch(0.80 0.16 200))',
+                          background: 'linear-gradient(135deg, oklch(0.72 0.13 285), oklch(0.80 0.16 200))',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: 13, fontWeight: 700, color: 'white',
                         }}>

@@ -185,7 +185,7 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
         }}>
           <div style={{
             width: `${pct}%`, height: '100%', background: trackColor,
-            boxShadow: pct > 0 ? `0 0 10px ${isComplete ? 'oklch(0.78 0.20 150 / 0.5)' : 'oklch(0.78 0.18 285 / 0.4)'}` : 'none',
+            boxShadow: pct > 0 ? `0 0 10px ${isComplete ? 'oklch(0.78 0.20 150 / 0.5)' : 'oklch(0.72 0.13 285 / 0.2)'}` : 'none',
             transition: 'width 0.08s linear', borderRadius: 999,
           }} />
         </div>
@@ -205,7 +205,7 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
           borderRadius: '50%',
           background: isComplete ? 'oklch(0.78 0.20 150)' : 'linear-gradient(135deg, var(--accent-1), var(--accent-2))',
           border: '2.5px solid var(--bg-0)',
-          boxShadow: `0 0 0 2px ${isComplete ? 'oklch(0.78 0.20 150 / 0.4)' : 'oklch(0.78 0.18 285 / 0.4)'}, 0 2px 8px rgba(0,0,0,0.5)`,
+          boxShadow: `0 0 0 2px ${isComplete ? 'oklch(0.78 0.20 150 / 0.4)' : 'oklch(0.72 0.13 285 / 0.2)'}, 0 2px 8px rgba(0,0,0,0.5)`,
           transition: 'left 0.08s linear', zIndex: 1, pointerEvents: 'none',
         }} />
       </div>
@@ -240,7 +240,7 @@ function ProgressSlider({ moduleId, initial, onSaved }: {
                 : '1px solid rgba(255,255,255,0.1)',
               color: hasUnsaved && !saving ? '#fff' : 'var(--ink-30)',
               boxShadow: hasUnsaved && !saving
-                ? '0 2px 10px oklch(0.78 0.18 285 / 0.35)'
+                ? '0 2px 10px oklch(0.72 0.13 285 / 0.35)'
                 : 'none',
               opacity: saving ? 0.6 : 1,
             }}
@@ -418,7 +418,7 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
         </svg>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--ink-50)', whiteSpace: 'nowrap' }}>{tier}</span>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-30)', whiteSpace: 'nowrap' }}>{done}/{modules.length}</span>
-        <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
+        <div style={{ flex: 1, height: 2, background: 'rgba(255,255,255,0.10)', borderRadius: 999 }} />
         <div style={{ width: 72, height: 3, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden', flexShrink: 0 }}>
           <div style={{ width: `${avgPct}%`, height: '100%', background: avgPct === 100 ? 'oklch(0.78 0.20 150)' : 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', borderRadius: 999, transition: 'width 0.4s ease' }} />
         </div>
@@ -433,12 +433,12 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
               style={{
                 borderRadius: 12, padding: '22px 26px',
                 background: 'var(--bg-2)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '2px solid rgba(255,255,255,0.13)',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 transition: 'box-shadow 0.18s, border-color 0.18s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.6)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.13)'; }}
-              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.6)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.13)'; }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
                 {/* Left: module info */}
@@ -451,9 +451,9 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
                   <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{mod.title}</h3>
                   <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>{mod.resource_name}</p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                    <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; e.currentTarget.style.color = 'var(--ink-100)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'var(--ink-80)'; }}>
+                    <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.22)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.25)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.12)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.3)'; }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                       Open resource
                     </a>
@@ -567,7 +567,7 @@ export default function RoadmapPage() {
         </div>
         <div style={{ marginTop: 16, maxWidth: 480 }}>
           <div style={{ height: 6, borderRadius: 999, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-            <div style={{ width: `${roadmap.overall_percentage}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', boxShadow: '0 0 12px oklch(0.78 0.18 285 / 0.5)', transition: 'width 0.5s cubic-bezier(0.34,1.56,0.64,1)' }} />
+            <div style={{ width: `${roadmap.overall_percentage}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', boxShadow: '0 0 12px oklch(0.72 0.13 285 / 0.25)', transition: 'width 0.5s cubic-bezier(0.34,1.56,0.64,1)' }} />
           </div>
         </div>
       </div>
@@ -598,17 +598,17 @@ export default function RoadmapPage() {
                   display: 'inline-flex', alignItems: 'center', gap: 5,
                   padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: isActive ? 700 : 500,
                   cursor: 'pointer', transition: 'all .15s', fontFamily: 'var(--font-sans)',
-                  background: isActive ? 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' : 'rgba(255,255,255,0.05)',
-                  border: isActive ? '1px solid transparent' : '1px solid rgba(255,255,255,0.1)',
-                  color: isActive ? 'white' : 'var(--ink-60)',
-                  boxShadow: isActive ? '0 2px 12px oklch(0.78 0.18 285 / 0.35)' : 'none',
+                  background: isActive ? 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' : 'rgba(255,255,255,0.07)',
+                  border: isActive ? '1px solid transparent' : '1px solid rgba(255,255,255,0.14)',
+                  color: isActive ? 'white' : 'var(--ink-100)',
+                  boxShadow: isActive ? '0 2px 12px oklch(0.72 0.13 285 / 0.35)' : 'none',
                 }}>
                   {tab.label}
                   <span style={{
                     fontFamily: 'var(--font-mono)', fontSize: 10,
-                    background: isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)',
+                    background: isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.12)',
                     padding: '1px 6px', borderRadius: 10,
-                    color: isActive ? 'white' : 'var(--ink-50)',
+                    color: isActive ? 'white' : 'var(--ink-70)',
                   }}>{tab.count}</span>
                 </button>
               );
@@ -632,7 +632,7 @@ export default function RoadmapPage() {
                 color: 'var(--ink-100)', outline: 'none', fontFamily: 'var(--font-sans)',
                 transition: 'border-color .15s, width .2s',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = 'oklch(0.78 0.18 285 / 0.5)'; e.currentTarget.style.width = '220px'; }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.25)'; e.currentTarget.style.width = '220px'; }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.width = '180px'; }}
             />
             {searchQuery && (
@@ -733,9 +733,9 @@ function FlatModuleCard({ mod, onModuleSaved, startDate, targetDate, totalModule
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <a href={mod.resource_link} target="_blank" rel="noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}>
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'oklch(0.76 0.13 285)', background: 'oklch(0.72 0.13 285 / 0.12)', border: '1px solid oklch(0.72 0.13 285 / 0.3)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s, border-color 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.22)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.25)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'oklch(0.72 0.13 285 / 0.12)'; e.currentTarget.style.borderColor = 'oklch(0.72 0.13 285 / 0.3)'; }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Open resource
             </a>
