@@ -441,31 +441,33 @@ function TierSection({ tier, modules, onModuleSaved, startDate, targetDate, tota
           {modules.map((mod, idx) => (
             <div key={mod.id} className={`ants-module-card${mod.progress_state === 'completed' ? ' completed' : ''}`}
               style={{ borderRadius: 0, border: 'none', borderTop: idx > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none', padding: '20px 24px' }}>
-              {/* Module info */}
-              <div>
-                <div style={{ marginBottom: 6 }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-40)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', padding: '2px 7px', borderRadius: 4 }}>
-                    {mod.category.replace(/^(Tier\s+\d+|L\d+)\s*[–-]\s*/i, '')}
-                  </span>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap' }}>
+                {/* Left: module info */}
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ marginBottom: 6 }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-40)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', padding: '2px 7px', borderRadius: 4 }}>
+                      {mod.category.replace(/^(Tier\s+\d+|L\d+)\s*[–-]\s*/i, '')}
+                    </span>
+                  </div>
+                  <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{mod.title}</h3>
+                  <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>{mod.resource_name}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                    <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; e.currentTarget.style.color = 'var(--ink-100)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'var(--ink-80)'; }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                      Open resource
+                    </a>
+                    {mod.estimated_time && (
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--ink-50)' }}>⏱ {mod.estimated_time}</span>
+                    )}
+                  </div>
+                  <TimelineStrip mod={mod} totalModules={totalModules} startDate={startDate} targetDate={targetDate} />
                 </div>
-                <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>{mod.title}</h3>
-                <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>{mod.resource_name}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                  <a href={mod.resource_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; e.currentTarget.style.color = 'var(--ink-100)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'var(--ink-80)'; }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    Open resource
-                  </a>
-                  {mod.estimated_time && (
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--ink-50)' }}>⏱ {mod.estimated_time}</span>
-                  )}
+                {/* Right: slider */}
+                <div style={{ width: 210, flexShrink: 0 }}>
+                  <ProgressSlider moduleId={mod.id} initial={mod.percentage} onSaved={(pct) => onModuleSaved(mod.id, pct)} />
                 </div>
-                <TimelineStrip mod={mod} totalModules={totalModules} startDate={startDate} targetDate={targetDate} />
-              </div>
-              {/* Progress slider strip */}
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', marginTop: 16, paddingTop: 14 }}>
-                <ProgressSlider moduleId={mod.id} initial={mod.percentage} onSaved={(pct) => onModuleSaved(mod.id, pct)} />
               </div>
             </div>
           ))}
@@ -710,42 +712,44 @@ function FlatModuleCard({ mod, onModuleSaved, startDate, targetDate, totalModule
   return (
     <div className={`ants-module-card${mod.progress_state === 'completed' ? ' completed' : ''}`}
       style={{ marginBottom: 16, borderRadius: 14, padding: '20px 24px' }}>
-      {/* Module info */}
-      <div>
-        <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-          <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase',
-            color, background: `${color}18`, border: `1px solid ${color}40`,
-            padding: '3px 8px', borderRadius: 5, fontWeight: 700,
-          }}>
-            {tier} · {section.split(' ').slice(0, 2).join(' ')}
-          </span>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap' }}>
+        {/* Left */}
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+            <span style={{
+              fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase',
+              color, background: `${color}18`, border: `1px solid ${color}40`,
+              padding: '3px 8px', borderRadius: 5, fontWeight: 700,
+            }}>
+              {tier} · {section.split(' ').slice(0, 2).join(' ')}
+            </span>
+          </div>
+
+          <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>
+            {mod.title}
+          </h3>
+
+          <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>
+            {mod.resource_name}{mod.resource_name ? ' · ' : ''}{mod.estimated_time ?? ''}
+          </p>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <a href={mod.resource_link} target="_blank" rel="noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Open resource
+            </a>
+          </div>
+
+          <TimelineStrip mod={mod} totalModules={totalModules} startDate={startDate} targetDate={targetDate} />
         </div>
 
-        <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 700, color: 'var(--ink-100)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>
-          {mod.title}
-        </h3>
-
-        <p style={{ fontSize: 12, color: 'var(--ink-70)', margin: '0 0 12px' }}>
-          {mod.resource_name}{mod.resource_name ? ' · ' : ''}{mod.estimated_time ?? ''}
-        </p>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <a href={mod.resource_link} target="_blank" rel="noreferrer"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'var(--ink-80)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', padding: '6px 13px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.11)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Open resource
-          </a>
+        {/* Right: slider */}
+        <div style={{ width: 210, flexShrink: 0 }}>
+          <ProgressSlider moduleId={mod.id} initial={mod.percentage} onSaved={(pct) => onModuleSaved(mod.id, pct)} />
         </div>
-
-        <TimelineStrip mod={mod} totalModules={totalModules} startDate={startDate} targetDate={targetDate} />
-      </div>
-
-      {/* Progress slider strip */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', marginTop: 16, paddingTop: 14 }}>
-        <ProgressSlider moduleId={mod.id} initial={mod.percentage} onSaved={(pct) => onModuleSaved(mod.id, pct)} />
       </div>
     </div>
   );
