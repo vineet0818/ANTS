@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function daysUntil(target: string): number {
@@ -393,6 +394,7 @@ export default function ProgrammeOverview() {
 
         {/* Nav actions */}
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <ThemeToggle />
           <button
             onClick={() => navigate('/')}
             style={{

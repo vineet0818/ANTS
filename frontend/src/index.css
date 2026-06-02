@@ -25,9 +25,9 @@
   --ink-40:  rgba(255,255,255,0.22);
   --ink-20:  rgba(255,255,255,0.10);
 
-  --accent-1: oklch(0.72 0.13 285);
-  --accent-2: oklch(0.74 0.10 210);
-  --accent-3: oklch(0.80 0.18 330);
+  --accent-1: #6366F1;
+  --accent-2: #06B6D4;
+  --accent-3: #A855F7;
 
   --aurora-1: oklch(0.72 0.13 285);
   --aurora-2: oklch(0.74 0.10 210);
@@ -65,14 +65,14 @@
 
   /* Slate scale — crisp enterprise typography */
   --ink-100: #0F172A;
-  --ink-70:  #334155;
-  --ink-50:  #64748B;
-  --ink-30:  #94A3B8;
+  --ink-70:  #1E293B;
+  --ink-50:  #475569;
+  --ink-30:  #64748B;
 
-  --ink-80:  #334155;
-  --ink-60:  #64748B;
-  --ink-40:  #94A3B8;
-  --ink-20:  #CBD5E1;
+  --ink-80:  #1E293B;
+  --ink-60:  #475569;
+  --ink-40:  #64748B;
+  --ink-20:  #94A3B8;
 
   /* Semantic accents — used for 2px borders, icons, glows */
   --accent-1: #6366F1;
