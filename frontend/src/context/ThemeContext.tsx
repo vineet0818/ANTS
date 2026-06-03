@@ -1,33 +1,58 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-type Theme = 'dark' | 'light';
+type ThemeSetting = 'system' | 'light' | 'dark';
+type ResolvedTheme = 'light' | 'dark';
 
 interface ThemeContextType {
-  theme: Theme;
-  toggleTheme: () => void;
+  setting: ThemeSetting;
+  theme: ResolvedTheme;
+  cycleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
+  setting: 'system',
   theme: 'dark',
-  toggleTheme: () => {},
+  cycleTheme: () => {},
 });
 
+function getSystemTheme(): ResolvedTheme {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem('ants-theme') as Theme | null;
+  const [setting, setSetting] = useState<ThemeSetting>(() => {
+    const stored = localStorage.getItem('ants-theme') as ThemeSetting | null;
     if (stored === 'dark' || stored === 'light') return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'system';
   });
+
+  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(getSystemTheme);
+
+  // Track live OS theme changes
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e: MediaQueryListEvent) => setSystemTheme(e.matches ? 'dark' : 'light');
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  const theme: ResolvedTheme = setting === 'system' ? systemTheme : setting;
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('ants-theme', theme);
-  }, [theme]);
+    if (setting === 'system') {
+      localStorage.removeItem('ants-theme');
+    } else {
+      localStorage.setItem('ants-theme', setting);
+    }
+  }, [theme, setting]);
 
-  const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));
+  // Cycle: system → light → dark → system
+  const cycleTheme = () =>
+    setSetting(s => (s === 'system' ? 'light' : s === 'light' ? 'dark' : 'system'));
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ setting, theme, cycleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

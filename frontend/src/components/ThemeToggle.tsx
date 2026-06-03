@@ -15,16 +15,36 @@ const MoonIcon = () => (
   </svg>
 );
 
+const MonitorIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="3" width="20" height="14" rx="2"/>
+    <path d="M8 21h8M12 17v4"/>
+  </svg>
+);
+
+const ICONS = {
+  system: <MonitorIcon />,
+  light:  <SunIcon />,
+  dark:   <MoonIcon />,
+};
+
+const LABELS = {
+  system: 'Auto (system) — click for light',
+  light:  'Light — click for dark',
+  dark:   'Dark — click for auto',
+};
+
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { setting, cycleTheme } = useTheme();
   return (
     <button
       className="ants-icon-btn"
-      onClick={toggleTheme}
-      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      onClick={cycleTheme}
+      title={LABELS[setting]}
+      aria-label={LABELS[setting]}
     >
-      {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+      {ICONS[setting]}
     </button>
   );
 }
