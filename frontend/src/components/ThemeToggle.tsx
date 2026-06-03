@@ -23,28 +23,23 @@ const MonitorIcon = () => (
   </svg>
 );
 
-const ICONS = {
-  system: <MonitorIcon />,
-  light:  <SunIcon />,
-  dark:   <MoonIcon />,
-};
-
-const LABELS = {
-  system: 'Auto (system) — click for light',
-  light:  'Light — click for dark',
-  dark:   'Dark — click for auto',
-};
-
 export function ThemeToggle() {
-  const { setting, cycleTheme } = useTheme();
+  const { setting, theme, isExplicit, cycleTheme } = useTheme();
+
+  // Monitor icon only when user has explicitly cycled back to system.
+  // On fresh load (implicit system default) show the resolved sun/moon instead.
+  const showMonitor = setting === 'system' && isExplicit;
+
+  const icon  = showMonitor ? <MonitorIcon /> : theme === 'dark' ? <MoonIcon /> : <SunIcon />;
+  const label = showMonitor
+    ? 'Auto (system) — click for light'
+    : theme === 'dark'
+    ? 'Dark — click for light'
+    : 'Light — click for dark';
+
   return (
-    <button
-      className="ants-icon-btn"
-      onClick={cycleTheme}
-      title={LABELS[setting]}
-      aria-label={LABELS[setting]}
-    >
-      {ICONS[setting]}
+    <button className="ants-icon-btn" onClick={cycleTheme} title={label} aria-label={label}>
+      {icon}
     </button>
   );
 }
