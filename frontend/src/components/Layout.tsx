@@ -114,8 +114,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="ants-crumbs">
               <span className="ants-crumbs-active">{currentNav?.label ?? 'Dashboard'}</span>
               <span className="ants-crumbs-dot" />
-              <span className="ants-live">Live</span>
-              <span className="ants-crumbs-dot" />
               <span style={{ color: 'var(--ink-70)' }}>
                 {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
               </span>

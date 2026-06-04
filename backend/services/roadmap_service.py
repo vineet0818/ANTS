@@ -42,15 +42,23 @@ def assign_profile(db: Session, user_id: int, profile_id: int):
         ProfileModule.profile_id == profile.id
     ).order_by(ProfileModule.sequence_order).all()
 
-    # Seed initial progress records (not_started) for each module
+    # Seed initial progress records — only for modules the user has NOT touched before.
+    # Using db.merge() would reset existing progress, breaking cross-profile carry-over.
+    # Instead we check first and only insert missing records.
+    existing_module_ids = {
+        row.module_id for row in
+        db.query(ModuleProgressCurrent.module_id).filter(
+            ModuleProgressCurrent.user_id == user_id
+        ).all()
+    }
     for mod in modules:
-        progress = ModuleProgressCurrent(
-            user_id=user_id,
-            module_id=mod.id,
-            progress_state=ProgressState.not_started,
-            percentage=0
-        )
-        db.merge(progress)   # UPSERT
+        if mod.id not in existing_module_ids:
+            db.add(ModuleProgressCurrent(
+                user_id=user_id,
+                module_id=mod.id,
+                progress_state=ProgressState.not_started,
+                percentage=0
+            ))
 
     db.commit()
     return user_profile
